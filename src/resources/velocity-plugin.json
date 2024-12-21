@@ -1,0 +1,8 @@
+{"id":"basetemplate",
+"name":"BaseTemplate",
+"version":"x-x-x",
+"description":"base for template",
+"authors":["Avankziar"],
+"url":"https://example.com",
+"dependencies":[{id='interfacehub', version='null', optional=false}],
+"main":"main.java.me.avankziar.bm.velocity.bm"}

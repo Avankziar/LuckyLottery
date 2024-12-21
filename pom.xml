@@ -110,6 +110,12 @@
 			<id>papermc</id>
         	<url>https://repo.papermc.io/repository/maven-public/</url>
 		</repository>
+		<!-- InterfaceHub -->
+		<repository>
+	        <id>github</id>
+      		<name>GitHub Avankziar Apache Maven Packages</name>
+	        <url>https://maven.pkg.github.com/Avankziar/InterfaceHub</url>
+	    </repository>
 	</repositories>
 	<dependencies>
 		<!--Spigot API-->
@@ -155,8 +161,7 @@
   			<artifactId>boosted-yaml</artifactId>
   			<version>1.3.5</version>
   			<!-- Only, if no Plugin has already included it
-		    <scope>provided</scope>
-		    -->
+		    <scope>provided</scope>-->
 		</dependency>
 		<!-- InterfaceHub -->
 		<dependency>

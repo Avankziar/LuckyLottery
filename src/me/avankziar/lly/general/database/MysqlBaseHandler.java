@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import me.avankziar.lly.general.objects.lotteryticket.LotteryTicket;
+
 public class MysqlBaseHandler
 {	
 	/*
@@ -103,6 +105,34 @@ public class MysqlBaseHandler
 		return false;
 	}
 	
+	public <T extends LotteryTicket> boolean exist(T t, String whereColumn, Object... whereObject)
+	{
+		//All Object which leaves the try-block, will be closed. So conn and ps is closed after the methode
+		//No finally needed.
+		//So much as possible in async methode use
+		try (Connection conn = mysqlBaseSetup.getConnection();)
+		{
+			PreparedStatement ps = getPreparedStatement(conn,
+					"SELECT `id` FROM `" + t.getMysqlTableName() + "` WHERE "+whereColumn+" LIMIT 1",
+					1,
+					whereObject);
+	        ResultSet rs = ps.executeQuery();
+	        MysqlBaseHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
+	        while (rs.next()) 
+	        {
+	        	return true;
+	        }
+	    } catch (SQLException e) 
+		{
+			  if(t instanceof MysqlLottery)
+			  {
+				  MysqlLottery ml = (MysqlLottery) t;
+				  ml.log(logger, Level.WARNING, "Could not check "+t.getClass().getName()+" Object if it exist!", e);
+			  }
+		}
+		return false;
+	}
+	
 	public boolean create(MysqlType type, Object object)
 	{
 		if(object instanceof MysqlHandable)
@@ -115,6 +145,23 @@ public class MysqlBaseHandler
 			} catch (Exception e)
 			{
 				mh.log(logger, Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+			}
+		}
+		return false;
+	}
+	
+	public <T extends LotteryTicket> boolean create(T t)
+	{
+		if(t instanceof MysqlLottery)
+		{
+			MysqlLottery ml = (MysqlLottery) t;
+			try (Connection conn = mysqlBaseSetup.getConnection();)
+			{
+				ml.create(conn);
+				return true;
+			} catch (Exception e)
+			{
+				ml.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
 			}
 		}
 		return false;
@@ -137,6 +184,23 @@ public class MysqlBaseHandler
 		return false;
 	}
 	
+	public <T extends LotteryTicket> boolean updateData(T t, String whereColumn, Object... whereObject)
+	{
+		if(t instanceof MysqlLottery)
+		{
+			MysqlLottery ml = (MysqlLottery) t;
+			try (Connection conn = mysqlBaseSetup.getConnection();)
+			{
+				ml.update(conn, whereColumn, whereObject);
+				return true;
+			} catch (Exception e)
+			{
+				ml.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
+			}
+		}
+		return false;
+	}
+	
 	public Object getData(MysqlType type, String whereColumn, Object... whereObject)
 	{
 		Object object = type.getObject();
@@ -153,6 +217,26 @@ public class MysqlBaseHandler
 			} catch (Exception e)
 			{
 				mh.log(logger, Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+			}
+		}
+		return null;
+	}
+	
+	public <T extends LotteryTicket> Object getData(T t, String whereColumn, Object... whereObject)
+	{
+		if(t instanceof MysqlLottery)
+		{
+			MysqlLottery ml = (MysqlLottery) t;
+			try (Connection conn = mysqlBaseSetup.getConnection();)
+			{
+				ArrayList<Object> list = ml.get(conn, "`id` ASC", " Limit 1", whereColumn, whereObject);
+				if(!list.isEmpty())
+				{
+					return list.get(0);
+				}
+			} catch (Exception e)
+			{
+				ml.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
 			}
 		}
 		return null;
@@ -180,6 +264,28 @@ public class MysqlBaseHandler
 		return 0;
 	}
 	
+	public <T extends LotteryTicket> int deleteData(T t, String whereColumn, Object... whereObject)
+	{
+		try (Connection conn = mysqlBaseSetup.getConnection();)
+		{
+			PreparedStatement ps = getPreparedStatement(conn,
+					"DELETE FROM `" + t.getMysqlTableName() + "` WHERE "+whereColumn,
+					1,
+					whereObject);
+	        int d = ps.executeUpdate();
+			MysqlBaseHandler.addRows(QueryType.DELETE, d);
+			return d;
+	    } catch (SQLException e) 
+		{
+	    	if(t instanceof MysqlLottery)
+			  {
+				  MysqlLottery ml = (MysqlLottery) t;
+				  ml.log(logger, Level.WARNING, "Could not delete "+t.getClass().getName()+" Object!", e);
+			  }
+		}
+		return 0;
+	}
+	
 	public int lastID(MysqlType type)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
@@ -199,6 +305,30 @@ public class MysqlBaseHandler
 			  {
 				  MysqlHandable mh = (MysqlHandable) type.getObject();
 				  mh.log(logger, Level.WARNING, "Could not get last id from "+type.getObject().getClass().getName()+" Object table!", e);
+			  }
+		}
+		return 0;
+	}
+	
+	public <T extends LotteryTicket> int lastID(T t)
+	{
+		try (Connection conn = mysqlBaseSetup.getConnection();)
+		{
+			PreparedStatement ps = getPreparedStatement(conn,
+					"SELECT `id` FROM `" + t.getMysqlTableName() + "` ORDER BY `id` DESC LIMIT 1",
+					1);
+	        ResultSet rs = ps.executeQuery();
+	        MysqlBaseHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
+	        while (rs.next()) 
+	        {
+	        	return rs.getInt("id");
+	        }
+	    } catch (SQLException e) 
+		{
+			  if(t instanceof MysqlLottery)
+			  {
+				  MysqlLottery ml = (MysqlLottery) t;
+				  ml.log(logger, Level.WARNING, "Could not get last id from "+t.getClass().getName()+" Object table!", e);
 			  }
 		}
 		return 0;

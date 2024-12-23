@@ -1,4 +1,4 @@
-package me.avankziar.lly.general.objects.lottery;
+package me.avankziar.lly.general.objects;
 
 import java.time.DayOfWeek;
 import java.time.Instant;

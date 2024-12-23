@@ -7,11 +7,13 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
+import me.avankziar.lly.general.objects.DrawTime;
+import me.avankziar.lly.general.objects.WinningCategory;
+import me.avankziar.lly.general.objects.WinningCategory.PayoutType;
 import me.avankziar.lly.general.objects.lottery.ClassicLotto;
-import me.avankziar.lly.general.objects.lottery.DrawTime;
 import me.avankziar.lly.general.objects.lottery.Lottery.GameType;
-import me.avankziar.lly.general.objects.lottery.WinningCategory;
-import me.avankziar.lly.general.objects.lottery.WinningCategory.PayoutType;
+import me.avankziar.lly.general.objects.lotterydraw.ClassicLottoDraw;
+import me.avankziar.lly.general.objects.lotteryticket.ClassicLottoTicket;
 import me.avankziar.lly.spigot.LLY;
 
 public class LotteryHandler 
@@ -36,15 +38,20 @@ public class LotteryHandler
 		{
 			try
 			{
+				if(y.contains("LotteryName") || y.contains("Description") || y.contains("DrawTime")
+						|| y.contains("WinningCategory.1.PayoutPercentage"))
+				{
+					continue;
+				}
 				String lottoname = y.getString("LotteryName");
 				String description = y.getString("Description");
-				double standartPot = y.getDouble("StandartPot");
-				double maximumPot = y.getDouble("MaximumPot");
-				double amountToAddToThePotIfNoOneIsWinning = y.getDouble("AmountToAddToThePotIfNoOneIsWinning");
-				double costPerTicket = y.getDouble("CostPerTicket");
-				int fristNumberToChooseFrom = y.getInt("FristNumberToChooseFrom");
-				int lastNumberToChooseFrom = y.getInt("LastNumberToChooseFrom");
-				int amountOfChoosedNumber = y.getInt("AmountOfChoosedNumber");
+				double standartPot = y.getDouble("StandartPot", 1_000_000.0);
+				double maximumPot = y.getDouble("MaximumPot", 10_000_000.0);
+				double amountToAddToThePotIfNoOneIsWinning = y.getDouble("AmountToAddToThePotIfNoOneIsWinning", 500_000.0);
+				double costPerTicket = y.getDouble("CostPerTicket", 2.5);
+				int fristNumberToChooseFrom = y.getInt("FristNumberToChooseFrom", 1);
+				int lastNumberToChooseFrom = y.getInt("LastNumberToChooseFrom", 49);
+				int amountOfChoosedNumber = y.getInt("AmountOfChoosedNumber", 6);
 				LinkedHashSet<DrawTime> drawTime = new LinkedHashSet<>();
 				for(String s : y.getStringList("DrawTime"))
 				{
@@ -68,15 +75,13 @@ public class LotteryHandler
 				int i = 1;
 				while(i <= 1000)
 				{
-					if(y.contains("WinningCategory."+i+".PayoutPercentage"));
+					if(!y.contains("WinningCategory."+i+".PayoutPercentage"))
 					{
-						double payoutpercentage = y.getDouble("WinningCategory."+i+".PayoutPercentage");
-						WinningCategory wc = new WinningCategory(i, PayoutType.PERCENTAGE, payoutpercentage);
-						winningCategory.add(wc);
-					}/* else
-					{
-						//TODO
-					}*/
+						break;
+					}
+					double payoutpercentage = y.getDouble("WinningCategory."+i+".PayoutPercentage");
+					WinningCategory wc = new WinningCategory(i, PayoutType.PERCENTAGE, payoutpercentage);
+					winningCategory.add(wc);
 					i++;
 				}
 				ClassicLotto cl = new ClassicLotto(lottoname, description, GameType.X_FROM_Y,
@@ -85,6 +90,10 @@ public class LotteryHandler
 						drawTime, winningCategory);
 				LLY.logger.info("ClassicLottery "+lottoname+" loaded!");
 				classicLotto.add(cl);
+				ClassicLottoTicket clt = new ClassicLottoTicket(lottoname);
+				clt.setupMysql(LLY.getPlugin().getMysqlSetup());
+				ClassicLottoDraw cld = new ClassicLottoDraw(lottoname);
+				
 			} catch(Exception e)
 			{
 				continue;

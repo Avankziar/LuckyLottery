@@ -42,6 +42,7 @@ import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
 import me.avankziar.lly.spigot.database.MysqlHandler;
 import me.avankziar.lly.spigot.database.MysqlSetup;
 import me.avankziar.lly.spigot.handler.ConfigHandler;
+import me.avankziar.lly.spigot.handler.lottery.LotteryHandler;
 import me.avankziar.lly.spigot.listener.JoinLeaveListener;
 import me.avankziar.lly.spigot.metric.Metrics;
 
@@ -49,7 +50,7 @@ public class LLY extends JavaPlugin
 {
 	public static Logger logger;
 	private static LLY plugin;
-	public static String pluginname = "Base";
+	public static String pluginname = "LuckyLottery";
 	private YamlHandler yamlHandler;
 	private YamlManager yamlManager;
 	private MysqlSetup mysqlSetup;
@@ -66,13 +67,13 @@ public class LLY extends JavaPlugin
 		plugin = this;
 		logger = getLogger();
 		
-		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Base
-		logger.info("  | API-Version: "+plugin.getDescription().getAPIVersion());
-		logger.info("  | Author: "+plugin.getDescription().getAuthors().toString());
-		logger.info("  | Plugin Website: "+plugin.getDescription().getWebsite());
-		logger.info("  | Depend Plugins: "+plugin.getDescription().getDepend().toString());
-		logger.info("  | SoftDepend Plugins: "+plugin.getDescription().getSoftDepend().toString());
-		logger.info("  | LoadBefore: "+plugin.getDescription().getLoadBefore().toString());
+		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=LLY
+		logger.info(" ██╗     ██╗  ██╗   ██╗ | API-Version: "+plugin.getDescription().getAPIVersion());
+		logger.info(" ██║     ██║  ╚██╗ ██╔╝ | Author: "+plugin.getDescription().getAuthors().toString());
+		logger.info(" ██║     ██║   ╚████╔╝  | Plugin Website: "+plugin.getDescription().getWebsite());
+		logger.info(" ██║     ██║    ╚██╔╝   | Depend Plugins: "+plugin.getDescription().getDepend().toString());
+		logger.info(" ███████╗███████╗██║    | SoftDepend Plugins: "+plugin.getDescription().getSoftDepend().toString());
+		logger.info(" ╚══════╝╚══════╝╚═╝    | LoadBefore: "+plugin.getDescription().getLoadBefore().toString());
 		
 		setupIFHAdministration();
 		
@@ -104,6 +105,8 @@ public class LLY extends JavaPlugin
 		setupListeners();
 		setupIFHConsumer();
 		setupBstats();
+		
+		LotteryHandler.initalized();
 	}
 	
 	public void onDisable()

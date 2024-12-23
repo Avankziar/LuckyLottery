@@ -2,6 +2,9 @@ package me.avankziar.lly.general.objects.lottery;
 
 import java.util.HashSet;
 
+import me.avankziar.lly.general.objects.DrawTime;
+import me.avankziar.lly.general.objects.WinningCategory;
+
 public class LottoPlusSuperNumber extends ClassicLotto
 {
 	private int additionalFristNumberToChooseFrom;

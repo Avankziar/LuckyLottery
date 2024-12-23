@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 import me.avankziar.lly.general.assistance.Utility;
+import me.avankziar.lly.general.objects.DrawTime;
+import me.avankziar.lly.general.objects.WinningCategory;
 
 public class ClassicLotto extends Lottery
 {

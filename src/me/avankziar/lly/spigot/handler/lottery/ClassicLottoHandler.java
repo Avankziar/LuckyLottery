@@ -4,8 +4,9 @@ import java.time.LocalDateTime;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.avankziar.lly.general.objects.DrawTime;
 import me.avankziar.lly.general.objects.lottery.ClassicLotto;
-import me.avankziar.lly.general.objects.lottery.DrawTime;
+import me.avankziar.lly.general.objects.lotteryticket.ClassicLottoTicket;
 import me.avankziar.lly.spigot.LLY;
 
 public class ClassicLottoHandler 

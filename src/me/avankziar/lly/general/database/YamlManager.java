@@ -93,132 +93,6 @@ public class YamlManager
 	/*
 	 * The main methode to set all paths in the yamls.
 	 */
-	public void setFileInputBukkit(org.bukkit.configuration.file.YamlConfiguration yml,
-			LinkedHashMap<String, Language> keyMap, String key, ISO639_2B languageType)
-	{
-		if(!keyMap.containsKey(key))
-		{
-			return;
-		}
-		if(key.startsWith("#"))
-		{
-			//Comments
-			String k = key.replace("#", "");
-			if(yml.get(k) == null)
-			{
-				//return because no aktual key are present
-				return;
-			}
-			if(yml.getComments(k) != null && !yml.getComments(k).isEmpty())
-			{
-				//Return, because the comments are already present, and there could be modified. F.e. could be comments from a admin.
-				return;
-			}
-			if(keyMap.get(key).languageValues.get(languageType).length == 1)
-			{
-				if(keyMap.get(key).languageValues.get(languageType)[0] instanceof String)
-				{
-					String s = ((String) keyMap.get(key).languageValues.get(languageType)[0]).replace("\r\n", "");
-					yml.setComments(k, Arrays.asList(s));
-				}
-			} else
-			{
-				List<Object> list = Arrays.asList(keyMap.get(key).languageValues.get(languageType));
-				ArrayList<String> stringList = new ArrayList<>();
-				if(list instanceof List<?>)
-				{
-					for(Object o : list)
-					{
-						if(o instanceof String)
-						{
-							stringList.add(((String) o).replace("\r\n", ""));
-						}
-					}
-				}
-				yml.setComments(k, (List<String>) stringList);
-			}
-			return;
-		}
-		if(yml.get(key) != null)
-		{
-			return;
-		}
-		if(keyMap.get(key).languageValues.get(languageType).length == 1)
-		{
-			if(keyMap.get(key).languageValues.get(languageType)[0] instanceof String)
-			{
-				yml.set(key, ((String) keyMap.get(key).languageValues.get(languageType)[0]).replace("\r\n", ""));
-			} else
-			{
-				yml.set(key, keyMap.get(key).languageValues.get(languageType)[0]);
-			}
-		} else
-		{
-			List<Object> list = Arrays.asList(keyMap.get(key).languageValues.get(languageType));
-			ArrayList<String> stringList = new ArrayList<>();
-			if(list instanceof List<?>)
-			{
-				for(Object o : list)
-				{
-					if(o instanceof String)
-					{
-						stringList.add(((String) o).replace("\r\n", ""));
-					} else
-					{
-						stringList.add(o.toString().replace("\r\n", ""));
-					}
-				}
-			}
-			yml.set(key, (List<String>) stringList);
-		}
-	}
-	
-	public void setFileInputBungee(net.md_5.bungee.config.Configuration yml,
-			LinkedHashMap<String, Language> keyMap, String key, ISO639_2B languageType)
-	{
-		if(!keyMap.containsKey(key))
-		{
-			return;
-		}
-		if(key.startsWith("#"))
-		{
-			//Comments cannot funktion on bungee
-			return;
-		}
-		if(yml.get(key) != null)
-		{
-			return;
-		}
-		if(keyMap.get(key).languageValues.get(languageType).length == 1)
-		{
-			if(keyMap.get(key).languageValues.get(languageType)[0] instanceof String)
-			{
-				yml.set(key, ((String) keyMap.get(key).languageValues.get(languageType)[0]).replace("\r\n", ""));
-			} else
-			{
-				yml.set(key, keyMap.get(key).languageValues.get(languageType)[0]);
-			}
-		} else
-		{
-			List<Object> list = Arrays.asList(keyMap.get(key).languageValues.get(languageType));
-			ArrayList<String> stringList = new ArrayList<>();
-			if(list instanceof List<?>)
-			{
-				for(Object o : list)
-				{
-					if(o instanceof String)
-					{
-						stringList.add(((String) o).replace("\r\n", ""));
-					} else
-					{
-						stringList.add(o.toString().replace("\r\n", ""));
-					}
-				}
-			}
-			yml.set(key, (List<String>) stringList);
-		}
-	}
-	
 	public void setFileInput(dev.dejvokep.boostedyaml.YamlDocument yml,
 			LinkedHashMap<String, Language> keyMap, String key, ISO639_2B languageType) throws org.spongepowered.configurate.serialize.SerializationException
 	{
@@ -402,22 +276,22 @@ public class YamlManager
 								r = "&9";
 								break;
 							case "<green>":
-								r = "&a";
+								r = "<green>";
 								break;
 							case "<aqua>":
-								r = "&b";
+								r = "<aqua>";
 								break;
 							case "<red>":
-								r = "&c";
+								r = "<red>";
 								break;
 							case "<light_purple>":
 								r = "&d";
 								break;
 							case "<yellow>":
-								r = "&e";
+								r = "<yellow>";
 								break;
 							case "<white>":
-								r = "&f";
+								r = "<white>";
 								break;
 							case "<obf>":
 							case "<obfuscated>":
@@ -487,7 +361,7 @@ public class YamlManager
 				"If 'true' is entered, but IFH Administration is not available, the own config values are automatically used."});
 		addConfig("IFHAdministrationPath", 
 				new Object[] {
-				"bm"},
+				"lly"},
 				new Object[] {
 				"",
 				"Diese Funktion sorgt dafür, dass das Plugin auf das IFH Interface Administration zugreifen kann.",
@@ -692,21 +566,21 @@ public class YamlManager
 		String path = "";
 		commandsInput("path", "base", "perm.command.perm", 
 				"/base [pagenumber]", "/base ", false,
-				"&c/base &f| Infoseite für alle Befehle.",
-				"&c/base &f| Info page for all commands.",
-				"&bBefehlsrecht für &f/base",
-				"&bCommandright for &f/base",
-				"&eBasisbefehl für das BaseTemplate Plugin.",
-				"&eGroundcommand for the BaseTemplate Plugin.");
+				"<red>/base <white>| Infoseite für alle Befehle.",
+				"<red>/base <white>| Info page for all commands.",
+				"<aqua>Befehlsrecht für <white>/base",
+				"<aqua>Commandright for <white>/base",
+				"<yellow>Basisbefehl für das BaseTemplate Plugin.",
+				"<yellow>Groundcommand for the BaseTemplate Plugin.");
 		String basePermission = "perm.base.";
 		argumentInput("base_argument", "argument", basePermission,
 				"/base argument <id>", "/econ deletelog ", false,
-				"&c/base argument &f| Ein Subbefehl",
-				"&c/base argument &f| A Subcommand.",
-				"&bBefehlsrecht für &f/base argument",
-				"&bCommandright for &f/base argument",
-				"&eBasisbefehl für das BaseTemplate Plugin.",
-				"&eGroundcommand for the BaseTemplate Plugin.");
+				"<red>/base argument <white>| Ein Subbefehl",
+				"<red>/base argument <white>| A Subcommand.",
+				"<aqua>Befehlsrecht für <white>/base argument",
+				"<aqua>Commandright for <white>/base argument",
+				"<yellow>Basisbefehl für das BaseTemplate Plugin.",
+				"<yellow>Groundcommand for the BaseTemplate Plugin.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -716,7 +590,7 @@ public class YamlManager
 		{
 			commandsKeys.put("Bypass."+ept.toString().replace("_", ".")
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"base."+ept.toString().toLowerCase().replace("_", ".")}));
+					"lly."+ept.toString().toLowerCase().replace("_", ".")}));
 		}
 		
 		List<Bypass.Counter> list2 = new ArrayList<Bypass.Counter>(EnumSet.allOf(Bypass.Counter.class));
@@ -728,7 +602,7 @@ public class YamlManager
 			}
 			commandsKeys.put("Count."+ept.toString().replace("_", ".")
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"base."+ept.toString().toLowerCase().replace("_", ".")}));
+					"lly."+ept.toString().toLowerCase().replace("_", ".")}));
 		}
 	}
 	
@@ -806,76 +680,171 @@ public class YamlManager
 	{
 		languageKeys.put("InputIsWrong",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&cDeine Eingabe ist fehlerhaft! Klicke hier auf den Text, um weitere Infos zu bekommen!",
-						"&cYour input is incorrect! Click here on the text to get more information!"}));
+						"<red>Deine Eingabe ist fehlerhaft! Klicke hier auf den Text, um weitere Infos zu bekommen!",
+						"<red>Your input is incorrect! Click here on the text to get more information!"}));
 		languageKeys.put("NoPermission",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&cDu hast dafür keine Rechte!",
-						"&cYou dont not have the rights!"}));
+						"<red>Du hast dafür keine Rechte!",
+						"<red>You dont not have the rights!"}));
 		languageKeys.put("NoPlayerExist",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&cDer Spieler existiert nicht!",
-						"&cThe player does not exist!"}));
+						"<red>Der Spieler existiert nicht!",
+						"<red>The player does not exist!"}));
 		languageKeys.put("NoNumber",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&cDas Argument &f%value% &cmuss eine ganze Zahl sein.",
-						"&cThe argument &f%value% &must be an integer."}));
+						"<red>Das Argument <white>%value% <red>muss eine ganze Zahl sein.",
+						"<red>The argument <white>%value% &must be an integer."}));
 		languageKeys.put("NoDouble",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&cDas Argument &f%value% &cmuss eine Gleitpunktzahl sein!",
-						"&cThe argument &f%value% &must be a floating point number!"}));
+						"<red>Das Argument <white>%value% <red>muss eine Gleitpunktzahl sein!",
+						"<red>The argument <white>%value% &must be a floating point number!"}));
 		languageKeys.put("IsNegativ",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&cDas Argument &f%value% &cmuss eine positive Zahl sein!",
-						"&cThe argument &f%value% &must be a positive number!"}));
+						"<red>Das Argument <white>%value% <red>muss eine positive Zahl sein!",
+						"<red>The argument <white>%value% <red>must be a positive number!"}));
 		languageKeys.put("GeneralHover",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eKlick mich!",
-						"&eClick me!"}));
+						"<yellow>Klick mich!",
+						"<yellow>Click me!"}));
 		languageKeys.put("Headline", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&e=====&7[&6BungeeTeleportManager&7]&e=====",
-						"&e=====&7[&6BungeeTeleportManager&7]&e====="}));
+						"<yellow>=====&7[&6BungeeTeleportManager&7]<yellow>=====",
+						"<yellow>=====&7[&6BungeeTeleportManager&7]<yellow>====="}));
 		languageKeys.put("Next", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&e&nnächste Seite &e==>",
-						"&e&nnext page &e==>"}));
+						"<yellow>&nnächste Seite <yellow>==>",
+						"<yellow>&nnext page <yellow>==>"}));
 		languageKeys.put("Past", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&e<== &nvorherige Seite",
-						"&e<== &nprevious page"}));
+						"<yellow><== &nvorherige Seite",
+						"<yellow><== &nprevious page"}));
 		languageKeys.put("IsTrue", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&a✔",
-						"&a✔"}));
+						"<green>✔",
+						"<green>✔"}));
 		languageKeys.put("IsFalse", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&c✖",
-						"&c✖"}));
+						"<red>✖",
+						"<red>✖"}));
+		languageKeys.put("WasChoosen", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<green>%number%</green>",
+						"<green>%number%</green>"}));
+		languageKeys.put("WasntChoosen", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>%number%</red>",
+						"<red>%number%</red>"}));
+		languageKeys.put("WasntDrawn", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Ziehung ausstehend</red>",
+						"<red>drawing pending</red>"}));
+		initClassicLotto();
 	}
 	
-	public void initModifierValueEntryLanguage() //INFO:BonusMalusLanguages
+	private void initClassicLotto()
+	{
+		String path = "ClassicLotto";
+		languageKeys.put(path+".Draw.NoTicketAreBought", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<gold>JackPot bis zu <white>%totalpot%<gold>! <aqua>Hauptgewinn <white>%highestwinningcatgeory%<aqua>!",
+						"<yellow>Gezogene Nummer: <reset>%drawnnumber%",
+						"<red>Keine Lose wurden verkauft! Ziehung ist ungültig",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"",
+						"",
+						""}));
+		languageKeys.put(path+".Draw.RepeatTicket.Category", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%lottoryname%-Ticket",
+						"%lottoryname%-Ticket"}));
+		languageKeys.put(path+".Draw.RepeatTicket.Comment", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Lotterie Ticket wurde automatisch wiedergekauft.",
+						"Lottery ticket was automatically repurchased."}));
+		languageKeys.put(path+".Draw.WinningCategoryReplacer", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>GW%level%: <white>%winneramount%",
+						"<gray>GW%level%: <white>%winneramount%"}));
+		languageKeys.put(path+".Draw.WinningCategoryReplacerSeperator", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>, ",
+						"<gray>, "}));
+		languageKeys.put(path+".Draw.JackpotWasBreached", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
+						"<gold>Gratulation an <white>%winners% <gold>zum knacken des Jackpots!",
+						"<gold>Gewonnen wurden <red><bold>%payout% <reset><gold>verteilt auf alle Gewinner.",
+						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnkategorien:",
+						"<gray>%winningcategorywinneramount%",
+						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
+						"<aqua><bold>%nexttotalpot% zu gewinnen!",
+						"<gray>(%nextpot% + %amounttoaddpot%)",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						""}));
+		languageKeys.put(path+".Draw.JackpotIsUntouched", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
+						"<gray><bold>Leider gab es keinen Hauptgewinner!",
+						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnkategorien:",
+						"<gray>%winningcategorywinneramount%",
+						"<yellow>Dem nächsten Lotteriepot:",
+						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
+						"<aqua><bold>%nexttotalpot% zu gewinnen!",
+						"<gray>(%nextpot% + %amounttoaddpot%)",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						""}));
+		languageKeys.put(path+".Draw.Won", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"        <gold><bold>! GEWONNEN !",
+						"<yellow>Du hattest %matchchoosennumberamount% richtige!",
+						"<gray>Deine Nummern:<reset> %matchchoosennumber%",
+						"<yellow>Dein Preis: %payout%",
+						"        <gold><bold>! GEWONNEN !",
+						""}));
+		languageKeys.put(path+".Draw.NotWon", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Schade! Leider hast du nichts gewonnen.",
+						"<yellow>Beim nächsten Mal!",
+						""}));
+		languageKeys.put(path+".Draw.Win.Category", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%lottoryname%-Gewinn",
+						"%lottoryname%-Prize"}));
+		languageKeys.put(path+".Draw.Win.Comment", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Gewonnen in der Gewinnkategory %level%.",
+						"Won in the winning category %level%."}));
+		languageKeys.put(path+"", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"",
+						""}));
+	}
+	
+	private void initModifierValueEntryLanguage() //INFO:BonusMalusLanguages
 	{
 		mvelanguageKeys.put(Bypass.Permission.BASE.toString()+".Displayname",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eByasspermission für",
-						"&eBypasspermission for"}));
+						"<yellow>Byasspermission für",
+						"<yellow>Bypasspermission for"}));
 		mvelanguageKeys.put(Bypass.Permission.BASE.toString()+".Explanation",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eByasspermission für",
-						"&edas Plugin BaseTemplate",
-						"&eBypasspermission for",
-						"&ethe plugin BaseTemplate"}));
+						"<yellow>Byasspermission für",
+						"<yellow>das Plugin BaseTemplate",
+						"<yellow>Bypasspermission for",
+						"<yellow>the plugin BaseTemplate"}));
 		mvelanguageKeys.put(Bypass.Counter.BASE.toString()+".Displayname",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eZählpermission für",
-						"&eCountpermission for"}));
+						"<yellow>Zählpermission für",
+						"<yellow>Countpermission for"}));
 		mvelanguageKeys.put(Bypass.Counter.BASE.toString()+".Explanation",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eZählpermission für",
-						"&edas Plugin BaseTemplate",
-						"&eCountpermission for",
-						"&ethe plugin BaseTemplate"}));
+						"<yellow>Zählpermission für",
+						"<yellow>das Plugin BaseTemplate",
+						"<yellow>Countpermission for",
+						"<yellow>the plugin BaseTemplate"}));
 	}
 	
 	private void initDefaultLottery()
@@ -891,7 +860,7 @@ public class YamlManager
 					"",
 					"Name of the lottery. This MUST be unique!"}));
 		mapII.put("Description", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"Das klassische Lotto, aber ohne Superzahl/Super 6/Spiel 77/Glücksspirale"
+					"<yellow>Das klassische Lotto, aber ohne Superzahl/Super 6/Spiel 77/Glücksspirale"
 					+ " ist eine Ziehung von 6 aus 49. Der Ablauf ist ziemlich einfach."
 					+ "Du wählst dir 6 sich nicht wiederholende Zahlen aus 1 bis 49."
 					+ "Die Gewinnchance ist 1:13.983.816.",
@@ -923,8 +892,10 @@ public class YamlManager
 		mapII.put("#AmountToAddToThePotIfNoOneIsWinning", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Menge an Geld, die dem JackPot hinzugefügt wird, wenn keiner die höchste Gewinnklasse gewinnt.",
+					"Dabei wird der Teil des Pots genommen, der nicht gewonnen wurde um dieser Menger addiert.",
 					"",
-					"The amount of money added to the jackpot if no one wins the highest prize category."}));
+					"The amount of money added to the jackpot if no one wins the highest prize category.",
+					"The part of the pot that was not won is taken and added to this amount."}));
 		mapII.put("CostPerTicket", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					2.5}));
 		mapII.put("#CostPerTicket", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -953,6 +924,20 @@ public class YamlManager
 					"Deklariert wieviele Zahlen man aus den zu wählenden Zahlenbereich wählen darf.",
 					"",
 					"Declares how many numbers you can choose from the range of numbers to be selected."}));
+		mapII.put("DrawOnServer", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"hub"}));
+		mapII.put("#DrawOnServer", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"",
+					"Der Server, wo die Ziehung erfolgen soll. Solltest nur ein Spigot/Paper/etc. laufen, kannste das ignorieren.",
+					"",
+					"The server where the draw should take place. If only one Spigot/Paper/etc. is running, you can ignore this."}));
+		mapII.put("#DrawTime", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Deklariert, wann die Lotterie gezogen wird. Es können mehrere Zeiten festgelegt werden.",
+					"Dabei wird zuerst immer der Wochentag in Großbuchstaben genannt, dann die Stunden und Minutenzahl.",
+					"",
+					"Declares when the lottery will be drawn. Multiple times can be specified.",
+					"The day of the week is always given first in capital letters, followed by the hours and minutes."}));
 		mapII.put("DrawTime", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"WEDNESDAY-20-00",
 					"SATURDAY-20-00"}));
@@ -971,11 +956,13 @@ public class YamlManager
 					"Dabei teilen sich alle Gewinner der Gleichen Gewinnkategorie diesen Anteil.",
 					"Umso niedriger das Level der Gewinnkategorie umso weniger gewinnt man etwas.",
 					"Die Prozentanteile aller Gewinnkategorien sollten nicht 100.0% übersteigen.",
+					"Beim Klassischen Lotto ist die Anzahl der Gewinnkategory die gleiche, wie die Anzahl an Zahlen der Spieler wählen darf!",
 					"",
 					"Lotto always pays out a certain percentage of the jackpot to the winners of a prize category.",
 					"All winners of the same prize category share this share.",
 					"The lower the level of the prize category, the less you win.",
-					"The percentages of all prize categories should not exceed 100.0%."}));
+					"The percentages of all prize categories should not exceed 100.0%.",
+					"In Classic Lotto, the number of winning categories is the same as the number of numbers the player can choose!"}));
 		mapII.put("WinningCategory.2.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					3.1255}));
 		mapII.put("WinningCategory.3.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {

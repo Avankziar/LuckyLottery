@@ -100,11 +100,6 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
-		<!-- Bungeecord -->
-        <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
 		<!-- Velocity -->
 		<repository>
 			<id>papermc</id>
@@ -116,6 +111,11 @@
       		<name>GitHub Avankziar Apache Maven Packages</name>
 	        <url>https://maven.pkg.github.com/Avankziar/InterfaceHub</url>
 	    </repository>
+	     <!--Vault-->
+        <repository>
+	        <id>jitpack.io</id>
+	        <url>https://jitpack.io</url>
+	    </repository>
 	</repositories>
 	<dependencies>
 		<!--Spigot API-->
@@ -125,14 +125,6 @@
 			<version>1.21-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Bungeecord -->
-		<dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
 		<!-- Velocity -->
   		<dependency>
         	<groupId>com.velocitypowered</groupId>
@@ -163,6 +155,13 @@
   			<!-- Only, if no Plugin has already included it
 		    <scope>provided</scope>-->
 		</dependency>
+		<!-- Vault -->
+        <dependency>
+	        <groupId>com.github.MilkBowl</groupId>
+	        <artifactId>VaultAPI</artifactId>
+	        <version>1.7</version>
+	        <scope>provided</scope>
+	    </dependency>
 		<!-- InterfaceHub -->
 		<dependency>
 		  <groupId>me.avankziar</groupId>

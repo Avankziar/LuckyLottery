@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
-import me.avankziar.lly.general.objects.lotteryticket.LotteryTicket;
+import me.avankziar.lly.general.objects.lottery.MysqlTableable;
 
 public class MysqlBaseHandler
 {	
@@ -105,7 +105,7 @@ public class MysqlBaseHandler
 		return false;
 	}
 	
-	public <T extends LotteryTicket> boolean exist(T t, String whereColumn, Object... whereObject)
+	public <T extends MysqlTableable & MysqlLottery<T>> boolean exist(T t, String whereColumn, Object... whereObject)
 	{
 		//All Object which leaves the try-block, will be closed. So conn and ps is closed after the methode
 		//No finally needed.
@@ -124,11 +124,7 @@ public class MysqlBaseHandler
 	        }
 	    } catch (SQLException e) 
 		{
-			  if(t instanceof MysqlLottery)
-			  {
-				  MysqlLottery ml = (MysqlLottery) t;
-				  ml.log(logger, Level.WARNING, "Could not check "+t.getClass().getName()+" Object if it exist!", e);
-			  }
+			t.log(logger, Level.WARNING, "Could not check "+t.getClass().getName()+" Object if it exist!", e);
 		}
 		return false;
 	}
@@ -150,19 +146,15 @@ public class MysqlBaseHandler
 		return false;
 	}
 	
-	public <T extends LotteryTicket> boolean create(T t)
+	public <T extends MysqlTableable & MysqlLottery<T>> boolean create(T t)
 	{
-		if(t instanceof MysqlLottery)
+		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
-			MysqlLottery ml = (MysqlLottery) t;
-			try (Connection conn = mysqlBaseSetup.getConnection();)
-			{
-				ml.create(conn);
-				return true;
-			} catch (Exception e)
-			{
-				ml.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
-			}
+			t.create(conn);
+			return true;
+		} catch (Exception e)
+		{
+			t.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
 		}
 		return false;
 	}
@@ -184,19 +176,15 @@ public class MysqlBaseHandler
 		return false;
 	}
 	
-	public <T extends LotteryTicket> boolean updateData(T t, String whereColumn, Object... whereObject)
+	public <T extends MysqlTableable & MysqlLottery<T>> boolean updateData(T t, String whereColumn, Object... whereObject)
 	{
-		if(t instanceof MysqlLottery)
+		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
-			MysqlLottery ml = (MysqlLottery) t;
-			try (Connection conn = mysqlBaseSetup.getConnection();)
-			{
-				ml.update(conn, whereColumn, whereObject);
-				return true;
-			} catch (Exception e)
-			{
-				ml.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
-			}
+			t.update(conn, whereColumn, whereObject);
+			return true;
+		} catch (Exception e)
+		{
+			t.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
 		}
 		return false;
 	}
@@ -222,22 +210,18 @@ public class MysqlBaseHandler
 		return null;
 	}
 	
-	public <T extends LotteryTicket> Object getData(T t, String whereColumn, Object... whereObject)
+	public <T extends MysqlTableable & MysqlLottery<T>> T getData(T t, String whereColumn, Object... whereObject)
 	{
-		if(t instanceof MysqlLottery)
+		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
-			MysqlLottery ml = (MysqlLottery) t;
-			try (Connection conn = mysqlBaseSetup.getConnection();)
+			ArrayList<T> list = t.get(conn, "`id` ASC", " Limit 1", whereColumn, whereObject);
+			if(!list.isEmpty())
 			{
-				ArrayList<Object> list = ml.get(conn, "`id` ASC", " Limit 1", whereColumn, whereObject);
-				if(!list.isEmpty())
-				{
-					return list.get(0);
-				}
-			} catch (Exception e)
-			{
-				ml.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
+				return list.get(0);
 			}
+		} catch (Exception e)
+		{
+			t.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
 		}
 		return null;
 	}
@@ -256,15 +240,15 @@ public class MysqlBaseHandler
 	    } catch (SQLException e) 
 		{
 	    	if(type.getObject() instanceof MysqlHandable)
-			  {
-				  MysqlHandable mh = (MysqlHandable) type.getObject();
-				  mh.log(logger, Level.WARNING, "Could not delete "+type.getObject().getClass().getName()+" Object!", e);
-			  }
+	    	{
+	    		MysqlHandable mh = (MysqlHandable) type.getObject();
+	    		mh.log(logger, Level.WARNING, "Could not delete "+type.getObject().getClass().getName()+" Object!", e);
+	    	}
 		}
 		return 0;
 	}
 	
-	public <T extends LotteryTicket> int deleteData(T t, String whereColumn, Object... whereObject)
+	public <T extends MysqlTableable & MysqlLottery<T>> int deleteData(T t, String whereColumn, Object... whereObject)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
@@ -277,11 +261,7 @@ public class MysqlBaseHandler
 			return d;
 	    } catch (SQLException e) 
 		{
-	    	if(t instanceof MysqlLottery)
-			  {
-				  MysqlLottery ml = (MysqlLottery) t;
-				  ml.log(logger, Level.WARNING, "Could not delete "+t.getClass().getName()+" Object!", e);
-			  }
+	    	t.log(logger, Level.WARNING, "Could not delete "+t.getClass().getName()+" Object!", e);
 		}
 		return 0;
 	}
@@ -310,7 +290,7 @@ public class MysqlBaseHandler
 		return 0;
 	}
 	
-	public <T extends LotteryTicket> int lastID(T t)
+	public <T extends MysqlTableable & MysqlLottery<T>> int lastID(T t)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
@@ -325,11 +305,7 @@ public class MysqlBaseHandler
 	        }
 	    } catch (SQLException e) 
 		{
-			  if(t instanceof MysqlLottery)
-			  {
-				  MysqlLottery ml = (MysqlLottery) t;
-				  ml.log(logger, Level.WARNING, "Could not get last id from "+t.getClass().getName()+" Object table!", e);
-			  }
+			t.log(logger, Level.WARNING, "Could not get last id from "+t.getClass().getName()+" Object table!", e);
 		}
 		return 0;
 	}
@@ -423,6 +399,23 @@ public class MysqlBaseHandler
 			{
 				mh.log(logger, Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
 			}
+		}
+		return new ArrayList<>();
+	}
+	
+	public <T extends MysqlTableable & MysqlLottery<T>> ArrayList<T> getFullList(T t, String orderByColumn,
+			String whereColumn, Object...whereObject)
+	{
+		try (Connection conn = mysqlBaseSetup.getConnection();)
+		{
+			ArrayList<T> list = t.get(conn, t.getMysqlTableName(), orderByColumn, "", whereColumn, whereObject);
+			if(!list.isEmpty())
+			{
+				return list;
+			}
+		} catch (Exception e)
+		{
+			t.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
 		}
 		return new ArrayList<>();
 	}

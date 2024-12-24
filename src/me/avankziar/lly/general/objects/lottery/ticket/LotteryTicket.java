@@ -1,6 +1,8 @@
-package me.avankziar.lly.general.objects.lotteryticket;
+package me.avankziar.lly.general.objects.lottery.ticket;
 
-public class LotteryTicket
+import me.avankziar.lly.general.objects.lottery.MysqlTableable;
+
+public class LotteryTicket implements MysqlTableable
 {
 	/**
 	 * ID of this Object

@@ -1,4 +1,4 @@
-package me.avankziar.lly.general.objects.lotterydraw;
+package me.avankziar.lly.general.objects.lottery.draw;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,11 +17,12 @@ import me.avankziar.lly.general.objects.lottery.ClassicLotto;
 import me.avankziar.lly.spigot.database.MysqlSetup;
 import me.avankziar.lly.spigot.handler.lottery.LotteryHandler;
 
-public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
+public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<ClassicLottoDraw>
 {
 	private boolean wasDrawn;
 	private long drawTime;
 	private LinkedHashSet<Integer> choosenNumbers = new LinkedHashSet<>();
+	private double actualPot;
 	
 	/**
 	 * <b>Only to call if the Mysql Setup is to do!</b>
@@ -32,11 +33,15 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 		super(0, lotteryname);
 	}
 	
-	public ClassicLottoDraw(long id, String lotteryname, boolean wasDrawn, long drawTime, LinkedHashSet<Integer> choosenNumbers)
+	public ClassicLottoDraw(long id, String lotteryname,
+			boolean wasDrawn, long drawTime,
+			double actualPot,
+			LinkedHashSet<Integer> choosenNumbers)
 	{
 		super(id, lotteryname);
 		setWasDrawn(wasDrawn);
 		setDrawTime(drawTime);
+		setActualPot(actualPot);
 		setChoosenNumbers(choosenNumbers);
 	}
 
@@ -58,6 +63,14 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 	public void setDrawTime(long drawTime)
 	{
 		this.drawTime = drawTime;
+	}
+
+	public double getActualPot() {
+		return actualPot;
+	}
+
+	public void setActualPot(double actualPot) {
+		this.actualPot = actualPot;
 	}
 
 	public LinkedHashSet<Integer> getChoosenNumbers()
@@ -83,7 +96,8 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 				+ "` (id bigint AUTO_INCREMENT PRIMARY KEY,"
 				+ " lottery_name text NOT NULL,"
 				+ " was_drawn boolean,"
-				+ " draw_time bigint".replace("%%tablename%%", getMysqlTableName()));
+				+ " draw_time bigint,"
+				+ " actual_pot double".replace("%%tablename%%", getMysqlTableName()));
 		for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
         {
 			sql.append(" ,`ball_"+i+"`");
@@ -106,12 +120,12 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 			String tablename = getMysqlTableName();
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO `" + tablename
-					+ "`(`lottery_name`, `was_drawn`, `draw_time`");
+					+ "`(`lottery_name`, `was_drawn`, `draw_time`, `actual_pot`");
 			for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
 				sql.append(" ,`ball_"+i+"`");
 	        }
-			sql.append(") VALUES(?, ?, ?");
+			sql.append(") VALUES(?, ?, ?, ?");
 			for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
 				sql.append(", ?");
@@ -121,10 +135,12 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 			ps.setString(1, getLotteryName());
 	        ps.setBoolean(2, wasDrawn());
 	        ps.setLong(3, getDrawTime());
-	        int c = 4;
-	        for(Iterator<Integer> iter = getChoosenNumbers().iterator(); iter.hasNext();)
+	        ps.setDouble(4, getActualPot());
+	        int c = 5;
+	        for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
-	        	ps.setInt(c, iter.next());
+	        	Iterator<Integer> iter = getChoosenNumbers().iterator();
+	        	ps.setInt(c, iter.hasNext() ? iter.next() : 0);
 	        	c++;
 	        }
 	        int i = ps.executeUpdate();
@@ -151,7 +167,7 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 			String tablename = getMysqlTableName();
 			StringBuilder sql = new StringBuilder();
 			sql.append("UPDATE `" + tablename
-				+ "` SET `lottery_name`, `was_drawn` = ?, `draw_time` = ?");
+				+ "` SET `lottery_name`, `was_drawn` = ?, `draw_time` = ?, `actual_pot` = ?");
 			for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
 				sql.append(", `ball_"+i+"` = ?");
@@ -161,10 +177,12 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 			ps.setString(1, getLotteryName());
 	        ps.setBoolean(2, wasDrawn());
 	        ps.setLong(3, getDrawTime());
-	        int c = 4;
-	        for(Iterator<Integer> iter = getChoosenNumbers().iterator(); iter.hasNext();)
+	        ps.setDouble(4, getActualPot());
+	        int c = 5;
+	        for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
-	        	ps.setInt(c, iter.next());
+	        	Iterator<Integer> iter = getChoosenNumbers().iterator();
+	        	ps.setInt(c, iter.hasNext() ? iter.next() : 0);
 	        	c++;
 	        }
 			int i = c+1;
@@ -184,7 +202,7 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 	}
 
 	@Override
-	public ArrayList<Object> get(Connection conn, String orderby, String limit, String whereColumn, Object... whereObject)
+	public ArrayList<ClassicLottoDraw> get(Connection conn, String orderby, String limit, String whereColumn, Object... whereObject)
 	{
 		try
 		{
@@ -207,7 +225,7 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 			
 			ResultSet rs = ps.executeQuery();
 			MysqlBaseHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
-			ArrayList<Object> al = new ArrayList<>();
+			ArrayList<ClassicLottoDraw> al = new ArrayList<>();
 			while (rs.next()) 
 			{
 			
@@ -220,6 +238,7 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 						rs.getString("lottery_name"),
 						rs.getBoolean("was_drawn"),
 						rs.getLong("draw_time"),
+						rs.getDouble("actual_pot"),
 						set));
 			}
 			return al;
@@ -228,18 +247,5 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery
 			this.log(MysqlBaseHandler.getLogger(), Level.WARNING, "SQLException! Could not get a "+this.getClass().getSimpleName()+" Object!", e);
 		}
 		return new ArrayList<>();
-	}
-	
-	public static ArrayList<ClassicLottoDraw> convert(ArrayList<Object> arrayList)
-	{
-		ArrayList<ClassicLottoDraw> l = new ArrayList<>();
-		for(Object o : arrayList)
-		{
-			if(o instanceof ClassicLottoDraw)
-			{
-				l.add((ClassicLottoDraw) o);
-			}
-		}
-		return l;
 	}
 }

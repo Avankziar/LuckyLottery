@@ -8,6 +8,8 @@ import java.util.LinkedHashSet;
 import me.avankziar.lly.general.assistance.Utility;
 import me.avankziar.lly.general.objects.DrawTime;
 import me.avankziar.lly.general.objects.WinningCategory;
+import me.avankziar.lly.general.objects.lottery.draw.ClassicLottoDraw;
+import me.avankziar.lly.general.objects.lottery.ticket.ClassicLottoTicket;
 
 public class ClassicLotto extends Lottery
 {
@@ -52,11 +54,14 @@ public class ClassicLotto extends Lottery
 	 */
 	private Collection<WinningCategory> winningCategory = new HashSet<>();
 	
+	private String drawOnServer;
+	
 	public ClassicLotto(String lotteryName, String description, GameType gameType,
 			double standartPot, double maximumPot, double amountToAddToThePotIfNoOneIsWinning,
 			double costPerTicket,
 			int firstNumberToChooseFrom, int lastNumberToChooseFrom, int amountOfChoosenNumber,
-			LinkedHashSet<DrawTime> drawTime, HashSet<WinningCategory> winningCategorys)
+			LinkedHashSet<DrawTime> drawTime, HashSet<WinningCategory> winningCategorys,
+			String drawOnServer)
 	{
 		super(lotteryName, description, gameType);
 		setStandartPot(standartPot);
@@ -68,6 +73,7 @@ public class ClassicLotto extends Lottery
 		setAmountOfChoosedNumber(amountOfChoosenNumber);
 		setDrawTime(drawTime);
 		setWinningCategory(winningCategorys);
+		setDrawOnServer(drawOnServer);
 	}
 
 	public double getStandartPot() {
@@ -149,6 +155,24 @@ public class ClassicLotto extends Lottery
 		BigInteger k = Utility.factorial(BigInteger.valueOf(getAmountOfChoosedNumber()));
 		BigInteger d = Utility.factorial(BigInteger.valueOf(getLastNumberToChooseFrom()-getAmountOfChoosedNumber()));
 		return n.divide(k.multiply(d));
+	}
+
+	public String getDrawOnServer() {
+		return drawOnServer;
+	}
+
+	public void setDrawOnServer(String drawOnServer) {
+		this.drawOnServer = drawOnServer;
+	}
+	
+	public ClassicLottoDraw getDrawMysql()
+	{
+		return new ClassicLottoDraw(getLotteryName());
+	}
+	
+	public ClassicLottoTicket getTicketMysql()
+	{
+		return new ClassicLottoTicket(getLotteryName());
 	}
 	
 	/*public static void main(String[] args) {

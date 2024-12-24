@@ -1,4 +1,4 @@
-package me.avankziar.lly.general.objects.lotteryticket;
+package me.avankziar.lly.general.objects.lottery.ticket;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,17 +18,13 @@ import me.avankziar.lly.general.objects.lottery.ClassicLotto;
 import me.avankziar.lly.spigot.database.MysqlSetup;
 import me.avankziar.lly.spigot.handler.lottery.LotteryHandler;
 
-public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, Ticketable
+public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery<ClassicLottoTicket>
 {
 	private UUID lotteryPlayer;
 	/**
 	 * If the used numbers should set again in the next lottery.
 	 */
 	private boolean shouldRepeate;
-	/**
-	 * Boolean to set if the lotto was drawn and is finish.
-	 */
-	private boolean wasDrawn;
 	private LinkedHashSet<Integer> choosenNumbers = new LinkedHashSet<>();
 	
 	/**
@@ -40,13 +36,13 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 		super(0, 0, lotteryname);
 	}
 	
-	public ClassicLottoTicket(long id, long drawid, String lotteryname, UUID lotteryPlayer, boolean shouldRepeate, boolean wasDrawn,
+	public ClassicLottoTicket(long id, long drawid, String lotteryname,
+			UUID lotteryPlayer, boolean shouldRepeate,
 			LinkedHashSet<Integer> choosenNumbers)
 	{
 		super(0, drawid, lotteryname);
 		setLotteryPlayer(lotteryPlayer);
 		setShouldRepeate(shouldRepeate);
-		setWasDrawn(wasDrawn);
 		setChoosenNumbers(choosenNumbers);
 	}
 
@@ -64,14 +60,6 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 
 	public void setShouldRepeate(boolean shouldRepeate) {
 		this.shouldRepeate = shouldRepeate;
-	}
-
-	public boolean wasDrawn() {
-		return wasDrawn;
-	}
-
-	public void setWasDrawn(boolean wasDrawn) {
-		this.wasDrawn = wasDrawn;
 	}
 
 	public LinkedHashSet<Integer> getChoosenNumbers() {
@@ -96,8 +84,7 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 				+ " draw_id bigint,"
 				+ " lottery_name text NOT NULL,"
 				+ " player_uuid char(36) NOT NULL,"
-				+ " should_repeat boolean,"
-				+ " was_drawn boolean".replace("%%tablename%%", getMysqlTableName()));
+				+ " should_repeat boolean".replace("%%tablename%%", getMysqlTableName()));
 		for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
         {
 			sql.append(" ,`ball_"+i+"`");
@@ -120,7 +107,7 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 			String tablename = getMysqlTableName();
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO `" + tablename
-					+ "`(`draw_id`, `lottery_name`, `player_uuid`, `should_repeat`, `was_drawn`");
+					+ "`(`draw_id`, `lottery_name`, `player_uuid`, `should_repeat`");
 			for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
 				sql.append(" ,`ball_"+i+"`");
@@ -135,11 +122,11 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 			ps.setString(1, getLotteryName());
 	        ps.setString(2, getLotteryPlayer().toString());
 	        ps.setBoolean(3, shouldRepeate());
-	        ps.setBoolean(4, wasDrawn());
-	        int c = 5;
-	        for(Iterator<Integer> iter = getChoosenNumbers().iterator(); iter.hasNext();)
+	        int c = 4;
+	        for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
-	        	ps.setInt(c, iter.next());
+	        	Iterator<Integer> iter = getChoosenNumbers().iterator();
+	        	ps.setInt(c, iter.hasNext() ? iter.next() : 0);
 	        	c++;
 	        }
 	        int i = ps.executeUpdate();
@@ -176,11 +163,11 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 			ps.setString(1, getLotteryName());
 	        ps.setString(2, getLotteryPlayer().toString());
 	        ps.setBoolean(3, shouldRepeate());
-	        ps.setBoolean(4, wasDrawn());
-	        int c = 5;
-	        for(Iterator<Integer> iter = getChoosenNumbers().iterator(); iter.hasNext();)
+	        int c = 4;
+	        for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
-	        	ps.setInt(c, iter.next());
+	        	Iterator<Integer> iter = getChoosenNumbers().iterator();
+	        	ps.setInt(c, iter.hasNext() ? iter.next() : 0);
 	        	c++;
 	        }
 			int i = c+1;
@@ -200,7 +187,7 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 	}
 
 	@Override
-	public ArrayList<Object> get(Connection conn, String orderby, String limit, String whereColumn, Object... whereObject)
+	public ArrayList<ClassicLottoTicket> get(Connection conn, String orderby, String limit, String whereColumn, Object... whereObject)
 	{
 		try
 		{
@@ -223,7 +210,7 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 			
 			ResultSet rs = ps.executeQuery();
 			MysqlBaseHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
-			ArrayList<Object> al = new ArrayList<>();
+			ArrayList<ClassicLottoTicket> al = new ArrayList<>();
 			while (rs.next()) 
 			{
 			
@@ -237,7 +224,6 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 						rs.getString("lottery_name"),
 						UUID.fromString(rs.getString("player_uuid")),
 						rs.getBoolean("should_repeat"),
-						rs.getBoolean("was_drawn"),
 						set));
 			}
 			return al;
@@ -246,18 +232,5 @@ public class ClassicLottoTicket extends LotteryTicket implements MysqlLottery, T
 			this.log(MysqlBaseHandler.getLogger(), Level.WARNING, "SQLException! Could not get a "+this.getClass().getSimpleName()+" Object!", e);
 		}
 		return new ArrayList<>();
-	}
-	
-	public static ArrayList<ClassicLottoTicket> convert(ArrayList<Object> arrayList)
-	{
-		ArrayList<ClassicLottoTicket> l = new ArrayList<>();
-		for(Object o : arrayList)
-		{
-			if(o instanceof ClassicLottoTicket)
-			{
-				l.add((ClassicLottoTicket) o);
-			}
-		}
-		return l;
 	}
 }

@@ -27,6 +27,9 @@ import me.avankziar.ifh.general.modifier.ModificationType;
 import me.avankziar.ifh.general.modifier.Modifier;
 import me.avankziar.ifh.general.valueentry.ValueEntry;
 import me.avankziar.ifh.spigot.administration.Administration;
+import me.avankziar.ifh.spigot.economy.Economy;
+import me.avankziar.ifh.spigot.interfaces.ProxyOnlinePlayers;
+import me.avankziar.ifh.spigot.tovelocity.chatlike.MessageToVelocity;
 import me.avankziar.lly.general.assistance.Utility;
 import me.avankziar.lly.general.cmdtree.BaseConstructor;
 import me.avankziar.lly.general.cmdtree.CommandConstructor;
@@ -48,7 +51,7 @@ import me.avankziar.lly.spigot.metric.Metrics;
 
 public class LLY extends JavaPlugin
 {
-	public static Logger logger;
+	public static Logger log;
 	private static LLY plugin;
 	public static String pluginname = "LuckyLottery";
 	private YamlHandler yamlHandler;
@@ -61,23 +64,28 @@ public class LLY extends JavaPlugin
 	private Administration administrationConsumer;
 	private ValueEntry valueEntryConsumer;
 	private Modifier modifierConsumer;
+	private MessageToVelocity mtvConsumer;
+	private ProxyOnlinePlayers proxyOnlinePlayersConsumer;
+	private Economy ecoConsumer;
+	
+	private net.milkbowl.vault.economy.Economy vEco;
 	
 	public void onEnable()
 	{
 		plugin = this;
-		logger = getLogger();
+		log = getLogger();
 		
 		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=LLY
-		logger.info(" ██╗     ██╗  ██╗   ██╗ | API-Version: "+plugin.getDescription().getAPIVersion());
-		logger.info(" ██║     ██║  ╚██╗ ██╔╝ | Author: "+plugin.getDescription().getAuthors().toString());
-		logger.info(" ██║     ██║   ╚████╔╝  | Plugin Website: "+plugin.getDescription().getWebsite());
-		logger.info(" ██║     ██║    ╚██╔╝   | Depend Plugins: "+plugin.getDescription().getDepend().toString());
-		logger.info(" ███████╗███████╗██║    | SoftDepend Plugins: "+plugin.getDescription().getSoftDepend().toString());
-		logger.info(" ╚══════╝╚══════╝╚═╝    | LoadBefore: "+plugin.getDescription().getLoadBefore().toString());
+		log.info(" ██╗     ██╗  ██╗   ██╗ | API-Version: "+plugin.getDescription().getAPIVersion());
+		log.info(" ██║     ██║  ╚██╗ ██╔╝ | Author: "+plugin.getDescription().getAuthors().toString());
+		log.info(" ██║     ██║   ╚████╔╝  | Plugin Website: "+plugin.getDescription().getWebsite());
+		log.info(" ██║     ██║    ╚██╔╝   | Depend Plugins: "+plugin.getDescription().getDepend().toString());
+		log.info(" ███████╗███████╗██║    | SoftDepend Plugins: "+plugin.getDescription().getSoftDepend().toString());
+		log.info(" ╚══════╝╚══════╝╚═╝    | LoadBefore: "+plugin.getDescription().getLoadBefore().toString());
 		
 		setupIFHAdministration();
 		
-		yamlHandler = new YamlHandler(YamlManager.Type.SPIGOT, pluginname, logger, plugin.getDataFolder().toPath(),
+		yamlHandler = new YamlHandler(YamlManager.Type.SPIGOT, pluginname, log, plugin.getDataFolder().toPath(),
         		(plugin.getAdministration() == null ? null : plugin.getAdministration().getLanguage()));
         setYamlManager(yamlHandler.getYamlManager());
 		
@@ -91,7 +99,7 @@ public class LLY extends JavaPlugin
 			mysqlHandler = new MysqlHandler(plugin);
 		} else
 		{
-			logger.severe("MySQL is not set in the Plugin " + pluginname + "!");
+			log.severe("MySQL is not set in the Plugin " + pluginname + "!");
 			Bukkit.getPluginManager().getPlugin(pluginname).getPluginLoader().disablePlugin(this);
 			return;
 		}
@@ -121,8 +129,8 @@ public class LLY extends JavaPlugin
 	    {
 	    	getServer().getServicesManager().unregisterAll(plugin);
 	    }
-		logger.info(pluginname + " is disabled!");
-		logger = null;
+		log.info(pluginname + " is disabled!");
+		log = null;
 	}
 
 	public static LLY getPlugin()
@@ -329,7 +337,7 @@ public class LLY extends JavaPlugin
 		{
 			return false;
 		}
-		logger.info(pluginname+" hook with "+externPluginName);
+		log.info(pluginname+" hook with "+externPluginName);
 		return true;
 	}
 	
@@ -346,7 +354,7 @@ public class LLY extends JavaPlugin
 		   return;
 		}
 		administrationConsumer = rsp.getProvider();
-		logger.info(pluginname + " detected InterfaceHub >>> Administration.class is consumed!");
+		log.info(pluginname + " detected InterfaceHub >>> Administration.class is consumed!");
 	}
 	
 	public Administration getAdministration()
@@ -358,6 +366,9 @@ public class LLY extends JavaPlugin
 	{
 		setupIFHValueEntry();
 		setupIFHModifier();
+		setupIFHMessageToVelocity();
+		setupIFHBungeeOnlinePlayers();
+		setupIFHEconomy();
 	}
 	
 	public void setupIFHValueEntry()
@@ -392,7 +403,7 @@ public class LLY extends JavaPlugin
 				        return;
 				    }
 				    valueEntryConsumer = rsp.getProvider();
-				    logger.info(pluginname + " detected InterfaceHub >>> ValueEntry.class is consumed!");
+				    log.info(pluginname + " detected InterfaceHub >>> ValueEntry.class is consumed!");
 				    cancel();
 				} catch(NoClassDefFoundError e)
 				{
@@ -474,7 +485,7 @@ public class LLY extends JavaPlugin
 				        return;
 				    }
 				    modifierConsumer = rsp.getProvider();
-				    logger.info(pluginname + " detected InterfaceHub >>> Modifier.class is consumed!");
+				    log.info(pluginname + " detected InterfaceHub >>> Modifier.class is consumed!");
 				    cancel();
 				} catch(NoClassDefFoundError e)
 				{
@@ -514,9 +525,155 @@ public class LLY extends JavaPlugin
 		return modifierConsumer;
 	}
 	
+	private void setupIFHMessageToVelocity() 
+	{
+        if(Bukkit.getPluginManager().getPlugin("InterfaceHub") == null) 
+        {
+            return;
+        }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+				try
+				{
+					if(i == 20)
+				    {
+						cancel();
+						return;
+				    }
+				    RegisteredServiceProvider<me.avankziar.ifh.spigot.tovelocity.chatlike.MessageToVelocity> rsp = 
+		                             getServer().getServicesManager().getRegistration(
+		                            		 me.avankziar.ifh.spigot.tovelocity.chatlike.MessageToVelocity.class);
+				    if(rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    mtvConsumer = rsp.getProvider();
+				    log.info(pluginname + " detected InterfaceHub >>> MessageToVelocity.class is consumed!");
+				    cancel();
+				} catch(NoClassDefFoundError e)
+				{
+					cancel();
+				}			    
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+	}
+	
+	public MessageToVelocity getMtV()
+	{
+		return mtvConsumer;
+	}
+	
+	private void setupIFHBungeeOnlinePlayers() 
+	{
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+				try
+				{
+					if(i == 20)
+				    {
+						cancel();
+				    	return;
+				    }
+				    RegisteredServiceProvider<me.avankziar.ifh.spigot.interfaces.ProxyOnlinePlayers> rsp = 
+		                             getServer().getServicesManager().getRegistration(
+		                            		 me.avankziar.ifh.spigot.interfaces.ProxyOnlinePlayers.class);
+				    if(rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    proxyOnlinePlayersConsumer = rsp.getProvider();
+				    log.info(pluginname + " detected InterfaceHub >>> BungeeOnlinePlayers.class is consumed!");
+				    cancel();
+				} catch(NoClassDefFoundError e)
+				{
+					cancel();
+				}			    
+			}
+        }.runTaskTimer(plugin, 0L, 20*2);
+	}
+	
+	public ProxyOnlinePlayers getProxyOnlinePlayers()
+	{
+		return proxyOnlinePlayersConsumer;
+	}
+	
+	private void setupIFHEconomy()
+    {
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")
+				&& !plugin.getServer().getPluginManager().isPluginEnabled("Vault")) 
+	    {
+			log.severe("Plugin InterfaceHub or Vault are missing!");
+			log.severe("Disable "+pluginname+"!");
+			Bukkit.getPluginManager().getPlugin(pluginname).getPluginLoader().disablePlugin(plugin);
+	    	return;
+	    }
+		if(plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub"))
+		{
+			RegisteredServiceProvider<me.avankziar.ifh.spigot.economy.Economy> rsp = 
+	                getServer().getServicesManager().getRegistration(Economy.class);
+			if (rsp == null) 
+			{
+				RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp2 = getServer()
+		        		.getServicesManager()
+		        		.getRegistration(net.milkbowl.vault.economy.Economy.class);
+		        if (rsp2 == null) 
+		        {
+		        	log.severe("A economy plugin which supported InterfaceHub or Vault is missing!");
+					log.severe("Disable "+pluginname+"!");
+					Bukkit.getPluginManager().getPlugin(pluginname).getPluginLoader().disablePlugin(plugin);
+		            return;
+		        }
+		        vEco = rsp2.getProvider();
+		        log.info(pluginname + " detected Vault >>> Economy.class is consumed!");
+				return;
+			}
+			ecoConsumer = rsp.getProvider();
+			log.info(pluginname + " detected InterfaceHub >>> Economy.class is consumed!");
+		} else
+		{
+			RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = getServer()
+	        		.getServicesManager()
+	        		.getRegistration(net.milkbowl.vault.economy.Economy.class);
+	        if (rsp == null) 
+	        {
+	        	log.severe("A economy plugin which supported Vault is missing!");
+				log.severe("Disable "+pluginname+"!");
+				Bukkit.getPluginManager().getPlugin(pluginname).getPluginLoader().disablePlugin(plugin);
+	            return;
+	        }
+	        vEco = rsp.getProvider();
+	        log.info(pluginname + " detected Vault >>> Economy.class is consumed!");
+		}
+        return;
+    }
+	
+	public Economy getIFHEco()
+	{
+		return this.ecoConsumer;
+	}
+	
+	public net.milkbowl.vault.economy.Economy getVaultEco()
+	{
+		return this.vEco;
+	}
+	
 	public void setupBstats()
 	{
-		int pluginId = 15925;
+		int pluginId = 0;
         new Metrics(this, pluginId);
 	}
 }

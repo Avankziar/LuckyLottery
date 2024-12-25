@@ -181,7 +181,7 @@ public class ClassicLottoHandler
 					{
 						if(dr.isNow(LocalDateTime.now()))
 						{
-							drawLotto(cl, new LinkedHashSet<>());
+							drawLotto(cl, new LinkedHashSet<Integer>());
 						}
 					}
 				}

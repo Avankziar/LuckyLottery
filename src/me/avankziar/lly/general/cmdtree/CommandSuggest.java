@@ -12,7 +12,11 @@ public class CommandSuggest
 		LLY,
 		LLY_BASE,
 		CLASSICLOTTO,
-		CLASSICLOTTO_PLAY
+		CLASSICLOTTO_DRAWNOW,
+		CLASSICLOTTO_GIVETICKET,
+		CLASSICLOTTO_PLAY,
+		CLASSICLOTTO_ADDPOT,
+		CLASSICLOTTO_SETPOT,
 	}
 	
 	public static LinkedHashMap<CommandSuggest.Type, BaseConstructor> map = new LinkedHashMap<>();

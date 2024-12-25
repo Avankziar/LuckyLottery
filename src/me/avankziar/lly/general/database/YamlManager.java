@@ -581,6 +581,14 @@ public class YamlManager
 				"<aqua>Commandright for <white>/classiclotto",
 				"<yellow>Befehl /classiclotto",
 				"<yellow>Command /classiclotto");
+		argumentInput("classiclotto_drawnow", "drawnow", basePermission,
+				"/classiclotto drawnow <lotteryname> [numbers]", "/classiclotto drawnow ", false,
+				"<red>/classiclotto drawnow <Lotteriename>  [Nummer] <white>| Zieht die Lotterie jetzt.",
+				"<red>/classiclotto drawnow <lotteryname>  [numbers] <white>| Draw the lottery now.",
+				"<aqua>Befehlsrecht für <white>/classiclotto drawnow",
+				"<aqua>Commandright for <white>/classiclotto drawnow",
+				"<yellow>Befehl /classiclotto drawnow",
+				"<yellow>Command /classiclotto drawnow");
 		argumentInput("classiclotto_play", "play", basePermission,
 				"/classiclotto play <lotteryname> [numbers] [boolean repeat] [confirm]", "/classiclotto play ", false,
 				"<red>/classiclotto play <Lotteriename>  [Nummer] [boolean Wiederholung] [bestätigen] <white>| Spielt in der angegeben Lotterie.",

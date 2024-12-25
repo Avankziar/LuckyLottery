@@ -44,6 +44,7 @@ import me.avankziar.lly.spigot.assistance.BackgroundTask;
 import me.avankziar.lly.spigot.cmd.ClassicLottoCommandExecutor;
 import me.avankziar.lly.spigot.cmd.LuckyLotteryCommandExecutor;
 import me.avankziar.lly.spigot.cmd.TabCompletion;
+import me.avankziar.lly.spigot.cmd.classiclotto.ARG_DrawNow;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Play;
 import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
 import me.avankziar.lly.spigot.database.MysqlHandler;
@@ -202,10 +203,14 @@ public class LLY extends JavaPlugin
 		CommandConstructor lly = new CommandConstructor(CommandSuggest.Type.LLY, "lly", false, false);
 		registerCommand(lly, new LuckyLotteryCommandExecutor(plugin, lly), tab);
 		
-		ArgumentConstructor cl_play = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_PLAY, "classiclotto_play", 0, 1, 999, false, false, classicLottoI);
+		ArgumentConstructor cl_drawnow = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_DRAWNOW, "classiclotto_drawnow",
+				0, 1, 999, true, false, classicLottoI);
+		ArgumentConstructor cl_play = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_PLAY, "classiclotto_play",
+				0, 1, 999, false, false, classicLottoI);
 		CommandConstructor classiclotto = new CommandConstructor(CommandSuggest.Type.CLASSICLOTTO, "classiclotto", false, false,
-				cl_play);
+				cl_drawnow, cl_play);
 		registerCommand(classiclotto, new ClassicLottoCommandExecutor(plugin, classiclotto), tab);
+		new ARG_DrawNow(cl_drawnow);
 		new ARG_Play(cl_play);
 		
 		//ArgumentConstructor add = new ArgumentConstructor(CommandSuggest.Type.FRIEND_ADD, "friend_add", 0, 1, 1, false, playerMapI);

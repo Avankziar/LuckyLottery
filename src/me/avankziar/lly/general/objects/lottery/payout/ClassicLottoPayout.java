@@ -1,4 +1,4 @@
-package me.avankziar.lly.general.objects.lottery.ticket;
+package me.avankziar.lly.general.objects.lottery.payout;
 
 import java.util.HashSet;
 import java.util.UUID;

@@ -9,9 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.avankziar.lly.general.assistance.ChatApiB;
-import me.avankziar.lly.general.assistance.ChatApiS;
-import me.avankziar.lly.general.assistance.ChatApiV;
+import me.avankziar.lly.general.assistance.ChatApi;
 import me.avankziar.lly.general.assistance.MatchApi;
 import me.avankziar.lly.general.cmdtree.ArgumentConstructor;
 import me.avankziar.lly.general.cmdtree.BaseConstructor;
@@ -20,7 +18,7 @@ import me.avankziar.lly.general.cmdtree.CommandSuggest;
 import me.avankziar.lly.spigot.LLY;
 import me.avankziar.lly.spigot.ModifierValueEntry.ModifierValueEntry;
 import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
-import net.md_5.bungee.api.chat.ClickEvent;
+import me.avankziar.lly.spigot.handler.MessageHandler;
 
 public class LuckyLotteryCommandExecutor implements CommandExecutor
 {
@@ -53,7 +51,7 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 				if(!ModifierValueEntry.hasPermission(player, cc))
 				{
 					///Du hast dafür keine Rechte!
-					player.spigot().sendMessage(ChatApiS.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+					player.spigot().sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return false;
 				}
 				baseCommands(player, Integer.parseInt(args[0])); //Base and Info Command
@@ -70,7 +68,7 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 			if(!ModifierValueEntry.hasPermission(player, cc))
 			{
 				///Du hast dafür keine Rechte!
-				player.spigot().sendMessage(ChatApiS.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+				player.spigot().sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return false;
 			}
 			baseCommands(player, 0); //Base and Info Command
@@ -105,7 +103,7 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 								{
 									plugin.getLogger().info("ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
 											.replace("%ac%", ac.getName()));
-									player.spigot().sendMessage(ChatApiS.tl(
+									player.spigot().sendMessage(ChatApi.tl(
 											"ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
 											.replace("%ac%", ac.getName())));
 									return false;
@@ -113,7 +111,7 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 								return false;
 							} else
 							{
-								player.spigot().sendMessage(ChatApiS.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+								player.spigot().sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 								return false;
 							}
 						} else
@@ -132,9 +130,9 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 							{
 								plugin.getLogger().info("ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
 										.replace("%ac%", ac.getName()));
-								sender.spigot().sendMessage(ChatApiS.tl(
+								MessageHandler.sendMessage(sender, 
 										"ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
-										.replace("%ac%", ac.getName())));
+										.replace("%ac%", ac.getName()));
 								return false;
 							}
 							return false;
@@ -147,8 +145,8 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 				}
 			}
 		}
-		sender.spigot().sendMessage(ChatApiB.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
-				ClickEvent.Action.RUN_COMMAND, CommandSuggest.getCmdString(CommandSuggest.Type.BASE)));
+		MessageHandler.sendMessage(sender, ChatApi.click(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
+				"RUN_COMMAND", CommandSuggest.getCmdString(CommandSuggest.Type.LLY)));
 		return false;
 	}
 	
@@ -171,17 +169,17 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 			}
 			index++;
 		}
-		String s = pastNextPage(player, page, control, plugin.getHelpList().size(), CommandSuggest.getCmdString(CommandSuggest.Type.BASE));
+		String s = pastNextPage(player, page, control, plugin.getHelpList().size(), CommandSuggest.getCmdString(CommandSuggest.Type.LLY));
 		if(s != null)
 		{
 			msg.add(s);
 		}
-		msg.stream().forEach(x -> player.spigot().sendMessage(ChatApiS.tl(x)));
+		msg.stream().forEach(x -> player.spigot().sendMessage(ChatApi.tl(x)));
 	}
 	
 	private String sendInfo(BaseConstructor bc)
 	{
-		return (ChatApiV.clickHover(
+		return (ChatApi.clickHover(
 				bc.getHelpInfo(),
 				"SUGGEST_COMMAND", bc.getSuggestion(),
 				"SHOW_TEXT", plugin.getYamlHandler().getLang().getString("GeneralHover")));
@@ -205,7 +203,7 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 			{
 				cmd += " "+o;
 			}
-			sb.append(ChatApiV.click(msg2, "RUN_COMMAND", cmd));
+			sb.append(ChatApi.click(msg2, "RUN_COMMAND", cmd));
 		}
 		if(control < total)
 		{
@@ -219,7 +217,7 @@ public class LuckyLotteryCommandExecutor implements CommandExecutor
 			{
 				sb.append(" | ");
 			}
-			sb.append(ChatApiV.click(msg1, "RUN_COMMAND", cmd));
+			sb.append(ChatApi.click(msg1, "RUN_COMMAND", cmd));
 		}
 		return sb.toString();
 	}

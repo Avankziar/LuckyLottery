@@ -30,7 +30,11 @@ public class ClassicLotto extends Lottery
 	 * The amount of money to buy on lottery ticket.
 	 */
 	private double costPerTicket;
-	
+	/**
+	 * The Maximal amount of ticket which a player can buy for one draw of the lottery.
+	 * -1 is equal to buy infinte amount.
+	 */
+	private int maximalAmountOfTicketWhichCanAPlayerBuy;
 	/**
 	 * The frist number to choose from which makes the numberpool.
 	 */
@@ -53,27 +57,33 @@ public class ClassicLotto extends Lottery
 	 * The higher the level of the winningcategory is, the higher the price should be.
 	 */
 	private Collection<WinningCategory> winningCategory = new HashSet<>();
+	/**
+	 * If true, the classiclotto will not draw automaticlly on the drawtimes.
+	 */
+	private boolean drawManually;
 	
 	private String drawOnServer;
 	
 	public ClassicLotto(String lotteryName, String description, GameType gameType,
 			double standartPot, double maximumPot, double amountToAddToThePotIfNoOneIsWinning,
-			double costPerTicket,
+			double costPerTicket, int maximalAmountOfTicketWhichCanAPlayerBuy,
 			int firstNumberToChooseFrom, int lastNumberToChooseFrom, int amountOfChoosenNumber,
 			LinkedHashSet<DrawTime> drawTime, HashSet<WinningCategory> winningCategorys,
-			String drawOnServer)
+			String drawOnServer, boolean drawManually)
 	{
 		super(lotteryName, description, gameType);
 		setStandartPot(standartPot);
 		setMaximumPot(maximumPot);
 		setAmountToAddToThePotIfNoOneIsWinning(amountToAddToThePotIfNoOneIsWinning);
 		setCostPerTicket(costPerTicket);
+		setMaximalAmountOfTicketWhichCanAPlayerBuy(maximalAmountOfTicketWhichCanAPlayerBuy);
 		setFristNumberToChooseFrom(lastNumberToChooseFrom);
 		setLastNumberToChooseFrom(lastNumberToChooseFrom);
 		setAmountOfChoosedNumber(amountOfChoosenNumber);
 		setDrawTime(drawTime);
 		setWinningCategory(winningCategorys);
 		setDrawOnServer(drawOnServer);
+		setDrawManually(drawManually);
 	}
 
 	public double getStandartPot() {
@@ -106,6 +116,14 @@ public class ClassicLotto extends Lottery
 
 	public void setCostPerTicket(double costPerTicket) {
 		this.costPerTicket = costPerTicket;
+	}
+
+	public int getMaximalAmountOfTicketWhichCanAPlayerBuy() {
+		return maximalAmountOfTicketWhichCanAPlayerBuy;
+	}
+
+	public void setMaximalAmountOfTicketWhichCanAPlayerBuy(int maximalAmountOfTicketWhichCanAPlayerBuy) {
+		this.maximalAmountOfTicketWhichCanAPlayerBuy = maximalAmountOfTicketWhichCanAPlayerBuy;
 	}
 
 	public LinkedHashSet<DrawTime> getDrawTime() {
@@ -165,6 +183,14 @@ public class ClassicLotto extends Lottery
 		this.drawOnServer = drawOnServer;
 	}
 	
+	public boolean isDrawManually() {
+		return drawManually;
+	}
+
+	public void setDrawManually(boolean drawManually) {
+		this.drawManually = drawManually;
+	}
+
 	public ClassicLottoDraw getDrawMysql()
 	{
 		return new ClassicLottoDraw(getLotteryName());

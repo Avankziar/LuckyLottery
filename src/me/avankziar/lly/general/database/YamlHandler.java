@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
@@ -16,6 +17,7 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import me.avankziar.lly.general.database.Language.ISO639_2B;
+import me.avankziar.lly.general.objects.lottery.Lottery.GameType;
 
 public class YamlHandler implements YamlHandling
 {	
@@ -67,6 +69,12 @@ public class YamlHandler implements YamlHandling
 	public ArrayList<YamlDocument> getClassicLotto()
 	{
 		return classicLotto;
+	}
+	
+	private static ArrayList<YamlDocument> lottoSuper = new ArrayList<>();
+	public ArrayList<YamlDocument> getLottoSuper()
+	{
+		return lottoSuper;
 	}
 	
 	public YamlHandler(YamlManager.Type type, String pluginname, Logger logger, Path directory, String administrationLanguage)
@@ -173,31 +181,87 @@ public class YamlHandler implements YamlHandling
 		{
 			lottery.mkdirs();
 		}
-		File classicLottoFolder = new File(lottery, "/ClassicLotto/");
-		if(!classicLottoFolder.exists())
+		if(yamlManager.getLottery().containsKey(GameType.X_FROM_Y))
 		{
-			classicLottoFolder.mkdirs();
-			//TODO Create the standart lotteries.
-		} else
-		{
-			for(File f : classicLottoFolder.listFiles())
+			File classicLottoFolder = new File(lottery, "/ClassicLotto/");
+			if(!classicLottoFolder.exists())
 			{
-				if(f.isDirectory())
+				classicLottoFolder.mkdirs();
+				for(Entry<String, LinkedHashMap<String, Language>> entry : yamlManager.getLottery()
+																			.get(GameType.X_FROM_Y).entrySet())
 				{
-					continue;
+					String cl = entry.getKey();
+					LinkedHashMap<String, Language> map = entry.getValue();
+					try
+				    {
+						YamlDocument y = YamlDocument.create(new File(classicLottoFolder,"%f%.yml".replace("%f%", cl)),
+								getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
+						if(!setupStaticFile(cl, y, map))
+						{
+							return false;
+						}
+						classicLotto.add(y);
+				    } catch (IOException e)
+				    {
+				    	logger.severe("Could not create/load config.yml file! Plugin will shut down!");
+				    }
 				}
-				try
-				{
-					YamlDocument y = YamlDocument
-							.create(f, getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
-					classicLotto.add(y);
-				} catch(Exception e)
-				{
-					continue;
-				}
+			} else
+			{
+				loadFiles(classicLottoFolder, classicLotto);
 			}
 		}
+		if(yamlManager.getLottery().containsKey(GameType.X_FROM_Y_AND_Z_FROM_U))
+		{
+			File lottoSuperFolder = new File(lottery, "/LottoSuper/");
+			if(!lottoSuperFolder.exists())
+			{
+				lottoSuperFolder.mkdirs();
+				for(Entry<String, LinkedHashMap<String, Language>> entry : yamlManager.getLottery()
+																			.get(GameType.X_FROM_Y_AND_Z_FROM_U).entrySet())
+				{
+					String cl = entry.getKey();
+					LinkedHashMap<String, Language> map = entry.getValue();
+					try
+				    {
+						YamlDocument y = YamlDocument.create(new File(lottoSuperFolder,"%f%.yml".replace("%f%", cl)),
+								getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
+						if(!setupStaticFile(cl, y, map))
+						{
+							return false;
+						}
+						lottoSuper.add(y);
+				    } catch (IOException e)
+				    {
+				    	logger.severe("Could not create/load config.yml file! Plugin will shut down!");
+				    }
+				}
+			} else
+			{
+				loadFiles(lottoSuperFolder, lottoSuper);
+			}
+		}		
 		return true;
+	}
+	
+	private void loadFiles(File folder, ArrayList<YamlDocument> ylA)
+	{
+		for(File f : folder.listFiles())
+		{
+			if(f.isDirectory())
+			{
+				continue;
+			}
+			try
+			{
+				YamlDocument y = YamlDocument
+						.create(f, getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
+				ylA.add(y);
+			} catch(Exception e)
+			{
+				continue;
+			}
+		}
 	}
 	
 	private boolean setupStaticFile(String f, YamlDocument yd, LinkedHashMap<String, Language> map) throws IOException

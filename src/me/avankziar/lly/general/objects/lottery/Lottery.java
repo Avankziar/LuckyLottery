@@ -15,14 +15,26 @@ public class Lottery
 		 * The player choose a x amount of non repetitive numbers of a pool from y non repetitive numbers
 		 * and a z amount of non repetitive numbers of a pool from u non repetitive numbers.<br>
 		 * F.e.:<br>
-		 * 5 from 50 and 2 from 12. And the player choose 8, 11, 33, 35, 42 and 2, 10
+		 * 5 from 50 and 2 from 12. And the player choose 8, 11, 33, 35, 42 and 2, 10<br>
 		 * Reallife example: Eurojackpot (EU), Powerball (USA)
 		 */
 		X_FROM_Y_AND_Z_FROM_U,
 		/**
+		 * The player choose from 2 to 'x' amount of non repetitive numbers of a pool from 'y' non repetitive numbers.<br>
+		 * The Lottery choose a 'z' amount of numbers.<br>
+		 * The he bet 'u' stake he will set. The amount the bet and the amount of numbers he choose
+		 * will set the winning price.<br>
+		 * F.e.:<br>
+		 * 2-10 from 70 and a betting stake of 1$ to 10$.<br>
+		 * If he set 2 numbers and bet 1$ his maximum price is 6$. And if he bet 10$ it is 60$.<br>
+		 * If he set 10 numbers and bet 1$ his maxumum price is 100 000$. And if he bet 10$ it is 1 000 000$.<br>
+		 * Reallife example: KENO (Germany/Austria)
+		 */
+		X_FROM_Y_DRAWN_Z_BET_U,
+		/**
 		 * The player has x amount of 0-9 numbers to choose.<br>
 		 * Every correct guessed number on the right spot increases the prize category.<br>
-		 * F.e.:
+		 * F.e.:<br>
 		 * 7 Numbers to choose. Player choose 2446831 and the winning Number was 4440129.<br>
 		 * So player has 2 Numbers right.
 		 * Reallife example: Glücksspirale (Germany)
@@ -37,7 +49,7 @@ public class Lottery
 		 */
 		X_NUMBER_OF_FIELDS,
 		/**
-		 * All player buys x amount of tickets. From all tickets are drawn the prize categorys.
+		 * All player buys x amount of tickets. From all tickets are drawn the prize categorys.<br>
 		 * Reallife example: Tombola from streetsfeastivals
 		 */
 		TOMBOLA_WITHOUT_DUDS,

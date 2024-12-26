@@ -44,8 +44,11 @@ import me.avankziar.lly.spigot.assistance.BackgroundTask;
 import me.avankziar.lly.spigot.cmd.ClassicLottoCommandExecutor;
 import me.avankziar.lly.spigot.cmd.LuckyLotteryCommandExecutor;
 import me.avankziar.lly.spigot.cmd.TabCompletion;
+import me.avankziar.lly.spigot.cmd.classiclotto.ARG_AddPot;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_DrawNow;
+import me.avankziar.lly.spigot.cmd.classiclotto.ARG_GiveTicket;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Play;
+import me.avankziar.lly.spigot.cmd.classiclotto.ARG_SetPot;
 import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
 import me.avankziar.lly.spigot.database.MysqlHandler;
 import me.avankziar.lly.spigot.database.MysqlSetup;
@@ -119,6 +122,8 @@ public class LLY extends JavaPlugin
 		setupListeners();
 		setupIFHConsumer();
 		setupBstats();
+		
+		LotteryHandler.initalizedDraws();
 	}
 	
 	public void onDisable()
@@ -192,7 +197,7 @@ public class LLY extends JavaPlugin
 	{		
 		LinkedHashMap<Integer, ArrayList<String>> classicLottoI = new LinkedHashMap<>();
 		ArrayList<String> list = new ArrayList<>();
-		for(ClassicLotto cl : LotteryHandler.getClassicLottery())
+		for(ClassicLotto cl : LotteryHandler.getClassicLotto())
 		{
 			list.add(cl.getLotteryName());
 		}
@@ -203,15 +208,28 @@ public class LLY extends JavaPlugin
 		CommandConstructor lly = new CommandConstructor(CommandSuggest.Type.LLY, "lly", false, false);
 		registerCommand(lly, new LuckyLotteryCommandExecutor(plugin, lly), tab);
 		
-		ArgumentConstructor cl_drawnow = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_DRAWNOW, "classiclotto_drawnow",
-				0, 1, 999, true, false, classicLottoI);
-		ArgumentConstructor cl_play = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_PLAY, "classiclotto_play",
-				0, 1, 999, false, false, classicLottoI);
-		CommandConstructor classiclotto = new CommandConstructor(CommandSuggest.Type.CLASSICLOTTO, "classiclotto", false, false,
-				cl_drawnow, cl_play);
-		registerCommand(classiclotto, new ClassicLottoCommandExecutor(plugin, classiclotto), tab);
-		new ARG_DrawNow(cl_drawnow);
-		new ARG_Play(cl_play);
+		if(LotteryHandler.getClassicLotto().size() > 0)
+		{
+			String path = "classiclotto";
+			ArgumentConstructor drawnow = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_DRAWNOW, path+"_drawnow",
+					0, 1, 999, true, false, classicLottoI);
+			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_PLAY, path+"_play",
+					0, 1, 999, false, false, classicLottoI);
+			ArgumentConstructor addpot = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_ADDPOT, path+"_addpot",
+					0, 2, 3, false, false, classicLottoI);
+			ArgumentConstructor setpot = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_SETPOT, path+"_setpot",
+					0, 2, 3, false, false, classicLottoI);
+			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_GIVETICKET, path+"_giveticket",
+					0, 1, 99, false, false, classicLottoI);
+			CommandConstructor cl = new CommandConstructor(CommandSuggest.Type.CLASSICLOTTO, path, false, false,
+					drawnow, play, addpot, setpot, giveticket);
+			registerCommand(cl, new ClassicLottoCommandExecutor(plugin, cl), tab);
+			new ARG_DrawNow(drawnow);
+			new ARG_Play(play);
+			new ARG_AddPot(addpot);
+			new ARG_SetPot(setpot);
+			new ARG_GiveTicket(giveticket);
+		}
 		
 		//ArgumentConstructor add = new ArgumentConstructor(CommandSuggest.Type.FRIEND_ADD, "friend_add", 0, 1, 1, false, playerMapI);
 		//CommandConstructor friend = new CommandConstructor(CommandSuggest.Type.FRIEND, "friend", false, add, remove);

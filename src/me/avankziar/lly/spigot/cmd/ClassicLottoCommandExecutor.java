@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.avankziar.lly.general.assistance.ChatApi;
 import me.avankziar.lly.general.cmdtree.ArgumentConstructor;
@@ -48,17 +49,31 @@ public class ClassicLottoCommandExecutor  implements CommandExecutor
 		if(args.length == 0)
 		{
 			Player player = (Player) sender;
-			getClassicLottoInfo(player);
+			new BukkitRunnable() 
+			{
+				@Override
+				public void run() 
+				{
+					getClassicLottoInfo(player);
+				}
+			}.runTaskAsynchronously(plugin);
 			return true;
 		}
 		if(args.length == 1)
 		{
 			Player player = (Player) sender;
-			Optional<ClassicLotto> ocl = LotteryHandler.getClassicLottery(args[0]);
+			Optional<ClassicLotto> ocl = LotteryHandler.getClassicLotto(args[0]);
 			if(ocl.isPresent())
 			{
 				ClassicLotto cl = ocl.get();
-				getClassicLottoInfo(player, cl);
+				new BukkitRunnable() 
+				{
+					@Override
+					public void run() 
+					{
+						getClassicLottoInfo(player, cl);
+					}
+				}.runTaskAsynchronously(plugin);
 				return true;
 			}
 		}
@@ -107,13 +122,20 @@ public class ClassicLottoCommandExecutor  implements CommandExecutor
 							ArgumentModule am = plugin.getArgumentMap().get(ac.getPath());
 							if(am != null)
 							{
-								try
+								new BukkitRunnable() 
 								{
-									am.run(sender, args);
-								} catch (IOException e)
-								{
-									e.printStackTrace();
-								}
+									@Override
+									public void run() 
+									{
+										try
+										{
+											am.run(sender, args);
+										} catch (IOException e)
+										{
+											e.printStackTrace();
+										}
+									}
+								}.runTaskAsynchronously(plugin);
 							} else
 							{
 								plugin.getLogger().info("ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
@@ -142,7 +164,7 @@ public class ClassicLottoCommandExecutor  implements CommandExecutor
 	{
 		ArrayList<String> msg = new ArrayList<>();
 		msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Cmd.Headline"));
-		for(ClassicLotto cl : LotteryHandler.getClassicLottery())
+		for(ClassicLotto cl : LotteryHandler.getClassicLotto())
 		{
 			ClassicLottoDraw cld = plugin.getMysqlHandler().getData(cl.getDrawMysql(), "`was_drawn` = ?", false);
 			if(cld == null)

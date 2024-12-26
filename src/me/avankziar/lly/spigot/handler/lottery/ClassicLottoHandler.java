@@ -115,7 +115,7 @@ public class ClassicLottoHandler
 						maximalAmountOfTicketWhichCanAPlayerBuy,
 						fristNumberToChooseFrom, lastNumberToChooseFrom, amountOfChoosedNumber, 
 						drawTime, winningCategory, drawOnServer, drawManually);
-				LLY.log.info("ClassicLottery "+lottoname+" loaded!");
+				LLY.log.info("ClassicLotto "+lottoname+" loaded!");
 				classicLotto.add(cl);
 				ClassicLottoTicket clt = new ClassicLottoTicket(lottoname);
 				clt.setupMysql(LLY.getPlugin().getMysqlSetup());
@@ -167,7 +167,7 @@ public class ClassicLottoHandler
 			@Override
 			public void run() 
 			{
-				for(ClassicLotto cl : LotteryHandler.getClassicLottery())
+				for(ClassicLotto cl : LotteryHandler.getClassicLotto())
 				{
 					if(cl.isDrawManually())
 					{

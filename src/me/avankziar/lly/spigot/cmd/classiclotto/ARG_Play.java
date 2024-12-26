@@ -8,13 +8,14 @@ import java.util.Optional;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.avankziar.lly.general.assistance.MatchApi;
 import me.avankziar.lly.general.cmdtree.ArgumentConstructor;
 import me.avankziar.lly.general.cmdtree.CommandSuggest;
 import me.avankziar.lly.general.cmdtree.CommandSuggest.Type;
 import me.avankziar.lly.general.objects.lottery.ClassicLotto;
+import me.avankziar.lly.general.objects.lottery.draw.ClassicLottoDraw;
+import me.avankziar.lly.general.objects.lottery.ticket.ClassicLottoTicket;
 import me.avankziar.lly.spigot.LLY;
 import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
 import me.avankziar.lly.spigot.handler.EconomyHandler;
@@ -40,21 +41,13 @@ public class ARG_Play extends ArgumentModule
 	public void run(CommandSender sender, String[] args) throws IOException 
 	{
 		Player player = (Player) sender;
-		new BukkitRunnable() 
-		{	
-			@Override
-			public void run() 
-			{
-				task(player, args);
-			}
-		}.runTaskAsynchronously(plugin);
-		
+		task(player, args);		
 	}
 	
 	private void task(Player player, String[] args)
 	{
 		String scl = args[1];
-		Optional<ClassicLotto> ocl = LotteryHandler.getClassicLottery(scl);
+		Optional<ClassicLotto> ocl = LotteryHandler.getClassicLotto(scl);
 		if(ocl.isEmpty())
 		{
 			MessageHandler.sendMessage(player, plugin.getYamlHandler().getLang().getString("ClassicLotto.NoClassicLottoFound"));
@@ -62,6 +55,19 @@ public class ARG_Play extends ArgumentModule
 		}
 		ClassicLotto cl = ocl.get();
 		LinkedHashSet<Integer> choosenNumber = new LinkedHashSet<Integer>();
+		if(cl.getMaximalAmountOfTicketWhichCanAPlayerBuy() > 0)
+		{
+			ClassicLottoDraw cld = plugin.getMysqlHandler().getData(cl.getDrawMysql(), "`was_drawn` = ?", false);
+			int count = plugin.getMysqlHandler().getCount(new ClassicLottoTicket(cl.getLotteryName()),
+					"`player_uuid` = ? AND `draw_id` = ?", player.getUniqueId().toString(), cld.getId());
+			if(count >=  cl.getMaximalAmountOfTicketWhichCanAPlayerBuy())
+			{
+				MessageHandler.sendMessage(player, plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.TooManyTickets")
+						.replace("%lotteryname%", cl.getLotteryName())
+						.replace("%amount%", String.valueOf(count))
+						.replace("%maximum%", String.valueOf(cl.getMaximalAmountOfTicketWhichCanAPlayerBuy())));
+			}
+		}
 		int i = 2;
 		boolean repeat = false;
 		boolean confirm = false;

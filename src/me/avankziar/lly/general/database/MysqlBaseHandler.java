@@ -10,8 +10,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
-import me.avankziar.lly.general.objects.lottery.MysqlTableable;
-
 public class MysqlBaseHandler
 {	
 	/*
@@ -77,35 +75,7 @@ public class MysqlBaseHandler
         return ps;
 	}
 	
-	public boolean exist(MysqlType type, String whereColumn, Object... whereObject)
-	{
-		//All Object which leaves the try-block, will be closed. So conn and ps is closed after the methode
-		//No finally needed.
-		//So much as possible in async methode use
-		try (Connection conn = mysqlBaseSetup.getConnection();)
-		{
-			PreparedStatement ps = getPreparedStatement(conn,
-					"SELECT `id` FROM `" + type.getValue()+ "` WHERE "+whereColumn+" LIMIT 1",
-					1,
-					whereObject);
-	        ResultSet rs = ps.executeQuery();
-	        MysqlBaseHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
-	        while (rs.next()) 
-	        {
-	        	return true;
-	        }
-	    } catch (SQLException e) 
-		{
-			  if(type.getObject() instanceof MysqlHandable)
-			  {
-				  MysqlHandable mh = (MysqlHandable) type.getObject();
-				  mh.log(logger, Level.WARNING, "Could not check "+type.getObject().getClass().getName()+" Object if it exist!", e);
-			  }
-		}
-		return false;
-	}
-	
-	public <T extends MysqlTableable & MysqlLottery<T>> boolean exist(T t, String whereColumn, Object... whereObject)
+	public <T extends MysqlTable<T>> boolean exist(T t, String whereColumn, Object... whereObject)
 	{
 		//All Object which leaves the try-block, will be closed. So conn and ps is closed after the methode
 		//No finally needed.
@@ -129,24 +99,7 @@ public class MysqlBaseHandler
 		return false;
 	}
 	
-	public boolean create(MysqlType type, Object object)
-	{
-		if(object instanceof MysqlHandable)
-		{
-			MysqlHandable mh = (MysqlHandable) object;
-			try (Connection conn = mysqlBaseSetup.getConnection();)
-			{
-				mh.create(conn, type.getValue());
-				return true;
-			} catch (Exception e)
-			{
-				mh.log(logger, Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
-			}
-		}
-		return false;
-	}
-	
-	public <T extends MysqlTableable & MysqlLottery<T>> boolean create(T t)
+	public <T extends MysqlTable<T>> boolean create(T t)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
@@ -159,24 +112,7 @@ public class MysqlBaseHandler
 		return false;
 	}
 	
-	public boolean updateData(MysqlType type, Object object, String whereColumn, Object... whereObject)
-	{
-		if(object instanceof MysqlHandable)
-		{
-			MysqlHandable mh = (MysqlHandable) object;
-			try (Connection conn = mysqlBaseSetup.getConnection();)
-			{
-				mh.update(conn, type.getValue(), whereColumn, whereObject);
-				return true;
-			} catch (Exception e)
-			{
-				mh.log(logger, Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
-			}
-		}
-		return false;
-	}
-	
-	public <T extends MysqlTableable & MysqlLottery<T>> boolean updateData(T t, String whereColumn, Object... whereObject)
+	public <T extends MysqlTable<T>> boolean updateData(T t, String whereColumn, Object... whereObject)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
@@ -189,28 +125,7 @@ public class MysqlBaseHandler
 		return false;
 	}
 	
-	public Object getData(MysqlType type, String whereColumn, Object... whereObject)
-	{
-		Object object = type.getObject();
-		if(object instanceof MysqlHandable)
-		{
-			MysqlHandable mh = (MysqlHandable) object;
-			try (Connection conn = mysqlBaseSetup.getConnection();)
-			{
-				ArrayList<Object> list = mh.get(conn, type.getValue(), "`id` ASC", " Limit 1", whereColumn, whereObject);
-				if(!list.isEmpty())
-				{
-					return list.get(0);
-				}
-			} catch (Exception e)
-			{
-				mh.log(logger, Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
-			}
-		}
-		return null;
-	}
-	
-	public <T extends MysqlTableable & MysqlLottery<T>> T getData(T t, String whereColumn, Object... whereObject)
+	public <T extends MysqlTable<T>> T getData(T t, String whereColumn, Object... whereObject)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
@@ -226,29 +141,7 @@ public class MysqlBaseHandler
 		return null;
 	}
 	
-	public int deleteData(MysqlType type, String whereColumn, Object... whereObject)
-	{
-		try (Connection conn = mysqlBaseSetup.getConnection();)
-		{
-			PreparedStatement ps = getPreparedStatement(conn,
-					"DELETE FROM `" + type.getValue() + "` WHERE "+whereColumn,
-					1,
-					whereObject);
-	        int d = ps.executeUpdate();
-			MysqlBaseHandler.addRows(QueryType.DELETE, d);
-			return d;
-	    } catch (SQLException e) 
-		{
-	    	if(type.getObject() instanceof MysqlHandable)
-	    	{
-	    		MysqlHandable mh = (MysqlHandable) type.getObject();
-	    		mh.log(logger, Level.WARNING, "Could not delete "+type.getObject().getClass().getName()+" Object!", e);
-	    	}
-		}
-		return 0;
-	}
-	
-	public <T extends MysqlTableable & MysqlLottery<T>> int deleteData(T t, String whereColumn, Object... whereObject)
+	public <T extends MysqlTable<T>> int deleteData(T t, String whereColumn, Object... whereObject)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
@@ -266,31 +159,7 @@ public class MysqlBaseHandler
 		return 0;
 	}
 	
-	public int lastID(MysqlType type)
-	{
-		try (Connection conn = mysqlBaseSetup.getConnection();)
-		{
-			PreparedStatement ps = getPreparedStatement(conn,
-					"SELECT `id` FROM `" + type.getValue() + "` ORDER BY `id` DESC LIMIT 1",
-					1);
-	        ResultSet rs = ps.executeQuery();
-	        MysqlBaseHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
-	        while (rs.next()) 
-	        {
-	        	return rs.getInt("id");
-	        }
-	    } catch (SQLException e) 
-		{
-			  if(type.getObject() instanceof MysqlHandable)
-			  {
-				  MysqlHandable mh = (MysqlHandable) type.getObject();
-				  mh.log(logger, Level.WARNING, "Could not get last id from "+type.getObject().getClass().getName()+" Object table!", e);
-			  }
-		}
-		return 0;
-	}
-	
-	public <T extends MysqlTableable & MysqlLottery<T>> int lastID(T t)
+	public <T extends MysqlTable<T>> int lastID(T t)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
@@ -310,12 +179,12 @@ public class MysqlBaseHandler
 		return 0;
 	}
 	
-	public int getCount(MysqlType type, String whereColumn, Object... whereObject)
+	public <T extends MysqlTable<T>> int getCount(T t, String whereColumn, Object... whereObject)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
 			PreparedStatement ps = getPreparedStatement(conn,
-					" SELECT count(*) FROM `" + type.getValue() + "` WHERE "+whereColumn,
+					" SELECT count(*) FROM `" + t.getMysqlTableName() + "` WHERE "+whereColumn,
 					1,
 					whereObject);
 	        ResultSet rs = ps.executeQuery();
@@ -326,21 +195,17 @@ public class MysqlBaseHandler
 	        }
 	    } catch (SQLException e) 
 		{
-			  if(type.getObject() instanceof MysqlHandable)
-			  {
-				  MysqlHandable mh = (MysqlHandable) type.getObject();
-				  mh.log(logger, Level.WARNING, "Could not count "+type.getObject().getClass().getName()+" Object!", e);
-			  }
+	    	t.log(logger, Level.WARNING, "Could not count "+t.getClass().getName()+" Object!", e);
 		}
 		return 0;
 	}
 	
-	public double getSum(MysqlType type, String whereColumn, Object... whereObject)
+	public <T extends MysqlTable<T>> double getSum(T t, String whereColumn, Object... whereObject)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
 			PreparedStatement ps = getPreparedStatement(conn,
-					"SELECT sum("+whereColumn+") FROM `" + type.getValue() + "` WHERE 1",
+					"SELECT sum("+whereColumn+") FROM `" + t.getMysqlTableName() + "` WHERE 1",
 					1,
 					whereObject);
 	        ResultSet rs = ps.executeQuery();
@@ -351,59 +216,28 @@ public class MysqlBaseHandler
 	        }
 	    } catch (SQLException e) 
 		{
-			  if(type.getObject() instanceof MysqlHandable)
-			  {
-				  MysqlHandable mh = (MysqlHandable) type.getObject();
-				  mh.log(logger, Level.WARNING, "Could not summarized "+type.getObject().getClass().getName()+" Object!", e);
-			  }
+	    	t.log(logger, Level.WARNING, "Could not summarized "+t.getClass().getName()+" Object!", e);
 		}
 		return 0;
 	}
 	
-	public ArrayList<Object> getList(MysqlType type, String orderByColumn, int start, int quantity, String whereColumn, Object...whereObject)
+	public <T extends MysqlTable<T>> ArrayList<T> getList(T t, String orderByColumn, int start, int quantity, String whereColumn, Object...whereObject)
 	{
-		Object object = type.getObject();
-		if(object instanceof MysqlHandable)
+		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
-			MysqlHandable mh = (MysqlHandable) object;
-			try (Connection conn = mysqlBaseSetup.getConnection();)
+			ArrayList<T> list = t.get(conn, t.getMysqlTableName(), orderByColumn, " Limit "+start+", "+quantity, whereColumn, whereObject);
+			if(!list.isEmpty())
 			{
-				ArrayList<Object> list = mh.get(conn, type.getValue(), orderByColumn, " Limit "+start+", "+quantity, whereColumn, whereObject);
-				if(!list.isEmpty())
-				{
-					return list;
-				}
-			} catch (Exception e)
-			{
-				mh.log(logger, Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+				return list;
 			}
+		} catch (Exception e)
+		{
+			t.log(logger, Level.WARNING, "Could not create "+t.getClass().getName()+" Object!", e);
 		}
 		return new ArrayList<>();
 	}
 	
-	public ArrayList<Object> getFullList(MysqlType type, String orderByColumn,
-			String whereColumn, Object...whereObject)
-	{
-		Object object = type.getObject();
-		if(object instanceof MysqlHandable)
-		{
-			MysqlHandable mh = (MysqlHandable) object;
-			try (Connection conn = mysqlBaseSetup.getConnection();)
-			{
-				ArrayList<Object> list = mh.get(conn, type.getValue(), orderByColumn, "", whereColumn, whereObject);
-				if(!list.isEmpty())
-				{
-					return list;
-				}
-			} catch (Exception e)
-			{
-				mh.log(logger, Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
-			}
-		}
-		return new ArrayList<>();
-	}
-	
-	public <T extends MysqlTableable & MysqlLottery<T>> ArrayList<T> getFullList(T t, String orderByColumn,
+	public <T extends MysqlTable<T>> ArrayList<T> getFullList(T t, String orderByColumn,
 			String whereColumn, Object...whereObject)
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)

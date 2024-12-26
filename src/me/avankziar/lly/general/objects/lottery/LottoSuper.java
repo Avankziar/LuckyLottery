@@ -6,13 +6,13 @@ import java.util.LinkedHashSet;
 import me.avankziar.lly.general.objects.DrawTime;
 import me.avankziar.lly.general.objects.WinningCategory;
 
-public class LottoPlusSuperNumber extends ClassicLotto
+public class LottoSuper extends ClassicLotto
 {
 	private int additionalFristNumberToChooseFrom;
 	private int additionalLastNumberToChooseFrom;
 	private int additionalAmountOfChoosenNumber;
 	
-	public LottoPlusSuperNumber(String lotteryName, String description, GameType gameType,
+	public LottoSuper(String lotteryName, String description, GameType gameType,
 			double standartPot,	double maximumPot, double amountToAddToThePotIfNoOneIsWinning, double costPerTicket,
 			int maximalAmountOfTicketWhichCanAPlayerBuy,
 			int firstNumberToChooseFrom, int lastNumberToChooseFrom, int amountOfChoosenNumber,

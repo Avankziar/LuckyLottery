@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
+
+import me.avankziar.lly.general.objects.PlayerData;
 
 public class MysqlBaseSetup 
 {
@@ -41,41 +44,21 @@ public class MysqlBaseSetup
 		this.isSSLEnabled = isSSLEnabled;
 	}
 	
+	public static ArrayList<MysqlHandable<?>> register = new ArrayList<>();
+	static
+	{
+		register.add(new PlayerData());
+	}
+	
 	public boolean loadMysqlSetup(ServerType serverType)
 	{
 		if(!connectToDatabase())
 		{
 			return false;
 		}
-		for(MysqlType mt : MysqlType.values())
+		for(MysqlHandable<?> mh : register)
 		{
-			//Decide, on which server, the mysql Table should be used.
-			switch(mt.getUsedOnServer())
-			{
-			case ALL: break;
-			case PROXY:
-				if(serverType == ServerType.BUNGEE || serverType == ServerType.VELOCITY)
-				{
-					break;
-				} else
-				{
-					continue;
-				}
-			case BUNGEE:
-			case SPIGOT:
-			case VELOCITY:
-				if(mt.getUsedOnServer() == serverType)
-				{
-					break;
-				} else
-				{
-					continue;
-				}
-			}
-			if(!baseSetup(mt.getSetupQuery()))
-			{
-				return false;
-			}
+			mh.setupMysql(this, serverType);
 		}
 		return true;
 	}

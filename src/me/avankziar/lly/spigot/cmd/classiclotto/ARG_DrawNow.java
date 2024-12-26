@@ -5,7 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.avankziar.lly.general.assistance.MatchApi;
 import me.avankziar.lly.general.cmdtree.ArgumentConstructor;
@@ -33,21 +32,13 @@ public class ARG_DrawNow extends ArgumentModule
 	@Override
 	public void run(CommandSender sender, String[] args) throws IOException 
 	{
-		new BukkitRunnable() 
-		{	
-			@Override
-			public void run() 
-			{
-				task(sender, args);
-			}
-		}.runTaskAsynchronously(plugin);
-		
+		task(sender, args);		
 	}
 	
 	private void task(CommandSender sender, String[] args)
 	{
 		String scl = args[1];
-		Optional<ClassicLotto> ocl = LotteryHandler.getClassicLottery(scl);
+		Optional<ClassicLotto> ocl = LotteryHandler.getClassicLotto(scl);
 		if(ocl.isEmpty())
 		{
 			MessageHandler.sendMessage(sender, plugin.getYamlHandler().getLang().getString("ClassicLotto.NoClassicLottoFound"));

@@ -9,7 +9,6 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import me.avankziar.lly.general.database.MysqlBaseHandler;
-import me.avankziar.lly.general.database.MysqlType;
 import me.avankziar.lly.general.objects.PlayerData;
 
 public class Utility
@@ -38,18 +37,18 @@ public class Utility
 	
 	public static String convertUUIDToName(String uuid)
 	{
-		if(mysqlBaseHandler.exist(MysqlType.PLAYERDATA, "player_uuid = ?", uuid))
+		if(mysqlBaseHandler.exist(new PlayerData(), "player_uuid = ?", uuid))
 		{
-			return ((PlayerData) mysqlBaseHandler.getData(MysqlType.PLAYERDATA, "player_uuid = ?", uuid)).getName();
+			return mysqlBaseHandler.getData(new PlayerData(), "player_uuid = ?", uuid).getName();
 		}
 		return null;
 	}
 	
 	public static UUID convertNameToUUID(String playername)
 	{
-		if(mysqlBaseHandler.exist(MysqlType.PLAYERDATA, "`player_name` = ?", playername))
+		if(mysqlBaseHandler.exist(new PlayerData(), "`player_name` = ?", playername))
 		{
-			return ((PlayerData) mysqlBaseHandler.getData(MysqlType.PLAYERDATA, "`player_name` = ?", playername)).getUUID();
+			return mysqlBaseHandler.getData(new PlayerData(), "`player_name` = ?", playername).getUUID();
 		}
 		return null;
 	}

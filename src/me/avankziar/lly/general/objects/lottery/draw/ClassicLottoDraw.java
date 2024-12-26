@@ -85,7 +85,7 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 
 	public boolean setupMysql(MysqlSetup mysqlSetup)
 	{
-		Optional<ClassicLotto> ocl = LotteryHandler.getClassicLottery(getLotteryName());
+		Optional<ClassicLotto> ocl = LotteryHandler.getClassicLotto(getLotteryName());
 		if(ocl.isEmpty())
 		{
 			return false;
@@ -111,7 +111,7 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 	{
 		try
 		{
-			Optional<ClassicLotto> ocl = LotteryHandler.getClassicLottery(getLotteryName());
+			Optional<ClassicLotto> ocl = LotteryHandler.getClassicLotto(getLotteryName());
 			if(ocl.isEmpty())
 			{
 				return false;
@@ -137,9 +137,9 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 	        ps.setLong(3, getDrawTime());
 	        ps.setDouble(4, getActualPot());
 	        int c = 5;
+	        Iterator<Integer> iter = getChoosenNumbers().iterator();
 	        for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
 	        {
-	        	Iterator<Integer> iter = getChoosenNumbers().iterator();
 	        	ps.setInt(c, iter.hasNext() ? iter.next() : 0);
 	        	c++;
 	        }
@@ -158,7 +158,7 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 	{
 		try
 		{
-			Optional<ClassicLotto> ocl = LotteryHandler.getClassicLottery(getLotteryName());
+			Optional<ClassicLotto> ocl = LotteryHandler.getClassicLotto(getLotteryName());
 			if(ocl.isEmpty())
 			{
 				return false;
@@ -179,9 +179,9 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 	        ps.setLong(3, getDrawTime());
 	        ps.setDouble(4, getActualPot());
 	        int c = 5;
+	        Iterator<Integer> iter = getChoosenNumbers().iterator();
 	        for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
-	        {
-	        	Iterator<Integer> iter = getChoosenNumbers().iterator();
+	        {	        	
 	        	ps.setInt(c, iter.hasNext() ? iter.next() : 0);
 	        	c++;
 	        }
@@ -206,7 +206,7 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 	{
 		try
 		{
-			Optional<ClassicLotto> ocl = LotteryHandler.getClassicLottery(getLotteryName());
+			Optional<ClassicLotto> ocl = LotteryHandler.getClassicLotto(getLotteryName());
 			if(ocl.isEmpty())
 			{
 				return null;

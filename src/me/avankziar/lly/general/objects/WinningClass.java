@@ -1,6 +1,6 @@
 package me.avankziar.lly.general.objects;
 
-public class WinningCategory 
+public class WinningClass 
 {
 	public enum PayoutType
 	{
@@ -16,29 +16,34 @@ public class WinningCategory
 	}
 	
 	/**
-	 * The level or step of the winning ladder the winningcategory is.<br>
+	 * The level or step of the winning ladder the winningclass is.<br>
 	 * The lower the level, the lower the price. Minimum is 1.
 	 */
-	private int winningCategoryLevel;
+	private int winningClassLevel;
 	private PayoutType payoutType;
 	/**
 	 * The percentage displace as 30% = 0.3 or the lump sum.
 	 */
 	private double amount;
+	/**
+	 * The lottorule, how much number you must have match to win this winningclass.
+	 */
+	private int numberMatchToWin;
 	
-	public WinningCategory(int winningCategoryLevel, PayoutType payoutType, double amount)
+	public WinningClass(int winningClassLevel, PayoutType payoutType, double amount, int numberMatchToWin)
 	{
-		setWinningCategoryLevel(winningCategoryLevel);
+		setWinningClassLevel(winningClassLevel);
 		setPayoutType(payoutType);
 		setAmount(amount);
+		setNumberMatchToWin(numberMatchToWin);
 	}
 
-	public int getWinningCategoryLevel() {
-		return winningCategoryLevel;
+	public int getWinningClassLevel() {
+		return winningClassLevel;
 	}
 
-	public void setWinningCategoryLevel(int winningCategoryLevel) {
-		this.winningCategoryLevel = winningCategoryLevel;
+	public void setWinningClassLevel(int winningCategoryLevel) {
+		this.winningClassLevel = winningCategoryLevel;
 	}
 
 	public PayoutType getPayoutType() {
@@ -55,5 +60,13 @@ public class WinningCategory
 
 	public void setAmount(double amount) {
 		this.amount = amount;
+	}
+
+	public int getNumberMatchToWin() {
+		return numberMatchToWin;
+	}
+
+	public void setNumberMatchToWin(int numberMatchToWin) {
+		this.numberMatchToWin = numberMatchToWin;
 	}
 }

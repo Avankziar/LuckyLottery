@@ -3,25 +3,40 @@ package me.avankziar.lly.general.objects.lottery.payout;
 import java.util.HashSet;
 import java.util.UUID;
 
+import me.avankziar.lly.general.objects.WinningClass.PayoutType;
+
 public class ClassicLottoPayout 
 {
-	private int winningCategoryLevel;
+	private int winningClassLevel;
+	private PayoutType payoutType;
 	private double payout;
 	private HashSet<UUID> uuids = new HashSet<>();
+	private int numberMatchToWin;
 	
-	public ClassicLottoPayout(int winningCategoryLevel, double payout, HashSet<UUID> uuids)
+	public ClassicLottoPayout(int winningClassLevel, PayoutType payoutType, double payout, 
+			HashSet<UUID> uuids, int numberMatchToWin)
 	{
-		setWinningCategoryLevel(winningCategoryLevel);
+		setWinningClassLevel(winningClassLevel);
+		setPayoutType(payoutType);
 		setPayout(payout);
 		setUUIDs(uuids);
+		setNumberMatchToWin(numberMatchToWin);
 	}
 
-	public int getWinningCategoryLevel() {
-		return winningCategoryLevel;
+	public int getWinningClassLevel() {
+		return winningClassLevel;
 	}
 
-	public void setWinningCategoryLevel(int winningCategoryLevel) {
-		this.winningCategoryLevel = winningCategoryLevel;
+	public void setWinningClassLevel(int winningCategoryLevel) {
+		this.winningClassLevel = winningCategoryLevel;
+	}
+
+	public PayoutType getPayoutType() {
+		return payoutType;
+	}
+
+	public void setPayoutType(PayoutType payoutType) {
+		this.payoutType = payoutType;
 	}
 
 	public double getPayout() {
@@ -40,8 +55,29 @@ public class ClassicLottoPayout
 		this.uuids = uuids;
 	}
 	
+	public HashSet<UUID> getUuids() {
+		return uuids;
+	}
+
+	public void setUuids(HashSet<UUID> uuids) {
+		this.uuids = uuids;
+	}
+
+	public int getNumberMatchToWin() {
+		return numberMatchToWin;
+	}
+
+	public void setNumberMatchToWin(int numberMatchToWin) {
+		this.numberMatchToWin = numberMatchToWin;
+	}
+
 	public double getFinalPayoutPerUUID()
 	{
-		return payout / uuids.size();
+		switch(getPayoutType())
+		{
+		default:
+		case LUMP_SUM: return payout;
+		case PERCENTAGE: return payout / uuids.size();
+		}
 	}
 }

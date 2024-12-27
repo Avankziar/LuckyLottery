@@ -101,7 +101,7 @@ public class LottoSuperTicket extends LotteryTicket implements MysqlLottery<Lott
         }
 		for(int i = 0; i < ls.getAdditionalAmountOfChoosenNumber(); i++)
         {
-			sql.append(" ,`ball_"+i+"`");
+			sql.append(" ,`super_ball_"+i+"`");
         }
 		sql.append(");");
 		return mysqlSetup.baseSetup(getMysqlTableName());
@@ -186,6 +186,10 @@ public class LottoSuperTicket extends LotteryTicket implements MysqlLottery<Lott
 	        {
 				sql.append(", `ball_"+i+"` = ?");
 	        }
+			for(int i = 0; i < ls.getAdditionalAmountOfChoosenNumber(); i++)
+	        {
+				sql.append(", `super_ball_"+i+"` = ?");
+	        }
 			sql.append(" WHERE "+whereColumn);
 			PreparedStatement ps = conn.prepareStatement(sql.toString());
 			ps.setString(1, getLotteryName());
@@ -256,7 +260,7 @@ public class LottoSuperTicket extends LotteryTicket implements MysqlLottery<Lott
 				LinkedHashSet<Integer> sets = new LinkedHashSet<>();
 				for(int ii = 0; ii < ls.getAdditionalAmountOfChoosenNumber(); ii++)
 		        {
-					sets.add(rs.getInt("ball_"+ii));
+					sets.add(rs.getInt("super_ball_"+ii));
 		        }
 				al.add(new LottoSuperTicket(rs.getLong("id"),
 						rs.getLong("draw_id"),

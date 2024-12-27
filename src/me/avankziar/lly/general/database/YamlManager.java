@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import me.avankziar.lly.general.database.Language.ISO639_2B;
+import me.avankziar.lly.general.objects.WinningClass.PayoutType;
 import me.avankziar.lly.general.objects.lottery.Lottery;
 import me.avankziar.lly.general.objects.lottery.Lottery.GameType;
 import me.avankziar.lly.spigot.ModifierValueEntry.Bypass;
@@ -787,6 +788,7 @@ public class YamlManager
 						"<red>Du hast nicht genug Geld!</red>",
 						"<red>You dont have enough money!</red>"}));
 		initClassicLotto();
+		initLottoSuper();
 	}
 	
 	private void initClassicLotto()
@@ -820,11 +822,11 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"Lotterie Ticket wurde automatisch wiedergekauft.",
 						"Lottery ticket was automatically repurchased."}));
-		languageKeys.put(path+".Draw.WinningCategoryReplacer", 
+		languageKeys.put(path+".Draw.WinningClassReplacer", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<gray>GW%level%: <white>%winneramount%",
 						"<gray>GW%level%: <white>%winneramount%"}));
-		languageKeys.put(path+".Draw.WinningCategoryReplacerSeperator", 
+		languageKeys.put(path+".Draw.WinningClassReplacerSeperator", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<gray>, ",
 						"<gray>, "}));
@@ -834,8 +836,8 @@ public class YamlManager
 						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
 						"<gold>Gratulation an <white>%winners% <gold>zum knacken des Jackpots!",
 						"<gold>Gewonnen wurden <red><bold>%payout% <reset><gold>verteilt auf alle Gewinner.",
-						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnkategorien:",
-						"<gray>%winningcategorywinneramount%",
+						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
+						"<gray>%winningclasswinneramount%",
 						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
 						"<aqua><bold>%nextpot% zu gewinnen!",
 						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
@@ -844,7 +846,7 @@ public class YamlManager
 						"<gold>Congratulations to <white>%winners% <gold>for hitting the jackpot!",
 						"<gold>The prize money won was <red><bold>%payout% <reset><gold>distributed among all winners.",
 						"<gray>Following are the number of winners in all prize categories:",
-						"<gray>%winningcategorywinneramount%",
+						"<gray>%winningclasswinneramount%",
 						"<yellow>The next lottery pot contains a total of up to ...",
 						"<aqua><bold>%nextpot% to win!",
 						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
@@ -853,8 +855,8 @@ public class YamlManager
 						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
 						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
 						"<gray><bold>Leider gab es keinen Hauptgewinner!",
-						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnkategorien:",
-						"<gray>%winningcategorywinneramount%",
+						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
+						"<gray>%winningclasswinneramount%",
 						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
 						"<aqua><bold>%nextpot% zu gewinnen!",
 						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
@@ -862,7 +864,7 @@ public class YamlManager
 						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber%",
 						"<gray><bold>Unfortunately there was no main winner!",
 						"<gray>Following are the number of winners in all prize categories:",
-						"<gray>%winningcategorywinneramount%",
+						"<gray>%winningclasswinneramount%",
 						"<yellow>The next lottery pot contains a total of up to ...",
 						"<aqua><bold>%nextpot% to win!",
 						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
@@ -882,7 +884,8 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow>Schade! Leider hast du nichts gewonnen.",
 						"<yellow>Beim nächsten Mal!",
-						""}));
+						"<yellow>Too bad! Unfortunately you didn't win anything.",
+						"<yellow>Next time!"}));
 		languageKeys.put(path+".Draw.Win.Category", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%lottoryname%-Gewinn",
@@ -985,6 +988,103 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow>Du hast <white>%amount% Spielern ein Ticket in der Lotterie %lotteryname% geschenkt!",
 						"<yellow>You have given <white>%amount% players a ticket in the %lotteryname% lottery!"}));
+	}
+	
+	private void initLottoSuper()
+	{
+		String path = "LottoSuper";
+		languageKeys.put(path+".Draw.NoTicketAreBought", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<gold>JackPot bis zu <white>%actualpot%<gold>! <aqua>Hauptgewinn <white>%highestwinningcatgeory%<aqua>!",
+						"<yellow>Gezogene Nummer: <reset>%drawnnumber%",
+						"<red>Keine Lose wurden verkauft!",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\\\\\{...",
+						"<gold>JackPot up to <white>%actualpot%<gold>! <aqua>Main prize <white>%highestwinningcatgeory%<aqua>!",
+						"<yellow>Drawn number: <reset>%drawnnumber%",
+						"<red>No tickets were sold!",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+		languageKeys.put(path+".Draw.RepeatTicket.Category", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%lottoryname%-Ticket",
+						"%lottoryname%-Ticket"}));
+		languageKeys.put(path+".Draw.RepeatTicket.Comment", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Lotterie Ticket wurde automatisch wiedergekauft.",
+						"Lottery ticket was automatically repurchased."}));
+		languageKeys.put(path+".Draw.WinningClassReplacer", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>GW%level%: <white>%winneramount%",
+						"<gray>GW%level%: <white>%winneramount%"}));
+		languageKeys.put(path+".Draw.WinningClassReplacerSeperator", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>, ",
+						"<gray>, "}));
+		languageKeys.put(path+".Draw.JackpotWasBreached", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
+						"<gold>Gratulation an <white>%winners% <gold>zum knacken des Jackpots!",
+						"<gold>Gewonnen wurden <red><bold>%payout% <reset><gold>verteilt auf alle Gewinner.",
+						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
+						"<gray>%winningclasswinneramount%",
+						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
+						"<aqua><bold>%nextpot% zu gewinnen!",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\\\\\{...",
+						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber%",
+						"<gold>Congratulations to <white>%winners% <gold>for hitting the jackpot!",
+						"<gold>The prize money won was <red><bold>%payout% <reset><gold>distributed among all winners.",
+						"<gray>Following are the number of winners in all prize categories:",
+						"<gray>%winningclasswinneramount%",
+						"<yellow>The next lottery pot contains a total of up to ...",
+						"<aqua><bold>%nextpot% to win!",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
+		languageKeys.put(path+".Draw.JackpotIsUntouched", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
+						"<gray><bold>Leider gab es keinen Hauptgewinner!",
+						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
+						"<gray>%winningclasswinneramount%",
+						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
+						"<aqua><bold>%nextpot% zu gewinnen!",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\{...",
+						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber%",
+						"<gray><bold>Unfortunately there was no main winner!",
+						"<gray>Following are the number of winners in all prize categories:",
+						"<gray>%winningclasswinneramount%",
+						"<yellow>The next lottery pot contains a total of up to ...",
+						"<aqua><bold>%nextpot% to win!",
+						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
+		languageKeys.put(path+".Draw.Won", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"        <gold><bold>! GEWONNEN !",
+						"<yellow>Du hattest %matchchoosennumberamount% & %matchadditionalchoosennumberamount% richtige!",
+						"<gray>Deine Nummern:<reset> %matchchoosennumber% & %matchadditionalchoosennumber%",
+						"<yellow>Dein Preis: %payout%",
+						"        <gold><bold>! GEWONNEN !",
+						"        <gold><bold>! WON !",
+						"<yellow>You had %matchchoosennumberamount% & %matchadditionalchoosennumberamount% correct!",
+						"<gray>Your numbers:<reset> %matchchoosennumber% & %matchadditionalchoosennumber%",
+						"<yellow>Your price: %payout%",
+						"        <gold><bold>! WON !"}));
+		languageKeys.put(path+".Draw.NotWon", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Schade! Leider hast du nichts gewonnen.",
+						"<yellow>Beim nächsten Mal!",
+						"<yellow>Too bad! Unfortunately you didn't win anything.",
+						"<yellow>Next time!"}));
+		languageKeys.put(path+".Draw.Win.Category", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%lottoryname%-Gewinn",
+						"%lottoryname%-Prize"}));
+		languageKeys.put(path+".Draw.Win.Comment", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Gewonnen in der Gewinnkategory %level%.",
+						"Won in the winning category %level%."}));
 		languageKeys.put(path+"", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"",
@@ -1068,7 +1168,7 @@ public class YamlManager
 					"Die Menge an Geld, die dem JackPot hinzugefügt wird, wenn keiner die höchste Gewinnklasse gewinnt.",
 					"Dabei wird der Teil des Pots genommen, der nicht gewonnen wurde um dieser Menger addiert.",
 					"",
-					"The amount of money added to the jackpot if no one wins the highest prize category.",
+					"The amount of money added to the jackpot if no one wins the highest prize class.",
 					"The part of the pot that was not won is taken and added to this amount."}));
 		mapII.put("CostPerTicket", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					2.5}));
@@ -1119,48 +1219,92 @@ public class YamlManager
 					"Wenn `true`, dann wird das Lotto nur über einen Befehl aufgelöst und die Zahlen gezogen.",
 					"",
 					"If `true`, then the lottery will only be solved via one command and the numbers will be drawn."}));
-		mapII.put("#DrawTime", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"",
-					"Deklariert, wann die Lotterie gezogen wird. Es können mehrere Zeiten festgelegt werden.",
-					"Dabei wird zuerst immer der Wochentag in Großbuchstaben genannt, dann die Stunden und Minutenzahl.",
-					"",
-					"Declares when the lottery will be drawn. Multiple times can be specified.",
-					"The day of the week is always given first in capital letters, followed by the hours and minutes."}));
 		mapII.put("DrawTime", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"WEDNESDAY-20-00",
-					"SATURDAY-20-00"}));
+					"1-WEDNESDAY-20-00",
+					"1-SATURDAY-20-00",
+					"2-WEDNESDAY-20-00",
+					"2-SATURDAY-20-00",
+					"3-WEDNESDAY-20-00",
+					"3-SATURDAY-20-00",
+					"4-WEDNESDAY-20-00",
+					"4-SATURDAY-20-00",
+					"5-WEDNESDAY-20-00",
+					"5-SATURDAY-20-00"}));
 		mapII.put("#DrawTime", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Deklariert, wann die Lotterie gezogen wird. Es können mehrere Zeiten festgelegt werden.",
-					"Dabei wird zuerst immer der Wochentag in Großbuchstaben genannt, dann die Stunden und Minutenzahl.",
+					"Dabei wird zuerst immer die Woche des Monats als Zahl genannt, dann der Wochentag in Großbuchstaben, dann die Stunden und Minutenzahl.",
 					"",
 					"Declares when the lottery will be drawn. Multiple times can be specified.",
-					"The day of the week is always given first in capital letters, followed by the hours and minutes."}));
-		mapII.put("WinningCategory.1.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"The week of the momnth is always given first as number, than the day of the week given first in capital letters, followed by the hours and minutes."}));
+		// ----------
+		mapII.put("WinningClass.6.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					PayoutType.LUMP_SUM.toString()}));
+		mapII.put("#WinningClass.6.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Der PayoutType kann aus folgenden Werten bestehen: LUMP_SUM oder PERCENTAGE",
+					"LUM_SUM gibt allen Gewinnern dieser Gewinnklasse den selben Pauschalbetrag.",
+					"PERCENTAGE nimt vom Gesamtpot den Prozentwert und teil diesen unter allen Gewinnern der Gewinnklasse.",
+					"Was gilt wird in in dem Pfad 'WinningClass.Zahl.Payout' dann definiert.",
+					"",
+					"The PayoutType can consist of the following values: LUMP_SUM or PERCENTAGE",
+					"LUM_SUM gives all winners in this prize category the same lump sum amount.",
+					"PERCENTAGE takes the percentage value of the total pot and divides it among all winners in the prize category.",
+					"What applies is then defined in the path 'WinningClass.Zahl.Payout'."}));
+		mapII.put("WinningClass.6.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1.5625}));
-		mapII.put("#WinningCategory.1.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+		mapII.put("#WinningClass.6.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
-					"Lotto zahlt vom Jackpot immer eine gewissen Prozenzanteil an die Gewinner einer Gewinnkategorie aus.",
-					"Dabei teilen sich alle Gewinner der Gleichen Gewinnkategorie diesen Anteil.",
-					"Umso niedriger das Level der Gewinnkategorie umso weniger gewinnt man etwas.",
-					"Die Prozentanteile aller Gewinnkategorien sollten nicht 100.0% übersteigen.",
-					"Beim Klassischen Lotto ist die Anzahl der Gewinnkategory die gleiche, wie die Anzahl an Zahlen der Spieler wählen darf!",
+					"Lotto zahlt vom Jackpot immer eine gewissen Prozenzanteil an die Gewinner einer Gewinnklasse aus.",
+					"Dabei teilen sich alle Gewinner der Gleichen Gewinnklasse diesen Anteil.",
+					"Umso höher das Level der Gewinnklasse umso weniger gewinnt man etwas.",
+					"Die Prozentanteile aller Gewinnklassen sollten nicht 100.0% übersteigen.",
+					"Beim Klassischen Lotto ist die Anzahl der Gewinnklasse die gleiche, wie die Anzahl an Zahlen der Spieler wählen darf!",
 					"",
-					"Lotto always pays out a certain percentage of the jackpot to the winners of a prize category.",
-					"All winners of the same prize category share this share.",
-					"The lower the level of the prize category, the less you win.",
+					"Lotto always pays out a certain percentage of the jackpot to the winners of a prize class.",
+					"All winners of the same prize class share this share.",
+					"The higher the level of the prize class, the less you win.",
 					"The percentages of all prize categories should not exceed 100.0%.",
 					"In Classic Lotto, the number of winning categories is the same as the number of numbers the player can choose!"}));
-		mapII.put("WinningCategory.2.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.6.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("#WinningClass.6.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Anzahl an Lottozahlen, die den vom Spieler gewählten Zahlen gleicht um den Preis in dieser Gewinnklasse zu erhalten.",
+					"",
+					"The number of lottery numbers that match the numbers chosen by the player to win the prize in that prize category."}));
+		// ----------
+		mapII.put("WinningClass.5.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					PayoutType.LUMP_SUM.toString()}));
+		mapII.put("WinningClass.5.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					3.1255}));
-		mapII.put("WinningCategory.3.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.5.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					2}));
+		// ----------
+		mapII.put("WinningClass.4.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.4.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					6.252}));
-		mapII.put("WinningCategory.4.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.4.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					5}));
+		mapII.put("WinningClass.3.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.3.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					12.56}));
-		mapII.put("WinningCategory.5.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.3.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					4}));
+		mapII.put("WinningClass.2.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.2.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					25.5}));
-		mapII.put("WinningCategory.6.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.2.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					5}));
+		mapII.put("WinningClass.1.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.1.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					51.0}));
+		mapII.put("WinningClass.1.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					6}));
 		mapI.put("Lotto", mapII);
 		getLottery().put(type, mapI);
 	}
@@ -1193,12 +1337,12 @@ public class YamlManager
 					"",
 					"The minimum amount of money in the jackpot."}));
 		mapII.put("MaximumPot", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					10_000_000_000.0}));
+					Double.MAX_VALUE}));
 		mapII.put("#MaximumPot", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Menge an Geld wie hoch der Jackpot maximal werden kann.",
 					"",
-					"The amount of money the jackpot can reach at most"}));
+					"The amount of money the jackpot can reach at most."}));
 		mapII.put("AmountToAddToThePotIfNoOneIsWinning", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					10_000_000.0}));
 		mapII.put("#AmountToAddToThePotIfNoOneIsWinning", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -1206,7 +1350,7 @@ public class YamlManager
 					"Die Menge an Geld, die dem JackPot hinzugefügt wird, wenn keiner die höchste Gewinnklasse gewinnt.",
 					"Dabei wird der Teil des Pots genommen, der nicht gewonnen wurde um dieser Menger addiert.",
 					"",
-					"The amount of money added to the jackpot if no one wins the highest prize category.",
+					"The amount of money added to the jackpot if no one wins the highest prize class.",
 					"The part of the pot that was not won is taken and added to this amount."}));
 		mapII.put("CostPerTicket", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					2.0}));
@@ -1278,62 +1422,135 @@ public class YamlManager
 					"Wenn `true`, dann wird das Lotto nur über einen Befehl aufgelöst und die Zahlen gezogen.",
 					"",
 					"If `true`, then the lottery will only be solved via one command and the numbers will be drawn."}));
-		mapII.put("#DrawTime", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"",
-					"Deklariert, wann die Lotterie gezogen wird. Es können mehrere Zeiten festgelegt werden.",
-					"Dabei wird zuerst immer der Wochentag in Großbuchstaben genannt, dann die Stunden und Minutenzahl.",
-					"",
-					"Declares when the lottery will be drawn. Multiple times can be specified.",
-					"The day of the week is always given first in capital letters, followed by the hours and minutes."}));
 		mapII.put("DrawTime", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"WEDNESDAY-20-00",
-					"SUNDAY-20-00"}));
+					"1-MONDAY-22-59",
+					"1-WEDNESDAY-22-59",
+					"1-SATURDAY-22-59",
+					"2-MONDAY-22-59",
+					"2-WEDNESDAY-22-59",
+					"2-SATURDAY-22-59",
+					"3-MONDAY-22-59",
+					"3-WEDNESDAY-22-59",
+					"3-SATURDAY-22-59",
+					"4-MONDAY-22-59",
+					"4-WEDNESDAY-22-59",
+					"4-SATURDAY-22-59",
+					"5-MONDAY-22-59",
+					"5-WEDNESDAY-22-59",
+					"5-SATURDAY-22-59"}));
 		mapII.put("#DrawTime", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Deklariert, wann die Lotterie gezogen wird. Es können mehrere Zeiten festgelegt werden.",
-					"Dabei wird zuerst immer der Wochentag in Großbuchstaben genannt, dann die Stunden und Minutenzahl.",
+					"Dabei wird zuerst immer die Woche des Monats als Zahl genannt, dann der Wochentag in Großbuchstaben, dann die Stunden und Minutenzahl.",
 					"",
 					"Declares when the lottery will be drawn. Multiple times can be specified.",
-					"The day of the week is always given first in capital letters, followed by the hours and minutes."}));
-		mapII.put("WinningCategory.1.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					1.0}));
-		mapII.put("#WinningCategory.1.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"The week of the momnth is always given first as number, than the day of the week given first in capital letters, followed by the hours and minutes."}));
+		mapII.put("WinningClass.9.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					PayoutType.LUMP_SUM.toString()}));
+		mapII.put("#WinningClass.9.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
-					"Lotto zahlt vom Jackpot immer eine gewissen Prozenzanteil an die Gewinner einer Gewinnkategorie aus.",
-					"Dabei teilen sich alle Gewinner der Gleichen Gewinnkategorie diesen Anteil.",
-					"Umso niedriger das Level der Gewinnkategorie umso weniger gewinnt man etwas.",
-					"Die Prozentanteile aller Gewinnkategorien sollten nicht 100.0% übersteigen.",
-					"Beim LottoSuper ist die Anzahl der Gewinnkategory die Anzahl zu wählenden Nummern mal die Anzahl an SuperNummern +1!",
-					"Bsp.: 5 * (1 + 1) = 10",
-					"Dabei ist die Gewinnkategorie wenn man 1 normale Zahl richtig ist. Gewinnkategorie 2, wenn man 1 normale und eine Super richtig hat.",
-					"Gewinnkategorie 3 bei 2 normalen richtig. etc.",
+					"Der PayoutType kann aus folgenden Werten bestehen: LUMP_SUM oder PERCENTAGE",
+					"LUM_SUM gibt allen Gewinnern dieser Gewinnklasse den selben Pauschalbetrag.",
+					"PERCENTAGE nimt vom Gesamtpot den Prozentwert und teil diesen unter allen Gewinnern der Gewinnklasse.",
+					"Was gilt wird in in dem Pfad 'WinningClass.Zahl.Payout' dann definiert.",
 					"",
-					"Lotto always pays out a certain percentage of the jackpot to the winners of a prize category.",
-					"All winners of the same prize category share this share.",
-					"The lower the level of the prize category, the less you win.",
-					"The percentages of all prize categories should not exceed 100.0%.",
-					"With LottoSuper, the number of winning categories is the number of numbers to be selected times the number of Super Numbers + 1!",
-					"F.e.: 5 * (1 + 1) = 10",
-					"The winning category is when you get 1 normal number right. The winning category is 2 when you get 1 normal and one super number right.",
-					"Winning category 3 with 2 normal correct answers. etc."}));
-		mapII.put("WinningCategory.2.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					1.0}));
-		mapII.put("WinningCategory.3.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					2.0}));
-		mapII.put("WinningCategory.4.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					3.0}));
-		mapII.put("WinningCategory.5.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					4.0}));
-		mapII.put("WinningCategory.6.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"The PayoutType can consist of the following values: LUMP_SUM or PERCENTAGE",
+					"LUM_SUM gives all winners in this prize category the same lump sum amount.",
+					"PERCENTAGE takes the percentage value of the total pot and divides it among all winners in the prize category.",
+					"What applies is then defined in the path 'WinningClass.Zahl.Payout'."}));
+		mapII.put("WinningClass.9.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					2.5}));
+		mapII.put("#WinningClass.9.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Lotto zahlt vom Jackpot immer eine gewissen Prozenzanteil an die Gewinner einer Gewinnklasse aus.",
+					"Dabei teilen sich alle Gewinner der Gleichen Gewinnklasse diesen Anteil.",
+					"Umso höher das Level der Gewinnklasse umso weniger gewinnt man etwas.",
+					"",
+					"Lotto always pays out a certain percentage of the jackpot to the winners of a prize class.",
+					"All winners of the same prize class share this share.",
+					"The higher the level of the prize class, the less you win."}));
+		mapII.put("WinningClass.9.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					0}));
+		mapII.put("#WinningClass.9.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Anzahl an Lottozahlen, die den vom Spieler gewählten Zahlen gleicht um den Preis in dieser Gewinnklasse zu erhalten.",
+					"=> https://www.powerball.com/powerball-prize-chart",
+					"",
+					"The number of lottery numbers that match the numbers chosen by the player to win the prize in that prize category.",
+					"=> https://www.powerball.com/powerball-prize-chart"}));
+		mapII.put("WinningClass.9.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("#WinningClass.9.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Anzahl an additionalen Lottozahlen (meist SuperZahlen genannt),",
+					"die den vom Spieler gewählten additionalen Zahlen gleicht um den Preis in dieser Gewinnklasse zu erhalten. (In Kombination mit den normalen Zahlen)",
+					"",
+					"The number of lottery numbers that match the numbers chosen",
+					"by the player to win the prize in that prize category. (In combination with the normal numbers)"}));
+		mapII.put("WinningClass.8.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				PayoutType.LUMP_SUM.toString()}));
+		mapII.put("WinningClass.8.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					5.0}));
-		mapII.put("WinningCategory.7.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.8.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("WinningClass.8.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("WinningClass.7.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.7.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					3.0}));
+		mapII.put("WinningClass.7.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					2}));
+		mapII.put("WinningClass.7.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("WinningClass.6.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.6.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					4.0}));
+		mapII.put("WinningClass.6.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					3}));
+		mapII.put("WinningClass.6.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					0}));
+		mapII.put("WinningClass.5.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.5.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					5.0}));
+		mapII.put("WinningClass.5.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					3}));
+		mapII.put("WinningClass.5.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("WinningClass.4.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.4.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					9.0}));
-		mapII.put("WinningCategory.8.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					15.0}));
-		mapII.put("WinningCategory.9.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					20.0}));
-		mapII.put("WinningCategory.10.PayoutPercentage", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					40.0}));
+		mapII.put("WinningClass.4.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					4}));
+		mapII.put("WinningClass.4.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					0}));
+		mapII.put("WinningClass.3.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.3.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					12.0}));
+		mapII.put("WinningClass.3.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					4}));
+		mapII.put("WinningClass.3.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("WinningClass.2.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.2.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					22.0}));
+		mapII.put("WinningClass.2.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					5}));
+		mapII.put("WinningClass.2.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					0}));
+		mapII.put("WinningClass.1.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				PayoutType.PERCENTAGE.toString()}));
+		mapII.put("WinningClass.1.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					45.0}));
+		mapII.put("WinningClass.1.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					5}));
+		mapII.put("WinningClass.1.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
 		mapI.put("PowerBall", mapII);
 		getLottery().put(type, mapI);
 	}

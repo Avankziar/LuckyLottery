@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 
 import me.avankziar.lly.general.assistance.Utility;
 import me.avankziar.lly.general.objects.DrawTime;
-import me.avankziar.lly.general.objects.WinningCategory;
+import me.avankziar.lly.general.objects.WinningClass;
 import me.avankziar.lly.general.objects.lottery.draw.ClassicLottoDraw;
 import me.avankziar.lly.general.objects.lottery.ticket.ClassicLottoTicket;
 
@@ -53,10 +53,10 @@ public class ClassicLotto extends Lottery
 	 */
 	private LinkedHashSet<DrawTime> drawTime = new LinkedHashSet<>();
 	/**
-	 * The winningCategorys of the lotto.<br>
-	 * The higher the level of the winningcategory is, the higher the price should be.
+	 * The winningClass of the lotto.<br>
+	 * The higher the level of the winningclass is, the higher the price should be.
 	 */
-	private Collection<WinningCategory> winningCategory = new HashSet<>();
+	private Collection<WinningClass> winningClass = new HashSet<>();
 	/**
 	 * If true, the classiclotto will not draw automaticlly on the drawtimes.
 	 */
@@ -68,7 +68,7 @@ public class ClassicLotto extends Lottery
 			double standartPot, double maximumPot, double amountToAddToThePotIfNoOneIsWinning,
 			double costPerTicket, int maximalAmountOfTicketWhichCanAPlayerBuy,
 			int firstNumberToChooseFrom, int lastNumberToChooseFrom, int amountOfChoosenNumber,
-			LinkedHashSet<DrawTime> drawTime, HashSet<WinningCategory> winningCategorys,
+			LinkedHashSet<DrawTime> drawTime, HashSet<WinningClass> winningClass,
 			String drawOnServer, boolean drawManually)
 	{
 		super(lotteryName, description, gameType);
@@ -77,11 +77,11 @@ public class ClassicLotto extends Lottery
 		setAmountToAddToThePotIfNoOneIsWinning(amountToAddToThePotIfNoOneIsWinning);
 		setCostPerTicket(costPerTicket);
 		setMaximalAmountOfTicketWhichCanAPlayerBuy(maximalAmountOfTicketWhichCanAPlayerBuy);
-		setFristNumberToChooseFrom(lastNumberToChooseFrom);
+		setFristNumberToChooseFrom(firstNumberToChooseFrom);
 		setLastNumberToChooseFrom(lastNumberToChooseFrom);
 		setAmountOfChoosedNumber(amountOfChoosenNumber);
 		setDrawTime(drawTime);
-		setWinningCategory(winningCategorys);
+		setWinningClass(winningClass);
 		setDrawOnServer(drawOnServer);
 		setDrawManually(drawManually);
 	}
@@ -134,12 +134,12 @@ public class ClassicLotto extends Lottery
 		this.drawTime = drawTime;
 	}
 
-	public Collection<WinningCategory> getWinningCategory() {
-		return winningCategory;
+	public Collection<WinningClass> getWinningClass() {
+		return winningClass;
 	}
 
-	public void setWinningCategory(Collection<WinningCategory> winningCategory) {
-		this.winningCategory = winningCategory;
+	public void setWinningClass(Collection<WinningClass> winningClass) {
+		this.winningClass = winningClass;
 	}
 
 	public int getFristNumberToChooseFrom() {

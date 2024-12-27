@@ -4,18 +4,29 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.WeekFields;
 
 public class DrawTime 
 {
+	private int weekOfMonth;
 	private DayOfWeek dayOfWeek;
 	private int hour;
 	private int minute;
 	
-	public DrawTime(DayOfWeek dayOfWeek, int hour, int minute)
+	public DrawTime(int weekOfMonth, DayOfWeek dayOfWeek, int hour, int minute)
 	{
+		setWeekOfMonth(weekOfMonth);
 		setDayOfWeek(dayOfWeek);
 		setHour(hour);
 		setMinute(minute);
+	}
+
+	public int getWeekOfMonth() {
+		return weekOfMonth;
+	}
+
+	public void setWeekOfMonth(int weekOfMonth) {
+		this.weekOfMonth = weekOfMonth;
 	}
 
 	public DayOfWeek getDayOfWeek() {
@@ -49,7 +60,9 @@ public class DrawTime
 
 	public boolean isNow(LocalDateTime dateTime)
 	{
-		return getDayOfWeek() == dateTime.getDayOfWeek()
+		int weekNumber = dateTime.get(WeekFields.ISO.weekOfWeekBasedYear());
+		return getWeekOfMonth() == weekNumber
+				&& getDayOfWeek() == dateTime.getDayOfWeek()
 				&& getHour() == dateTime.getHour()
 				&& getMinute() == dateTime.getMinute();
 	}

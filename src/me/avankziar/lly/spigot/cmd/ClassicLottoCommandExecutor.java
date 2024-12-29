@@ -169,6 +169,7 @@ public class ClassicLottoCommandExecutor  implements CommandExecutor
 			ClassicLottoDraw cld = plugin.getMysqlHandler().getData(cl.getDrawMysql(), "`was_drawn` = ?", false);
 			if(cld == null)
 			{
+				player.sendMessage("CL "+cl.getLotteryName()+" Draw == null");
 				continue;
 			}
 			ArrayList<String> l = ClassicLottoHandler.replacer(cl, cld, null, null, null, null, false,
@@ -182,16 +183,14 @@ public class ClassicLottoCommandExecutor  implements CommandExecutor
 	private void getClassicLottoInfo(Player player, final ClassicLotto cl)
 	{
 		ArrayList<String> msg = new ArrayList<>();
-		msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Cmd.Headline"));
 		ClassicLottoDraw cld = plugin.getMysqlHandler().getData(cl.getDrawMysql(), "`was_drawn` = ?", false);
 		if(cld == null)
 		{
 			return;
 		}
 		ArrayList<String> l = ClassicLottoHandler.replacer(cl, cld, null, null, null, null, false,
-				(ArrayList<String>) plugin.getYamlHandler().getLang().getStringList(".Cmd.DetailInfo"));
+				(ArrayList<String>) plugin.getYamlHandler().getLang().getStringList("ClassicLotto.Cmd.DetailInfo"));
 		msg.addAll(l);
-		msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Cmd.BottomLine"));
 		MessageHandler.sendMessage(player.getUniqueId(), msg.toArray(new String[msg.size()]));
 	}
 }

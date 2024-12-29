@@ -11,15 +11,17 @@ public class ClassicLottoPayout
 	private PayoutType payoutType;
 	private double payout;
 	private HashSet<UUID> uuids = new HashSet<>();
+	private int winnersAmount;
 	private int numberMatchToWin;
 	
 	public ClassicLottoPayout(int winningClassLevel, PayoutType payoutType, double payout, 
-			HashSet<UUID> uuids, int numberMatchToWin)
+			HashSet<UUID> uuids, int winnersAmount, int numberMatchToWin)
 	{
 		setWinningClassLevel(winningClassLevel);
 		setPayoutType(payoutType);
 		setPayout(payout);
 		setUUIDs(uuids);
+		setWinnersAmount(winnersAmount);
 		setNumberMatchToWin(numberMatchToWin);
 	}
 
@@ -61,6 +63,16 @@ public class ClassicLottoPayout
 
 	public void setUuids(HashSet<UUID> uuids) {
 		this.uuids = uuids;
+	}
+
+	public int getWinnersAmount()
+	{
+		return winnersAmount;
+	}
+
+	public void setWinnersAmount(int winnersAmount)
+	{
+		this.winnersAmount = winnersAmount;
 	}
 
 	public int getNumberMatchToWin() {

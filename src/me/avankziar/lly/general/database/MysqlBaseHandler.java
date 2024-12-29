@@ -225,7 +225,7 @@ public class MysqlBaseHandler
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
-			ArrayList<T> list = t.get(conn, t.getMysqlTableName(), orderByColumn, " Limit "+start+", "+quantity, whereColumn, whereObject);
+			ArrayList<T> list = t.get(conn, orderByColumn, " Limit "+start+", "+quantity, whereColumn, whereObject);
 			if(!list.isEmpty())
 			{
 				return list;
@@ -242,7 +242,7 @@ public class MysqlBaseHandler
 	{
 		try (Connection conn = mysqlBaseSetup.getConnection();)
 		{
-			ArrayList<T> list = t.get(conn, t.getMysqlTableName(), orderByColumn, "", whereColumn, whereObject);
+			ArrayList<T> list = t.get(conn, orderByColumn, " ", whereColumn, whereObject);
 			if(!list.isEmpty())
 			{
 				return list;

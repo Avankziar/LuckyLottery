@@ -40,13 +40,14 @@ public class MessageHandler
 	
 	public static void sendMessage(String...array)
 	{
-		if(LLY.getPlugin().getProxyOnlinePlayers() != null)
+		if(LLY.getPlugin().getMtV() != null)
 		{
-			LLY.getPlugin().getProxyOnlinePlayers().getProxyOnlinePlayers().keySet().stream()
-			.forEach(x -> sendMessage(x, array));
+			LLY.getPlugin().getMtV().sendMessage(array);
+			return;
 		} else
 		{
 			Bukkit.getOnlinePlayers().stream().forEach(x -> sendMessage(x.getUniqueId(), array));
+			return;
 		}
 	}
 }

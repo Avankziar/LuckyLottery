@@ -153,6 +153,21 @@ public class YamlManager
 			if(keyMap.get(key).languageValues.get(languageType)[0] instanceof String)
 			{
 				yml.set(key, convertMiniMessageToBungee(((String) keyMap.get(key).languageValues.get(languageType)[0]).replace("\r\n", "")));
+			} else if(keyMap.get(key).languageValues.get(languageType)[0] instanceof Boolean)
+			{
+				yml.set(key, (boolean) keyMap.get(key).languageValues.get(languageType)[0]);
+			} else if(keyMap.get(key).languageValues.get(languageType)[0] instanceof Integer)
+			{
+				yml.set(key, (int) keyMap.get(key).languageValues.get(languageType)[0]);
+			} else if(keyMap.get(key).languageValues.get(languageType)[0] instanceof Long)
+			{
+				yml.set(key, (long) keyMap.get(key).languageValues.get(languageType)[0]);
+			} else if(keyMap.get(key).languageValues.get(languageType)[0] instanceof Double)
+			{
+				yml.set(key, Double.valueOf((double) keyMap.get(key).languageValues.get(languageType)[0]));
+			} else if(keyMap.get(key).languageValues.get(languageType)[0] instanceof Float)
+			{
+				yml.set(key, (float) keyMap.get(key).languageValues.get(languageType)[0]);
 			} else
 			{
 				yml.set(key, keyMap.get(key).languageValues.get(languageType)[0]);
@@ -218,7 +233,7 @@ public class YamlManager
 							{
 							case "</color>":
 							case "</black>":
-							case "</dark_blue>":
+							case "</#d2b773>":
 							case "</dark_green>":
 							case "</dark_aqua>":
 							case "</dark_red>":
@@ -249,7 +264,7 @@ public class YamlManager
 							case "<black>":
 								r = "&0";
 								break;
-							case "<dark_blue>":
+							case "<#d2b773>":
 								r = "&1";
 								break;
 							case "<dark_green>":
@@ -265,10 +280,10 @@ public class YamlManager
 								r = "&5";
 								break;
 							case "<gold>":
-								r = "&6";
+								r = "<gold>";
 								break;
 							case "<gray>":
-								r = "&7";
+								r = "<gray>";
 								break;
 							case "<dark_gray>":
 								r = "&8";
@@ -308,7 +323,7 @@ public class YamlManager
 								break;
 							case "<u>":
 							case "<underlined>":
-								r = "&n";
+								r = "<underlined>";
 								break;
 							case "<i>":
 							case "<em>":
@@ -583,9 +598,9 @@ public class YamlManager
 				"<yellow>Befehl /classiclotto",
 				"<yellow>Command /classiclotto");
 		argumentInput("classiclotto_drawnow", "drawnow", basePermission,
-				"/classiclotto drawnow <lotteryname> [numbers]", "/classiclotto drawnow ", false,
-				"<red>/classiclotto drawnow <Lotteriename> [Nummer] <white>| Zieht die Lotterie jetzt. Optional können die geltenden Zahlen mitangegeben werden.",
-				"<red>/classiclotto drawnow <lotteryname> [numbers] <white>| Draw the lottery now. Optionally, the applicable numbers can be specified.",
+				"/classiclotto drawnow <lotteryname> [numbers|reopen]", "/classiclotto drawnow ", false,
+				"<red>/classiclotto drawnow <Lotteriename> [Nummer|reopen] <white>| Zieht die Lotterie jetzt. Optional können die geltenden Zahlen mitangegeben werden und oder Wiedereröffnung der Lotterie nach der Ziehung für maneuell gezogene Lotterien.",
+				"<red>/classiclotto drawnow <lotteryname> [numbers|reopen] <white>| Draw the lottery now. Optionally, the applicable numbers can be specified and or reopening the lottery after the draw for manually drawn lotteries.",
 				"<aqua>Befehlsrecht für <white>/classiclotto drawnow",
 				"<aqua>Commandright for <white>/classiclotto drawnow",
 				"<yellow>Befehl /classiclotto drawnow",
@@ -615,13 +630,37 @@ public class YamlManager
 				"<yellow>Befehl /classiclotto setpot",
 				"<yellow>Command /classiclotto setpot");
 		argumentInput("classiclotto_giveticket", "giveticket", basePermission,
-				"/classiclotto giveticket <lotteryname> [numbers]", "/classiclotto giveticket ", false,
-				"<red>/classiclotto giveticket <Lotteriename> [numbers] <white>| Gibt allen online Spieler ein Ticket in der Lotterie. Optional mit vordefinierten Nummern.",
-				"<red>/classiclotto giveticket <lotteryname> [numbers] <white>| Gives all online players a ticket in the lottery. Optionally with predefined numbers.",
+				"/classiclotto giveticket <lotteryname> [amountOfTicket]", "/classiclotto giveticket ", false,
+				"<red>/classiclotto giveticket <Lotteriename> [amountOfTicket] <white>| Gibt allen online Spieler ein Ticket in der Lotterie. Optional mit Anzahl an zu vergebenden Tickets.",
+				"<red>/classiclotto giveticket <lotteryname> [amountOfTicket] <white>| Gives all online players a ticket in the lottery. Optional with number of tickets to be allocated.",
 				"<aqua>Befehlsrecht für <white>/classiclotto giveticket",
 				"<aqua>Commandright for <white>/classiclotto giveticket",
 				"<yellow>Befehl /classiclotto giveticket",
 				"<yellow>Command /classiclotto giveticket");
+		argumentInput("classiclotto_open", "open", basePermission,
+				"/classiclotto open", "/classiclotto open ", false,
+				"<red>/classiclotto open <white>| Öffnet eine Lotterie. Sofern die Lotterie manuell gezogen wird, muss dies dann auch über einen Befehl erfolgen.",
+				"<red>/classiclotto open <white>| Opens a lottery. If the lottery is drawn manually, this must also be done using a command.",
+				"<aqua>Befehlsrecht für <white>/classiclotto open",
+				"<aqua>Commandright for <white>/classiclotto open",
+				"<yellow>Befehl /classiclotto open",
+				"<yellow>Command /classiclotto open");
+		argumentInput("classiclotto_ticketlist", "ticketlist", basePermission,
+				"/classiclotto ticketlist [page]", "/classiclotto ticketlist ", false,
+				"<red>/classiclotto ticketlist [Seite] <white>| Listet die letzten 10 Tickets der angegebenen Lotteriea auf.",
+				"<red>/classiclotto ticketlist [page] <white>| Lists the last 10 tickets of the specified lottery.",
+				"<aqua>Befehlsrecht für <white>/classiclotto ticketlist",
+				"<aqua>Commandright for <white>/classiclotto ticketlist",
+				"<yellow>Befehl /classiclotto ticketlist",
+				"<yellow>Command /classiclotto ticketlist");
+		argumentInput("classiclotto_repeat", "repeat", basePermission,
+				"/classiclotto repeat <lotteryname> <id>", "/classiclotto repeat ", false,
+				"<red>/classiclotto repeat <lotteryname> <id> <white>| Setzt das Ticket auf wiederholung der Zahlen. Sollte die Ziehung schon abgelaufen sein, wird ein neues Ticket erstellt.",
+				"<red>/classiclotto repeat <lotteryname> <id> <white>| Sets the ticket to repeat the numbers. If the draw has already expired, a new ticket is created.",
+				"<aqua>Befehlsrecht für <white>/classiclotto repeat",
+				"<aqua>Commandright for <white>/classiclotto repeat",
+				"<yellow>Befehl /classiclotto repeat",
+				"<yellow>Command /classiclotto repeat");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -749,16 +788,20 @@ public class YamlManager
 						"<yellow>Click me!"}));
 		languageKeys.put("Headline", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>=====&7[&6BungeeTeleportManager&7]<yellow>=====",
-						"<yellow>=====&7[&6BungeeTeleportManager&7]<yellow>====="}));
+						"<yellow>=====<gray>[<gold>LuckyLottery<gray>]<yellow>=====",
+						"<yellow>=====<gray>[<gold>LuckyLottery<gray>]<yellow>====="}));
 		languageKeys.put("Next", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>&nnächste Seite <yellow>==>",
-						"<yellow>&nnext page <yellow>==>"}));
+						"<yellow><underlined>nächste Seite <yellow>==>",
+						"<yellow><underlined>next page <yellow>==>"}));
+		languageKeys.put("NextPast", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<white>| ",
+						"<white>| "}));
 		languageKeys.put("Past", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow><== &nvorherige Seite",
-						"<yellow><== &nprevious page"}));
+						"<yellow><== <underlined>vorherige Seite",
+						"<yellow><== <underlined>previous page"}));
 		languageKeys.put("IsTrue", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<green>✔",
@@ -804,16 +847,16 @@ public class YamlManager
 						"<red>No drawing is expected for the specified lottery! Error with MySQL!"}));
 		languageKeys.put(path+".Draw.NoTicketAreBought", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
-						"<gold>JackPot bis zu <white>%actualpot%<gold>! <aqua>Hauptgewinn <white>%highestwinningcatgeory%<aqua>!",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
+						"<gold>JackPot bis zu <white>%actualpot%<gold>! <aqua>Hauptgewinn <white>%highestwinningclass%<aqua>!",
 						"<yellow>Gezogene Nummer: <reset>%drawnnumber%",
 						"<red>Keine Lose wurden verkauft!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\\\\\{...",
-						"<gold>JackPot up to <white>%actualpot%<gold>! <aqua>Main prize <white>%highestwinningcatgeory%<aqua>!",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\\\\\{...",
+						"<gold>JackPot up to <white>%actualpot%<gold>! <aqua>Main prize <white>%highestwinningclass%<aqua>!",
 						"<yellow>Drawn number: <reset>%drawnnumber%",
 						"<red>No tickets were sold!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
 		languageKeys.put(path+".Draw.RepeatTicket.Category", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%lottoryname%-Ticket",
@@ -832,60 +875,56 @@ public class YamlManager
 						"<gray>, "}));
 		languageKeys.put(path+".Draw.JackpotWasBreached", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
 						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
 						"<gold>Gratulation an <white>%winners% <gold>zum knacken des Jackpots!",
-						"<gold>Gewonnen wurden <red><bold>%payout% <reset><gold>verteilt auf alle Gewinner.",
+						"<gold>Gewonnen wurden <red><bold>%highestwinningclass% <reset><gold>verteilt auf alle Hauptgewinner.",
 						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
 						"<gray>%winningclasswinneramount%",
 						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
 						"<aqua><bold>%nextpot% zu gewinnen!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\\\\\{...",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\\\\\{...",
 						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber%",
 						"<gold>Congratulations to <white>%winners% <gold>for hitting the jackpot!",
-						"<gold>The prize money won was <red><bold>%payout% <reset><gold>distributed among all winners.",
+						"<gold>The prize money won was <red><bold>%highestwinningclass% <reset><gold>distributed among all mainwinners.",
 						"<gray>Following are the number of winners in all prize categories:",
 						"<gray>%winningclasswinneramount%",
 						"<yellow>The next lottery pot contains a total of up to ...",
 						"<aqua><bold>%nextpot% to win!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
 		languageKeys.put(path+".Draw.JackpotIsUntouched", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
 						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
 						"<gray><bold>Leider gab es keinen Hauptgewinner!",
 						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
 						"<gray>%winningclasswinneramount%",
 						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
 						"<aqua><bold>%nextpot% zu gewinnen!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\{...",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\{...",
 						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber%",
 						"<gray><bold>Unfortunately there was no main winner!",
 						"<gray>Following are the number of winners in all prize categories:",
 						"<gray>%winningclasswinneramount%",
 						"<yellow>The next lottery pot contains a total of up to ...",
 						"<aqua><bold>%nextpot% to win!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
 		languageKeys.put(path+".Draw.Won", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"        <gold><bold>! GEWONNEN !",
 						"<yellow>Du hattest %matchchoosennumberamount% richtige!",
 						"<gray>Deine Nummern:<reset> %matchchoosennumber%",
 						"<yellow>Dein Preis: %payout%",
-						"        <gold><bold>! GEWONNEN !",
 						"        <gold><bold>! WON !",
 						"<yellow>You had %matchchoosennumberamount% correct!",
 						"<gray>Your numbers:<reset> %matchchoosennumber%",
-						"<yellow>Your price: %payout%",
-						"        <gold><bold>! WON !"}));
+						"<yellow>Your price: %payout%"}));
 		languageKeys.put(path+".Draw.NotWon", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>Schade! Leider hast du nichts gewonnen.",
-						"<yellow>Beim nächsten Mal!",
-						"<yellow>Too bad! Unfortunately you didn't win anything.",
-						"<yellow>Next time!"}));
+						"<yellow>Schade! Nicht gewonnen. %matchchoosennumber%",
+						"<yellow>Too bad! Not won. %matchchoosennumber%"}));
 		languageKeys.put(path+".Draw.Win.Category", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%lottoryname%-Gewinn",
@@ -896,46 +935,46 @@ public class YamlManager
 						"Won in the winning category %level%."}));
 		languageKeys.put(path+".Cmd.Headline", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>Klassisches Lotto Info <dark_blue>===\\{...",
-						"<dark_blue>...}/=== <gold>Klassisches Lotto Info <dark_blue>===\\{..."}));
+						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
+						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{..."}));
 		languageKeys.put(path+".Cmd.BottomLine", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
 		languageKeys.put(path+".Cmd.GeneralInfo", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>Klassisches Lotto Info <dark_blue>===\\{...",
 						"<aqua><bold>%lotteryname%:",
-						"<yellow>Aktueller Pot: <white>%actualpot% | %costperticket% <yellow>pro Ticket.",
 						"<gray>%description%",
+						"<red>Aktueller Pot: <white>%actualpot% | %costperticket% <red>pro Ticket.",
 						"<click:run_command:'%classiclottocmd%%lotteryname%'><gray>Klicke {hier} für mehr Infos.</click>",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=== <gold>Klassisches Lotto Info <dark_blue>===\\{...",
 						"<aqua><bold>%lotteryname%:",
-						"<yellow>Current pot: <white>%actualpot% | %costperticket% <yellow>per ticket.",
 						"<gray>%description%",
-						"<click:run_command:'%classiclottocmd%%lotteryname%'><gray>Click {here} for more info.</click>",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+						"<red>Current pot: <white>%actualpot% | %costperticket% <red>per ticket.",
+						"<click:run_command:'%classiclottocmd%%lotteryname%'><gray>Click {here} for more info.</click>"}));
 		languageKeys.put(path+".Cmd.DetailInfo", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>Klassisches Lotto Info <dark_blue>===\\{...",
+						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
 						"<aqua><bold>%lotteryname%:",
 						"<gray>%description%",
-						"<yellow>Aktueller Pot: <white>%actualpot% | %costperticket% <yellow>pro Ticket.",
-						"<yellow>Gewinnchance 1:%winningchance%",
-						"<yellow>Mindest Pot: <white>%standartpot% | <yellow>Maximaler Pot: <white>maximumpot%",
-						"<yellow>Ehöhung des Pot, falls es kein Hauptgewinner gibt: <white>%amounttoaddpot%",
+						"<red>Aktueller Pot: <white>%actualpot% | %costperticket% <red>pro Ticket.",
+						"<red>Gewinnchance 1:%winningchance%",
+						"<red>Mindest Pot: <white>%standartpot% | <red>Maximaler Pot: <white>%maximumpot%",
+						"<red>Ehöhung des Pot, falls es kein Hauptgewinner gibt: <white>%amounttoaddpot%",
 						"<click:run_command:'%classiclottobet%%lotteryname%'><gold>Klicke {hier} zum spielen.</click>",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=== <gold>Klassisches Lotto Info <dark_blue>===\\{...",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
 						"<aqua><bold>%lotteryname%:",
 						"<gray>%description%",
-						"<yellow>Current pot: <white>%actualpot% | %costperticket% <yellow>per ticket.",
-						"<yellow>Chance of winning 1:%winningchance%",
-						"<yellow>Minimum pot: <white>%standardpot% | <yellow>Maximum Pot: <white>maximumpot%",
-						"<yellow>Increase the pot if there is no main winner: <white>%amounttoaddpot%",
+						"<red>Current pot: <white>%actualpot% | %costperticket% <red>per ticket.",
+						"<red>Chance of winning 1:%winningchance%",
+						"<red>Minimum pot: <white>%standardpot% | <red>Maximum Pot: <white>%maximumpot%",
+						"<red>Increase the pot if there is no main winner: <white>%amounttoaddpot%",
 						"<click:run_command:'%classiclottobet%%lotteryname%'><gold>Click {here} to play.</click>",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+		languageKeys.put(path+".Arg.Play.LotteryNotOpen", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Die Lotterie erlaubt zurzeit keinen Ticketkauf!",
+						"<red>The lottery currently does not allow ticket purchases!"}));
 		languageKeys.put(path+".Arg.Play.TooManyTickets", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<red>Du hast schon %amount% Lose für die Lotterie %lotteryname%. Pro Ziehung sind nur maximal %maximum% Lose erlaubt.",
@@ -944,14 +983,18 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<aqua>Deine bisher gewählten Nummern: <white>%choosennumber%",
 						"<aqua>Your previously selected numbers: <white>%choosennumber%"}));
+		languageKeys.put(path+".Arg.Play.RandomChoose", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Klicke <red>{hier} <yellow>um deine Nummber <white>zufällig <yellow>auszuwählen!",
+						"<yellow>Click <red>{here} <yellow>to select your Nummber <white>randomly <yellow>!"}));
 		languageKeys.put(path+".Arg.Play.ShouldRepeat", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>Soll dein Ticket sich nach einer Ziehung wiederholen: <reset>%shouldrepeat% <gray>(Klicke aus Icon zum ändern)",
-						"<yellow>Should your ticket repeat after a draw: <reset>%shouldrepeat% <gray>(Click icon to change)"}));
+						"<yellow>Soll dein Ticket sich nach einer Ziehung wiederholen: <reset>%shouldrepeat% <gray>(Klicke aufs Icon)",
+						"<yellow>Should your ticket repeat after a draw: <reset>%shouldrepeat% <gray>(Click on icon)"}));
 		languageKeys.put(path+".Arg.Play.ChooseNumber", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>Bitte wähle deine gewünschten %% Nummern aus:",
-						"<yellow>Please select your desired %% numbers:"}));
+						"<yellow>Bitte wähle deine gewünschten %amountofchoosennumber% Nummern aus:",
+						"<yellow>Please select your desired %amountofchoosennumber% numbers:"}));
 		languageKeys.put(path+".Arg.Play.Seperator", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						" ",
@@ -970,8 +1013,12 @@ public class YamlManager
 						"<yellow>You have bought a ticket! Good luck! Chosen numbers: <white>%choosennumber%"}));
 		languageKeys.put(path+".Arg.Play.MayYouConfirm", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>Gewählte Zahlen: <white>%choosennumber%<newline><yellow>Möchtest du bestätigen? <red>Klicke {hier}!",
-						"<yellow>Numbers chosen: <white>%choosennumber%<newline><yellow>Would you like to confirm? <red>Click {here}!"}));
+						"<yellow>Gewählte Zahlen: <white>%choosennumber%",
+						"<yellow>Die Kosten belaufen sich auf <white>%costperticket%",
+						"<yellow>Möchtest du bestätigen? <red>Klicke {hier}!",
+						"<yellow>Numbers chosen: <white>%choosennumber%",
+						"<yellow>The costs amount to <white>%costperticket%",
+						"<yellow>Would you like to confirm? <red>Click {here}!"}));
 		languageKeys.put(path+".Arg.AddPot.Added", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow>Der Pot des klassischen Lottos %lotteryname% wurde von <white>%oldpot% <yellow>auf <white>%actualpot% <yellow>um <white>%added% <yellow>erhöht!",
@@ -986,8 +1033,72 @@ public class YamlManager
 						"<gold>Congratulations! <yellow>You have been given a ticket in the lottery %lotteryname% by %player% with the following numbers: <white>%choosennumber%"}));
 		languageKeys.put(path+".Arg.GiveTicket.Given", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>Du hast <white>%amount% Spielern ein Ticket in der Lotterie %lotteryname% geschenkt!",
-						"<yellow>You have given <white>%amount% players a ticket in the %lotteryname% lottery!"}));
+						"<yellow>Du hast <white>%amount% <yellow>Spielern <white>%value% <yellow>Ticket(s) in der Lotterie %lotteryname% geschenkt!",
+						"<yellow>You have given <white>%amount% <yellow>players <white>%value% <yellow>ticket(s) in the %lotteryname% lottery!"}));
+		languageKeys.put(path+".DrawNow.OnCooldown", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<white>Achtung! <red>Die Ziehung der Lotterie %lotteryname% besitzt eine Abklingzeit!",
+						"<white>Attention! <red>The drawing of the lottery %lotteryname% has a cooldown period!"}));
+		languageKeys.put(path+".Arg.Open.AlreayOpen", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Die Lotterie %lotteryname% ist schon eröffnet.",
+						"<red>The lottery %lotteryname% is already open."}));
+		languageKeys.put(path+".Arg.Open.Open", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Die Lotterie %lotteryname% ist nun eröffnet mit einem aktuellen Jackpot von bis zu %actualpot%<yellow>.",
+						"<yellow>The lottery %lotteryname% is now open with a current jackpot of up to %actualpot%<yellow>."}));
+		languageKeys.put(path+".Arg.TicketList.NoTickets", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Du hast in dieser Lotterie keine Tickets!",
+						"<red>You have no tickets in this lottery!"}));
+		languageKeys.put(path+".Arg.TicketList.Headline", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>===== <yellow>Lotterie <gold>%lotteryname% <gray>=====",
+						"<gray>===== <yellow>Lottery <gold>%lotteryname% <gray>====="}));
+		languageKeys.put(path+".Arg.TicketList.Listed", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>ID: <white>%id% | <red>Status: <white>%status% %repeat%",
+						"<red>ID: <white>%id% | <red>Status: <white>%status% %repeat%"}));
+		languageKeys.put(path+".Arg.TicketList.StatusWon", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<green>Gewonnen! >> <white>%numbers% <gray>GW<white>%winningclass% : %prize%",
+						"<green>Won! >> <white>%numbers% <gray>GW<white>%winningclass% : %prize%"}));
+		languageKeys.put(path+".Arg.TicketList.StatusDontWon", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>Verloren >> <white>%numbers%",
+						"<gray>Lost >> <white>%numbers%"}));
+		languageKeys.put(path+".Arg.TicketList.StatusPending", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Ziehung folgt >> <white>%numbers%",
+						"<yellow>Drawing follows >> <white>%numbers%"}));
+		languageKeys.put(path+".Arg.TicketList.Repeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<click:suggest_command:'%classiclottorepeat%%lotteryname% %id%'><gray>{Wiederholen?}</click>",
+						"<click:suggest_command:'%classiclottorepeat%%lotteryname% %id%'><gray>{Repeat?}</click>"}));
+		languageKeys.put(path+".Arg.TicketList.DontRepeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<click:suggest_command:'%classiclottorepeat%%lotteryname% %id%'><gray>{Nicht wiederholen?}</click>",
+						"<click:suggest_command:'%classiclottorepeat%%lotteryname% %id%'><gray>{Not repeat?}</click>"}));
+		languageKeys.put(path+".Arg.Repeat.DontExist", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red> Das Ticket %id% der Lotterie %lotteryname% existiert nicht!",
+						"<red> The ticket %id% of the lottery %lotteryname% does not exist!"}));
+		languageKeys.put(path+".Arg.Repeat.DontYours", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red> Das Ticket %id% der Lotterie %lotteryname% gehört dir nicht!",
+						"<red> The ticket %id% of the lottery %lotteryname% does not belong to you!"}));
+		languageKeys.put(path+".Arg.Repeat.TicketCreated", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow> Die Ziehung der Lotterie, welche das Ticket angehört, wurde schon gezogen! <green>Ticket für nächste Ziehung neu erstellt!",
+						"<yellow> The lottery to which the ticket belongs has already been drawn! <green>New ticket created for next draw!"}));
+		languageKeys.put(path+".Arg.Repeat.Repeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Das Ticket %id% der Lotterie %lotteryname% wurde wiederholt!",
+						"<yellow>The ticket %id% of the lottery %lotteryname% was repeated!"}));
+		languageKeys.put(path+".Arg.Repeat.DontRepeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Das Ticket %id% der Lotterie %lotteryname% wird <red>nicht <yellow>wiederholt!",
+						"<yellow>The ticket %id% of the lottery %lotteryname% will <red>not <yellow>be repeated!"}));
 	}
 	
 	private void initLottoSuper()
@@ -995,16 +1106,16 @@ public class YamlManager
 		String path = "LottoSuper";
 		languageKeys.put(path+".Draw.NoTicketAreBought", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
-						"<gold>JackPot bis zu <white>%actualpot%<gold>! <aqua>Hauptgewinn <white>%highestwinningcatgeory%<aqua>!",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
+						"<gold>JackPot bis zu <white>%actualpot%<gold>! <aqua>Hauptgewinn <white>%highestwinningclass%<aqua>!",
 						"<yellow>Gezogene Nummer: <reset>%drawnnumber%",
 						"<red>Keine Lose wurden verkauft!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\\\\\{...",
-						"<gold>JackPot up to <white>%actualpot%<gold>! <aqua>Main prize <white>%highestwinningcatgeory%<aqua>!",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\\\\\{...",
+						"<gold>JackPot up to <white>%actualpot%<gold>! <aqua>Main prize <white>%highestwinningclass%<aqua>!",
 						"<yellow>Drawn number: <reset>%drawnnumber%",
 						"<red>No tickets were sold!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
 		languageKeys.put(path+".Draw.RepeatTicket.Category", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%lottoryname%-Ticket",
@@ -1023,7 +1134,7 @@ public class YamlManager
 						"<gray>, "}));
 		languageKeys.put(path+".Draw.JackpotWasBreached", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
 						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
 						"<gold>Gratulation an <white>%winners% <gold>zum knacken des Jackpots!",
 						"<gold>Gewonnen wurden <red><bold>%payout% <reset><gold>verteilt auf alle Gewinner.",
@@ -1031,8 +1142,8 @@ public class YamlManager
 						"<gray>%winningclasswinneramount%",
 						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
 						"<aqua><bold>%nextpot% zu gewinnen!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\\\\\{...",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\\\\\{...",
 						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber%",
 						"<gold>Congratulations to <white>%winners% <gold>for hitting the jackpot!",
 						"<gold>The prize money won was <red><bold>%payout% <reset><gold>distributed among all winners.",
@@ -1040,25 +1151,25 @@ public class YamlManager
 						"<gray>%winningclasswinneramount%",
 						"<yellow>The next lottery pot contains a total of up to ...",
 						"<aqua><bold>%nextpot% to win!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
 		languageKeys.put(path+".Draw.JackpotIsUntouched", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Ziehung <dark_blue>===\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
 						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber%",
 						"<gray><bold>Leider gab es keinen Hauptgewinner!",
 						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
 						"<gray>%winningclasswinneramount%",
 						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
 						"<aqua><bold>%nextpot% zu gewinnen!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\{...",
-						"<dark_blue>...}/=== <gold>%lotteryname% <white>Draw <dark_blue>===\\\\{...",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\{...",
 						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber%",
 						"<gray><bold>Unfortunately there was no main winner!",
 						"<gray>Following are the number of winners in all prize categories:",
 						"<gray>%winningclasswinneramount%",
 						"<yellow>The next lottery pot contains a total of up to ...",
 						"<aqua><bold>%nextpot% to win!",
-						"<dark_blue>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
 		languageKeys.put(path+".Draw.Won", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"        <gold><bold>! GEWONNEN !",
@@ -1136,33 +1247,33 @@ public class YamlManager
 		mapII.put("Description", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"<yellow>Das klassische Lotto, aber ohne Superzahl/Super 6/Spiel 77/Glücksspirale"
 					+ " ist eine Ziehung von 6 aus 49. Der Ablauf ist ziemlich einfach."
-					+ "Du wählst dir 6 sich nicht wiederholende Zahlen aus 1 bis 49."
-					+ "Die Gewinnchance ist 1:13.983.816.",
+					+ " Du wählst dir 6 sich nicht wiederholende Zahlen aus 1 bis 49."
+					+ " Die Gewinnchance ist 1:13.983.816.",
 					"<yellow>The classic lottery, but without Super Number/Super 6/Game 77/Glücksspirale,"
 					+ " is a drawing of 6 out of 49. The process is quite simple."
-					+ "You choose 6 non-repeating numbers from 1 to 49."
-					+ "The chance of winning is 1:13,983,816."}));
+					+ " You choose 6 non-repeating numbers from 1 to 49."
+					+ " The chance of winning is 1:13,983,816."}));
 		mapII.put("#Description", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Beschreibung sollte das Spiel in ein paar Sätzen erklären.",
 					"",
 					"The description should explain the game in a few sentences."}));
 		mapII.put("StandartPot", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					1_000_000.0}));
+					1000_000.0}));
 		mapII.put("#StandartPot", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Mindestmenge an Geld im Jackpot.",
 					"",
 					"The minimum amount of money in the jackpot."}));
 		mapII.put("MaximumPot", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					10_000_000.0}));
+					10000000.0}));
 		mapII.put("#MaximumPot", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Menge an Geld wie hoch der Jackpot maximal werden kann.",
 					"",
 					"The amount of money the jackpot can reach at most"}));
 		mapII.put("AmountToAddToThePotIfNoOneIsWinning", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					500_000.0}));
+					500000.0D}));
 		mapII.put("#AmountToAddToThePotIfNoOneIsWinning", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Menge an Geld, die dem JackPot hinzugefügt wird, wenn keiner die höchste Gewinnklasse gewinnt.",
@@ -1330,21 +1441,21 @@ public class YamlManager
 					"",
 					"The description should explain the game in a few sentences."}));
 		mapII.put("StandartPot", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					40_000_000.0}));
+				Double.valueOf(40_000_000.0)}));
 		mapII.put("#StandartPot", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Mindestmenge an Geld im Jackpot.",
 					"",
 					"The minimum amount of money in the jackpot."}));
 		mapII.put("MaximumPot", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					Double.MAX_VALUE}));
+				Double.valueOf(Double.MAX_VALUE)}));
 		mapII.put("#MaximumPot", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Menge an Geld wie hoch der Jackpot maximal werden kann.",
 					"",
 					"The amount of money the jackpot can reach at most."}));
 		mapII.put("AmountToAddToThePotIfNoOneIsWinning", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					10_000_000.0}));
+				Double.valueOf(10_000_000.0)}));
 		mapII.put("#AmountToAddToThePotIfNoOneIsWinning", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Menge an Geld, die dem JackPot hinzugefügt wird, wenn keiner die höchste Gewinnklasse gewinnt.",

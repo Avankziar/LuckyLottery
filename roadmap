@@ -14,3 +14,5 @@
 - Tickets mit Nieten: Für jedes gekaufte Ticket, werden n-Anzahl an Nieten hinzugefügt.
 					  Auslosung wie bei den ohne Nieten.
 - Custom Lotterie: Server gibt den Preis sowie die Gewinnklassen an. Die Gewinne sollten durch Konsolenbefehle durchgeführt werden.
+
+- Benachrichtigung wieviel im Lotteriepot

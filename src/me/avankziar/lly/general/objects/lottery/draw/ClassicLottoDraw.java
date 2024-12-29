@@ -11,10 +11,11 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 import me.avankziar.lly.general.database.MysqlBaseHandler;
+import me.avankziar.lly.general.database.MysqlBaseSetup;
 import me.avankziar.lly.general.database.MysqlLottery;
 import me.avankziar.lly.general.database.QueryType;
+import me.avankziar.lly.general.database.ServerType;
 import me.avankziar.lly.general.objects.lottery.ClassicLotto;
-import me.avankziar.lly.spigot.database.MysqlSetup;
 import me.avankziar.lly.spigot.handler.lottery.LotteryHandler;
 
 public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<ClassicLottoDraw>
@@ -82,8 +83,13 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 	{
 		this.choosenNumbers = choosenNumbers;
 	}
+	
+	public String getMysqlTableName()
+	{
+		return "lly"+getLotteryName()+"Draw";
+	}
 
-	public boolean setupMysql(MysqlSetup mysqlSetup)
+	public boolean setupMysql(MysqlBaseSetup mysqlSetup, ServerType serverType)
 	{
 		Optional<ClassicLotto> ocl = LotteryHandler.getClassicLotto(getLotteryName());
 		if(ocl.isEmpty())
@@ -92,18 +98,17 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 		}
 		ClassicLotto cl = ocl.get();
 		StringBuilder sql = new StringBuilder();
-		sql.append("CREATE TABLE IF NOT EXISTS `%%tablename%%"
+		sql.append("CREATE TABLE IF NOT EXISTS `"+getMysqlTableName()
 				+ "` (id bigint AUTO_INCREMENT PRIMARY KEY,"
-				+ " lottery_name text NOT NULL,"
 				+ " was_drawn boolean,"
 				+ " draw_time bigint,"
-				+ " actual_pot double".replace("%%tablename%%", getMysqlTableName()));
-		for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
+				+ " actual_pot double");
+		for(int i = 1; i <= cl.getAmountOfChoosedNumber(); i++)
         {
-			sql.append(" ,`ball_"+i+"`");
+			sql.append(", `ball_"+i+"` int");
         }
 		sql.append(");");
-		return mysqlSetup.baseSetup(getMysqlTableName());
+		return mysqlSetup.baseSetup(sql.toString());
 	}
 
 	@Override
@@ -120,25 +125,24 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 			String tablename = getMysqlTableName();
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO `" + tablename
-					+ "`(`lottery_name`, `was_drawn`, `draw_time`, `actual_pot`");
-			for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
+					+ "`(`was_drawn`, `draw_time`, `actual_pot`");
+			for(int i = 1; i <= cl.getAmountOfChoosedNumber(); i++)
 	        {
-				sql.append(" ,`ball_"+i+"`");
+				sql.append(", `ball_"+i+"`");
 	        }
-			sql.append(") VALUES(?, ?, ?, ?");
-			for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
+			sql.append(") VALUES(?, ?, ?");
+			for(int i = 1; i <= cl.getAmountOfChoosedNumber(); i++)
 	        {
 				sql.append(", ?");
 	        }
 			sql.append(")");
 			PreparedStatement ps = conn.prepareStatement(sql.toString());
-			ps.setString(1, getLotteryName());
-	        ps.setBoolean(2, wasDrawn());
-	        ps.setLong(3, getDrawTime());
-	        ps.setDouble(4, getActualPot());
-	        int c = 5;
+	        ps.setBoolean(1, wasDrawn());
+	        ps.setLong(2, getDrawTime());
+	        ps.setDouble(3, getActualPot());
+	        int c = 4;
 	        Iterator<Integer> iter = getChoosenNumbers().iterator();
-	        for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
+	        for(int i = 1; i <= cl.getAmountOfChoosedNumber(); i++)
 	        {
 	        	ps.setInt(c, iter.hasNext() ? iter.next() : 0);
 	        	c++;
@@ -167,30 +171,29 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 			String tablename = getMysqlTableName();
 			StringBuilder sql = new StringBuilder();
 			sql.append("UPDATE `" + tablename
-				+ "` SET `lottery_name`, `was_drawn` = ?, `draw_time` = ?, `actual_pot` = ?");
-			for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
+				+ "` SET `was_drawn` = ?, `draw_time` = ?, `actual_pot` = ?");
+			for(int i = 1; i <= cl.getAmountOfChoosedNumber(); i++)
 	        {
 				sql.append(", `ball_"+i+"` = ?");
 	        }
 			sql.append(" WHERE "+whereColumn);
 			PreparedStatement ps = conn.prepareStatement(sql.toString());
-			ps.setString(1, getLotteryName());
-	        ps.setBoolean(2, wasDrawn());
-	        ps.setLong(3, getDrawTime());
-	        ps.setDouble(4, getActualPot());
-	        int c = 5;
+			ps.setBoolean(1, wasDrawn());
+		    ps.setLong(2, getDrawTime());
+		    ps.setDouble(3, getActualPot());
+	        int c = 4;
 	        Iterator<Integer> iter = getChoosenNumbers().iterator();
-	        for(int i = 0; i < cl.getAmountOfChoosedNumber(); i++)
+	        for(int i = 1; i <= cl.getAmountOfChoosedNumber(); i++)
 	        {	        	
 	        	ps.setInt(c, iter.hasNext() ? iter.next() : 0);
 	        	c++;
 	        }
-			int i = c+1;
+			int i = c;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
 				i++;
-			}			
+			}
 			int u = ps.executeUpdate();
 			MysqlBaseHandler.addRows(QueryType.UPDATE, u);
 			return true;
@@ -230,12 +233,12 @@ public class ClassicLottoDraw extends LotteryDraw implements MysqlLottery<Classi
 			{
 			
 				LinkedHashSet<Integer> set = new LinkedHashSet<>();
-				for(int ii = 0; ii < cl.getAmountOfChoosedNumber(); ii++)
+				for(int ii = 1; ii <= cl.getAmountOfChoosedNumber(); ii++)
 		        {
 					set.add(rs.getInt("ball_"+ii));
 		        }
 				al.add(new ClassicLottoDraw(rs.getLong("id"),
-						rs.getString("lottery_name"),
+						getLotteryName(),
 						rs.getBoolean("was_drawn"),
 						rs.getLong("draw_time"),
 						rs.getDouble("actual_pot"),

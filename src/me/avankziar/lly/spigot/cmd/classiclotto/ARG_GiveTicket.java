@@ -31,10 +31,11 @@ public class ARG_GiveTicket extends ArgumentModule
 	{
 		super(ac);
 		//this.ac = ac;
+		this.plugin = LLY.getPlugin();
 	}
 
 	/**
-	 * => /classiclotto giveticket lotteryname [numbers]
+	 * => /classiclotto giveticket lotteryname [amount of tickets]
 	 */
 	@Override
 	public void run(CommandSender sender, String[] args) throws IOException 
@@ -53,18 +54,18 @@ public class ARG_GiveTicket extends ArgumentModule
 			return;
 		}
 		ClassicLotto cl = ocl.get();
-		LinkedHashSet<Integer> choosenNumber = new LinkedHashSet<>();
-		for(int i = 2; i < args.length; i++)
+		int amountOfTickets = 1;
+		if(args.length >= 3)
 		{
-			if(MatchApi.isInteger(args[i]))
+			if(MatchApi.isInteger(args[2]))
 			{
-				if(choosenNumber.size() < cl.getAmountOfChoosedNumber())
+				amountOfTickets = Integer.valueOf(args[2]);
+				if(amountOfTickets <= 0)
 				{
-					choosenNumber.add(Integer.valueOf(args[i]));
+					amountOfTickets = 1;
 				}
 			}
 		}
-		ClassicLottoHandler.sortDrawnNumber(choosenNumber);
 		HashSet<UUID> onlineplayer = new HashSet<>();
 		if(plugin.getProxyOnlinePlayers() != null)
 		{
@@ -85,23 +86,25 @@ public class ARG_GiveTicket extends ArgumentModule
 		}
 		MessageHandler.sendMessage(player, plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.GiveTicket.Given")
 				.replace("%lotteryname%", cl.getLotteryName())
+				.replace("%value%", String.valueOf(amountOfTickets))
 				.replace("%amount%", String.valueOf(onlineplayer.size())));
 		for(UUID uuid : onlineplayer)
 		{
-			if(choosenNumber.size() < cl.getAmountOfChoosedNumber())
+			for(int i = 0; i < amountOfTickets; i++)
 			{
-				choosenNumber.addAll(ClassicLottoHandler.drawLotteryNumber(cl.getFristNumberToChooseFrom(),
-						cl.getLastNumberToChooseFrom(), cl.getAmountOfChoosedNumber()-choosenNumber.size()));
+				LinkedHashSet<Integer> choosenNumber = new LinkedHashSet<>();
+				choosenNumber = ClassicLottoHandler.sortDrawnNumber(ClassicLottoHandler.drawLotteryNumber(cl.getFirstNumberToChooseFrom(),
+						cl.getLastNumberToChooseFrom(), cl.getAmountOfChoosedNumber()));
+				ClassicLottoTicket clt = new ClassicLottoTicket(0, cld.getId(), cl.getLotteryName(), uuid, false, 0, 0.0, choosenNumber);
+				plugin.getMysqlHandler().create(clt);
+				ArrayList<String> cn = new ArrayList<>();
+				choosenNumber.stream().forEach(x -> cn.add(String.valueOf(x)));
+				MessageHandler.sendMessage(uuid, 
+						plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.GiveTicket.Give")
+						.replace("%player%", player.getName())
+						.replace("%lotteryname%", cl.getLotteryName())
+						.replace("%choosennumber%", String.join(" ", cn)));
 			}
-			ClassicLottoTicket clt = new ClassicLottoTicket(0, cld.getId(), cl.getLotteryName(), uuid, false, choosenNumber);
-			plugin.getMysqlHandler().create(clt);
-			ArrayList<String> cn = new ArrayList<>();
-			choosenNumber.stream().forEach(x -> cn.add(String.valueOf(x)));
-			MessageHandler.sendMessage(uuid, 
-					plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.GiveTicket.Give")
-					.replace("%player%", player.getName())
-					.replace("%lotteryname%", cl.getLotteryName())
-					.replace("%choosennumber%", String.join(" ", cn)));
 		}
 	}
 }

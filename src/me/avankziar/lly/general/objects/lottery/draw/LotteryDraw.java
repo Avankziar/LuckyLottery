@@ -1,8 +1,6 @@
 package me.avankziar.lly.general.objects.lottery.draw;
 
-import me.avankziar.lly.general.objects.lottery.MysqlTableable;
-
-public class LotteryDraw implements MysqlTableable
+public class LotteryDraw
 {
 	private long id;
 	private String lotteryname;
@@ -31,10 +29,5 @@ public class LotteryDraw implements MysqlTableable
 	public void setLotteryName(String lotteryname)
 	{
 		this.lotteryname = lotteryname;
-	}
-
-	public String getMysqlTableName()
-	{
-		return "lly"+getLotteryName()+"Draw";
 	}
 }

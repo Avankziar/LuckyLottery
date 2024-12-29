@@ -25,6 +25,7 @@ public class ARG_SetPot extends ArgumentModule
 	{
 		super(ac);
 		//this.ac = ac;
+		this.plugin = LLY.getPlugin();
 	}
 
 	/**

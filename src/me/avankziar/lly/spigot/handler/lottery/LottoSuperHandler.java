@@ -23,6 +23,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import me.avankziar.lly.general.assistance.TimeHandler;
 import me.avankziar.lly.general.assistance.Utility;
 import me.avankziar.lly.general.cmdtree.CommandSuggest;
+import me.avankziar.lly.general.database.ServerType;
 import me.avankziar.lly.general.objects.DrawTime;
 import me.avankziar.lly.general.objects.WinningClass.PayoutType;
 import me.avankziar.lly.general.objects.WinningClassSuper;
@@ -45,8 +46,8 @@ public class LottoSuperHandler
 		{
 			try
 			{
-				if(y.contains("LotteryName") || y.contains("Description") || y.contains("DrawTime")
-						|| y.contains("WinningClass.1.Payout"))
+				if(!y.contains("LotteryName") || !y.contains("Description")
+						|| !y.contains("WinningClass.1.Payout"))
 				{
 					LLY.log.warning(
 							y.getFile().getName()+".yaml is missing essential values! "
@@ -67,28 +68,31 @@ public class LottoSuperHandler
 				int additionalLastNumberToChooseFrom = y.getInt("AdditionalLastNumberToChooseFrom", 10);
 				int additionalAmountOfChoosedNumber = y.getInt("AdditionalAmountOfChoosedNumber", 2);
 				LinkedHashSet<DrawTime> drawTime = new LinkedHashSet<>();
-				for(String s : y.getStringList("DrawTime"))
+				if(y.get("DrawTime") != null)
 				{
-					String[] a = s.split("-");
-					if(a.length != 4)
+					for(String s : y.getStringList("DrawTime"))
 					{
-						LLY.log.warning(lottoname+" has by DrawTime a Problem! "
-										+ "DrawTime "+s+" missed 3 of `-` Character! "
-										+ "DrawTime was not registered!");
-						continue;
-					}
-					try
-					{
-						int weekOfMonth = Integer.valueOf(a[0]);
-						DayOfWeek dayOfWeek = DayOfWeek.valueOf(a[0]);
-						int hour = Integer.valueOf(a[1]);
-						int min = Integer.valueOf(a[2]);
-						drawTime.add(new DrawTime(weekOfMonth, dayOfWeek, hour, min));
-					} catch(Exception e)
-					{
-						LLY.log.warning(lottoname+" has by DrawTime a Problem! "
-								+ "DrawTime "+s+" is incorrect! DrawTime will be ignored!");
-						continue;
+						String[] a = s.split("-");
+						if(a.length != 4)
+						{
+							LLY.log.warning(lottoname+" has by DrawTime a Problem! "
+											+ "DrawTime "+s+" missed 3 of `-` Character! "
+											+ "DrawTime was not registered!");
+							continue;
+						}
+						try
+						{
+							int weekOfMonth = Integer.valueOf(a[0]);
+							DayOfWeek dayOfWeek = DayOfWeek.valueOf(a[0]);
+							int hour = Integer.valueOf(a[1]);
+							int min = Integer.valueOf(a[2]);
+							drawTime.add(new DrawTime(weekOfMonth, dayOfWeek, hour, min));
+						} catch(Exception e)
+						{
+							LLY.log.warning(lottoname+" has by DrawTime a Problem! "
+									+ "DrawTime "+s+" is incorrect! DrawTime will be ignored!");
+							continue;
+						}
 					}
 				}
 				String drawOnServer = y.getString("DrawOnServer", "hub");
@@ -129,9 +133,9 @@ public class LottoSuperHandler
 				LLY.log.info("LottoSuper "+lottoname+" loaded!");
 				lottosuper.add(ls);
 				LottoSuperTicket clt = new LottoSuperTicket(lottoname);
-				clt.setupMysql(LLY.getPlugin().getMysqlSetup());
+				clt.setupMysql(LLY.getPlugin().getMysqlSetup(), ServerType.ALL);
 				LottoSuperDraw cld = new LottoSuperDraw(lottoname);
-				cld.setupMysql(LLY.getPlugin().getMysqlSetup());
+				cld.setupMysql(LLY.getPlugin().getMysqlSetup(), ServerType.ALL);
 				checkIfDrawIsRegistered(ls);
 			} catch(Exception e)
 			{
@@ -194,7 +198,7 @@ public class LottoSuperHandler
 					{
 						if(dr.isNow(ldt))
 						{
-							drawLotto(ls, new LinkedHashSet<Integer>(), new LinkedHashSet<Integer>());
+							drawLotto(ls, new LinkedHashSet<Integer>(), new LinkedHashSet<Integer>(), true);
 						}
 					}
 				}
@@ -203,10 +207,11 @@ public class LottoSuperHandler
 	}
 	
 	public static void drawLotto(final LottoSuper ls, LinkedHashSet<Integer> manuallyDrawnNumber,
-			LinkedHashSet<Integer> manuallyAddtionalDrawnNumber)
+			LinkedHashSet<Integer> manuallyAddtionalDrawnNumber, boolean reopen)
 	{
 		LLY plugin = LLY.getPlugin();
 		LottoSuperDraw lsd = plugin.getMysqlHandler().getData(ls.getDrawMysql(), "`was_drawn` = ?", false);
+		long drawTime = System.currentTimeMillis();
 		if(lsd == null)
 		{
 			LLY.log.warning("Attention! The MysqlObject of LottoSuperDraw is missing! Draw of "
@@ -219,19 +224,44 @@ public class LottoSuperHandler
 		{
 			drawnNumber = drawLotteryNumber(ls.getFirstNumberToChooseFrom(),
 					ls.getLastNumberToChooseFrom(), ls.getAmountOfChoosedNumber());
+		} else
+		{
+			if(drawnNumber.size() < ls.getAmountOfChoosedNumber())
+			{
+				while(drawnNumber.size() < ls.getAmountOfChoosedNumber())
+				{
+					Random r = new Random();
+					int i = r.nextInt(ls.getLastNumberToChooseFrom()) + ls.getFirstNumberToChooseFrom();
+					drawnNumber.add(i);
+				}
+			}
+			//Sorting DrawnNumber
+			drawnNumber = sortDrawnNumber(drawnNumber);
 		}
 		LinkedHashSet<Integer> drawnAdditionalNumber = manuallyAddtionalDrawnNumber;
 		if(manuallyAddtionalDrawnNumber.size() <= 0)
 		{
 			drawnAdditionalNumber = drawLotteryNumber(ls.getAdditionalFirstNumberToChooseFrom(),
 					ls.getAdditionalLastNumberToChooseFrom(), ls.getAdditionalAmountOfChoosenNumber());
+		} else
+		{
+			if(drawnAdditionalNumber.size() < ls.getAdditionalAmountOfChoosenNumber())
+			{
+				while(drawnAdditionalNumber.size() < ls.getAdditionalAmountOfChoosenNumber())
+				{
+					Random r = new Random();
+					int i = r.nextInt(ls.getAdditionalLastNumberToChooseFrom()) + ls.getAdditionalFirstNumberToChooseFrom();
+					drawnAdditionalNumber.add(i);
+				}
+			}
+			//Sorting DrawnNumber
+			drawnAdditionalNumber = sortDrawnNumber(drawnAdditionalNumber);
 		}
-		//Sorting DrawnNumber
-		drawnNumber = sortDrawnNumber(drawnNumber);
-		drawnAdditionalNumber = sortDrawnNumber(drawnAdditionalNumber);
 		//Update Object
 		lsd.setChoosenNumbers(drawnNumber);
 		lsd.setAdditionalChoosenNumbers(drawnAdditionalNumber);
+		lsd.setDrawTime(drawTime);
+		lsd.setWasDrawn(true);
 		//Lotto Ticket call
 		ArrayList<LottoSuperTicket> lstA = plugin.getMysqlHandler().getFullList(ls.getTicketMysql(),
 				"`id` ASC", "`draw_id` = ?", lsd.getId());
@@ -248,6 +278,23 @@ public class LottoSuperHandler
 					(ArrayList<String>) plugin.getYamlHandler().getLang()
 					.getStringList("LottoSuper.Draw.NoTicketAreBought"));
 			MessageHandler.sendMessage(uuids, msgl.toArray(new String[msgl.size()]));
+			double nextpot = lsd.getActualPot();
+			if(nextpot < ls.getStandartPot())
+			{
+				nextpot = ls.getStandartPot();
+			}
+			nextpot += ls.getAmountToAddToThePotIfNoOneIsWinning();
+			if(nextpot > ls.getMaximumPot())
+			{
+				nextpot = ls.getMaximumPot();
+			}
+			plugin.getMysqlHandler().updateData(lsd, "`id` = ?", lsd.getId());
+			if(reopen || !ls.isDrawManually())
+			{
+				LottoSuperDraw lsdNext = new LottoSuperDraw(0, ls.getLotteryName(), false, 0, nextpot,
+						new LinkedHashSet<>(), new LinkedHashSet<>());
+				plugin.getMysqlHandler().create(lsdNext);
+			}
 			return;
 		}
 		//Get Next LottoSuperDraw ID
@@ -269,10 +316,6 @@ public class LottoSuperHandler
 			lspA.add(new LottoSuperPayout(wcs.getWinningClassLevel(),
 					wcs.getPayoutType(), payout,
 					new HashSet<UUID>(), wcs.getNumberMatchToWin(), wcs.getAddtionalNumberMatchToWin()));
-			if(wcs.getWinningClassLevel() > highestWC)
-			{
-				highestWC = wcs.getWinningClassLevel();
-			}
 		}
 		//Lotto Ticket Evaluation
 		String repeatCategory = plugin.getYamlHandler().getLang().getString("LottoSuper.Draw.RepeatTicket.Category")
@@ -377,7 +420,6 @@ public class LottoSuperHandler
 			}	
 			winnercheck.addAll(lsp.getUUIDs());
 		}
-		plugin.getMysqlHandler().updateData(lsd, "`id` = ?", lsd.getId());
 		//Determine next pot
 		if(hlsp.getUUIDs().size() > 0)
 		{
@@ -395,9 +437,12 @@ public class LottoSuperHandler
 			}
 		}
 		//Create next lotto draw.
-		LottoSuperDraw lsdNext = new LottoSuperDraw(0, ls.getLotteryName(), false, 0, nextpot,
-				new LinkedHashSet<>(), new LinkedHashSet<>());
-		plugin.getMysqlHandler().create(lsdNext);
+		if(reopen || !ls.isDrawManually())
+		{
+			LottoSuperDraw lsdNext = new LottoSuperDraw(0, ls.getLotteryName(), false, 0, nextpot,
+					new LinkedHashSet<>(), new LinkedHashSet<>());
+			plugin.getMysqlHandler().create(lsdNext);
+		}
 	}
 	
 	public static LinkedHashSet<Integer> drawLotteryNumber(int firstNumber, int lastNumber, int amountOfNumber)
@@ -414,7 +459,7 @@ public class LottoSuperHandler
 	
 	public static LinkedHashSet<Integer> sortDrawnNumber(LinkedHashSet<Integer> drawnNumber)
 	{
-		List<Integer> sort = List.of();
+		ArrayList<Integer> sort = new ArrayList<>();
 		sort.addAll(drawnNumber);
 		Collections.sort(sort);
 		LinkedHashSet<Integer> set = new LinkedHashSet<>();
@@ -430,7 +475,7 @@ public class LottoSuperHandler
 			ArrayList<String> list)
 	{
 		ArrayList<String> l = new ArrayList<>();
-		for(String s : l)
+		for(String s : list)
 		{
 			if(payout != null)
 			{
@@ -443,6 +488,10 @@ public class LottoSuperHandler
 			if(s.contains("%lottosupercmd%"))
 			{
 				s = s.replace("lottosupercmd%", CommandSuggest.getCmdString(CommandSuggest.Type.LOTTOSUPER));
+			}
+			if(s.contains("%lottosuperbet%"))
+			{
+				s = s.replace("%lottosuperbet%", CommandSuggest.getCmdString(CommandSuggest.Type.LOTTOSUPER_PLAY));
 			}
 			if(ls != null)
 			{

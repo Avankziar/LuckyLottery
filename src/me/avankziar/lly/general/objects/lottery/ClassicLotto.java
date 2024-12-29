@@ -38,7 +38,7 @@ public class ClassicLotto extends Lottery
 	/**
 	 * The frist number to choose from which makes the numberpool.
 	 */
-	private int fristNumberToChooseFrom;
+	private int firstNumberToChooseFrom;
 	/**
 	 * The last number to choose from which makes the numberpool.
 	 */
@@ -77,7 +77,7 @@ public class ClassicLotto extends Lottery
 		setAmountToAddToThePotIfNoOneIsWinning(amountToAddToThePotIfNoOneIsWinning);
 		setCostPerTicket(costPerTicket);
 		setMaximalAmountOfTicketWhichCanAPlayerBuy(maximalAmountOfTicketWhichCanAPlayerBuy);
-		setFristNumberToChooseFrom(firstNumberToChooseFrom);
+		setFirstNumberToChooseFrom(firstNumberToChooseFrom);
 		setLastNumberToChooseFrom(lastNumberToChooseFrom);
 		setAmountOfChoosedNumber(amountOfChoosenNumber);
 		setDrawTime(drawTime);
@@ -142,12 +142,12 @@ public class ClassicLotto extends Lottery
 		this.winningClass = winningClass;
 	}
 
-	public int getFristNumberToChooseFrom() {
-		return fristNumberToChooseFrom;
+	public int getFirstNumberToChooseFrom() {
+		return firstNumberToChooseFrom;
 	}
 
-	public void setFristNumberToChooseFrom(int fristNumberToChooseFrom) {
-		this.fristNumberToChooseFrom = fristNumberToChooseFrom;
+	public void setFirstNumberToChooseFrom(int firstNumberToChooseFrom) {
+		this.firstNumberToChooseFrom = firstNumberToChooseFrom;
 	}
 
 	public int getLastNumberToChooseFrom() {

@@ -25,6 +25,7 @@ public class ARG_AddPot extends ArgumentModule
 	{
 		super(ac);
 		//this.ac = ac;
+		this.plugin = LLY.getPlugin();
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class ARG_AddPot extends ArgumentModule
 		}
 		final double oldpot = cld.getActualPot();
 		cld.setActualPot(cld.getActualPot() + d);
-		final double actualpot = cld.getActualPot();
+		final double actualpot = oldpot+d;
 		plugin.getMysqlHandler().updateData(cld, "`id` = ?", cld.getId());
 		String msg = plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.AddPot.Added")
 				.replace("%oldpot%", EconomyHandler.format(oldpot))

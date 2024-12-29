@@ -72,13 +72,11 @@ public class PlayerData implements MysqlHandable<PlayerData>
 	public boolean setupMysql(MysqlBaseSetup mysqlSetup, ServerType serverType)
 	{
 		StringBuilder sql = new StringBuilder();
-		sql.append("CREATE TABLE IF NOT EXISTS `%%tablename%%"
+		sql.append("CREATE TABLE IF NOT EXISTS `"+getMysqlTableName()
 				+ "` (id bigint AUTO_INCREMENT PRIMARY KEY,"
 				+ " player_uuid char(36) NOT NULL UNIQUE,"
-				+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL"
-				.replace("%%tablename%%", getMysqlTableName()));
-		sql.append(");");
-		return mysqlSetup.baseSetup(getMysqlTableName());
+				+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL);");
+		return mysqlSetup.baseSetup(sql.toString());
 	}
 
 	@Override

@@ -47,8 +47,11 @@ import me.avankziar.lly.spigot.cmd.TabCompletion;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_AddPot;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_DrawNow;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_GiveTicket;
+import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Open;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Play;
+import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Repeat;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_SetPot;
+import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Ticketlist;
 import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
 import me.avankziar.lly.spigot.database.MysqlHandler;
 import me.avankziar.lly.spigot.database.MysqlSetup;
@@ -93,8 +96,15 @@ public class LLY extends JavaPlugin
 		
 		setupIFHAdministration();
 		
-		yamlHandler = new YamlHandler(YamlManager.Type.SPIGOT, pluginname, log, plugin.getDataFolder().toPath(),
-        		(plugin.getAdministration() == null ? null : plugin.getAdministration().getLanguage()));
+		yamlHandler = 
+		new YamlHandler(
+				YamlManager.Type.SPIGOT,
+				pluginname,
+				log,
+				plugin.getDataFolder().toPath(),
+        		(plugin.getAdministration() == null ?
+        				null :
+        					plugin.getAdministration().getLanguage()));
         setYamlManager(yamlHandler.getYamlManager());
 		
 		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
@@ -214,21 +224,30 @@ public class LLY extends JavaPlugin
 			ArgumentConstructor drawnow = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_DRAWNOW, path+"_drawnow",
 					0, 1, 999, true, false, classicLottoI);
 			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_PLAY, path+"_play",
-					0, 1, 999, false, false, classicLottoI);
+					0, 1, 2, false, false, classicLottoI);
 			ArgumentConstructor addpot = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_ADDPOT, path+"_addpot",
 					0, 2, 3, false, false, classicLottoI);
 			ArgumentConstructor setpot = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_SETPOT, path+"_setpot",
 					0, 2, 3, false, false, classicLottoI);
 			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_GIVETICKET, path+"_giveticket",
-					0, 1, 99, false, false, classicLottoI);
+					0, 1, 2, false, false, classicLottoI);
+			ArgumentConstructor open = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_OPEN, path+"_open",
+					0, 1, 1, true, false, classicLottoI);
+			ArgumentConstructor ticketlist = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_TICKETLIST, path+"_ticketlist",
+					0, 1, 2, false, false, classicLottoI);
+			ArgumentConstructor repeat = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_REPEAT, path+"_repeat",
+					0, 2, 2, false, false, classicLottoI);
 			CommandConstructor cl = new CommandConstructor(CommandSuggest.Type.CLASSICLOTTO, path, false, false,
-					drawnow, play, addpot, setpot, giveticket);
+					drawnow, play, addpot, setpot, giveticket, open, ticketlist, repeat);
 			registerCommand(cl, new ClassicLottoCommandExecutor(plugin, cl), tab);
 			new ARG_DrawNow(drawnow);
 			new ARG_Play(play);
 			new ARG_AddPot(addpot);
 			new ARG_SetPot(setpot);
 			new ARG_GiveTicket(giveticket);
+			new ARG_Open(open);
+			new ARG_Ticketlist(ticketlist);
+			new ARG_Repeat(repeat);
 		}
 		
 		//ArgumentConstructor add = new ArgumentConstructor(CommandSuggest.Type.FRIEND_ADD, "friend_add", 0, 1, 1, false, playerMapI);

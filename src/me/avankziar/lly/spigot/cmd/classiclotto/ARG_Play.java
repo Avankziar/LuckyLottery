@@ -2,9 +2,10 @@ package me.avankziar.lly.spigot.cmd.classiclotto;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,12 +27,12 @@ import me.avankziar.lly.spigot.handler.lottery.LotteryHandler;
 public class ARG_Play extends ArgumentModule
 {
 	private LLY plugin;
-	private ArgumentConstructor ac;
+	private LinkedHashMap<UUID, ClassicLottoTicket> playingNumber = new LinkedHashMap<>();
 	
 	public ARG_Play(ArgumentConstructor ac)
 	{
 		super(ac);
-		this.ac = ac;
+		this.plugin = LLY.getPlugin();
 	}
 
 	/**
@@ -54,10 +55,9 @@ public class ARG_Play extends ArgumentModule
 			return;
 		}
 		ClassicLotto cl = ocl.get();
-		LinkedHashSet<Integer> choosenNumber = new LinkedHashSet<Integer>();
+		ClassicLottoDraw cld = plugin.getMysqlHandler().getData(cl.getDrawMysql(), "`was_drawn` = ?", false);
 		if(cl.getMaximalAmountOfTicketWhichCanAPlayerBuy() > 0)
 		{
-			ClassicLottoDraw cld = plugin.getMysqlHandler().getData(cl.getDrawMysql(), "`was_drawn` = ?", false);
 			int count = plugin.getMysqlHandler().getCount(new ClassicLottoTicket(cl.getLotteryName()),
 					"`player_uuid` = ? AND `draw_id` = ?", player.getUniqueId().toString(), cld.getId());
 			if(count >=  cl.getMaximalAmountOfTicketWhichCanAPlayerBuy())
@@ -68,43 +68,64 @@ public class ARG_Play extends ArgumentModule
 						.replace("%maximum%", String.valueOf(cl.getMaximalAmountOfTicketWhichCanAPlayerBuy())));
 			}
 		}
-		int i = 2;
-		boolean repeat = false;
 		boolean confirm = false;
-		while(i >= args.length)
+		if(args.length <= 2)
 		{
-			if(i >= args.length)
-			{
-				break;
-			}
-			if(MatchApi.isInteger(args[i]) && choosenNumber.size() < cl.getAmountOfChoosedNumber())
-			{
-				choosenNumber.add(Integer.valueOf(args[i]));
-			}
-			if(MatchApi.isBoolean(args[i]))
-			{
-				repeat = Boolean.getBoolean(args[i]);
-			} else if("-r".equalsIgnoreCase(args[i]) || "repeat".equalsIgnoreCase(args[i])
-					|| "-w".equalsIgnoreCase(args[i]) || "wiederholen".equalsIgnoreCase(args[i]))
-			{
-				repeat = true;
-			}
-			if("confirm".equalsIgnoreCase(args[i]) || "bestätigen".equalsIgnoreCase(args[i]))
-			{
-				confirm = true;
-			}
-			i++;
+			sendMessageToChoose(player, cl, cld, getSet(player.getUniqueId(), cl, cld));
+			return;
 		}
-		choosenNumber = ClassicLottoHandler.sortDrawnNumber(choosenNumber);
-		if(choosenNumber.size() >= cl.getAmountOfChoosedNumber())
+		String value = args[2];
+		if(cld == null)
+		{
+			MessageHandler.sendMessage(player.getUniqueId(), plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.LotteryNotOpen"));
+			return;
+		}
+		if(MatchApi.isInteger(value))
+		{
+			int n = Integer.valueOf(value);
+			if(n >= cl.getFirstNumberToChooseFrom() && n <= cl.getLastNumberToChooseFrom())
+			{
+				addRemoveNumber(player.getUniqueId(), cl, cld, Integer.valueOf(value));
+			}
+		}
+		if(MatchApi.isBoolean(value))
+		{
+			setRepeat(player.getUniqueId(), cl, cld, Boolean.valueOf(value));
+		} else if("-r".equalsIgnoreCase(value) || "repeat".equalsIgnoreCase(value)
+				|| "-w".equalsIgnoreCase(value) || "wiederholen".equalsIgnoreCase(value))
+		{
+			setRepeat(player.getUniqueId(), cl, cld, true);
+		}
+		if("random".equalsIgnoreCase(value))
+		{
+			LinkedHashSet<Integer> set = ClassicLottoHandler.sortDrawnNumber(
+					ClassicLottoHandler.drawLotteryNumber(
+					cl.getFirstNumberToChooseFrom(), cl.getLastNumberToChooseFrom(), cl.getAmountOfChoosedNumber()));
+			set.stream().forEach(x -> addRemoveNumber(player.getUniqueId(), cl, cld, x));
+		}
+		if("confirm".equalsIgnoreCase(value) || "bestätigen".equalsIgnoreCase(value))
+		{
+			confirm = true;
+		}
+		ClassicLottoTicket clt = getSet(player.getUniqueId(), cl, cld);
+		if(clt.getChoosenNumbers().size() >= cl.getAmountOfChoosedNumber())
 		{
 			//Choosen all requiert number
 			if(!confirm)
 			{
-				MessageHandler.sendMessage(player, 
-						getCmdForConfirm(cl, choosenNumber, repeat,
-								replace(choosenNumber, 
-										plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.MayYouConfirm"))));
+				ArrayList<String> l = new ArrayList<>();
+				for(String s : plugin.getYamlHandler().getLang().getStringList("ClassicLotto.Arg.Play.MayYouConfirm"))
+				{
+					if(s.contains("{") || s.contains("}"))
+					{
+						l.add(getCmdForConfirm(cl, clt.getChoosenNumbers(), clt.shouldRepeate(), s));
+					} else
+					{
+						l.add(replace(clt.getChoosenNumbers(), s.replace("%costperticket%", EconomyHandler.format(cl.getCostPerTicket()))));
+					}
+					
+				}
+				MessageHandler.sendMessage(player, l.toArray(new String[l.size()]));
 				return;
 			}
 			if(!EconomyHandler.hasBalance(player.getUniqueId(), cl.getCostPerTicket()))
@@ -112,94 +133,156 @@ public class ARG_Play extends ArgumentModule
 				MessageHandler.sendMessage(player, plugin.getYamlHandler().getLang().getString("NotEnoughMoney"));
 				return;
 			}
-			String cat = plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.Category");
+			String cat = plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.Category").replace("%lotteryname%", cl.getLotteryName());
 			String comment = plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.Comment");
 			EconomyHandler.withdraw(player.getUniqueId(), cl.getCostPerTicket(), cat, comment);
 			MessageHandler.sendMessage(player, 
-					replace(choosenNumber, plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.TicketBought")));
+					replace(clt.getChoosenNumbers(), plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.TicketBought")));
+			plugin.getMysqlHandler().create(clt);
+			playingNumber.remove(player.getUniqueId());
 			return;
 		}
-		ArrayList<String> msg = new ArrayList<String>();
-		if(choosenNumber.size() > 0)
+		sendMessageToChoose(player, cl, cld, clt);
+	}
+	
+	private ClassicLottoTicket getSet(UUID uuid, ClassicLotto cl, ClassicLottoDraw cld)
+	{
+		return playingNumber.containsKey(uuid) 
+				? playingNumber.get(uuid) 
+				: new ClassicLottoTicket(0, cld.getId(), cl.getLotteryName(), uuid, false, 0, 0.0, new LinkedHashSet<Integer>());
+	}
+	
+	private void addRemoveNumber(UUID uuid, ClassicLotto cl, ClassicLottoDraw cld, int i)
+	{
+		ClassicLottoTicket clt = getSet(uuid, cl, cld);
+		if(clt.getChoosenNumbers().contains(i))
 		{
-			msg.add(replace(ClassicLottoHandler.sortDrawnNumber(choosenNumber), 
+			clt.getChoosenNumbers().remove(i);
+		} else
+		{
+			if(clt.getChoosenNumbers().size() < cl.getAmountOfChoosedNumber())
+			{
+				clt.getChoosenNumbers().add(i);
+			}
+		}
+		ClassicLottoHandler.sortDrawnNumber(clt.getChoosenNumbers());
+		playingNumber.put(uuid, clt);
+	}
+	
+	private void setRepeat(UUID uuid, ClassicLotto cl, ClassicLottoDraw cld, boolean b)
+	{
+		ClassicLottoTicket clt = getSet(uuid, cl, cld);
+		clt.setShouldRepeate(b);
+		playingNumber.put(uuid, clt);
+	}
+	
+	public static String replace(LinkedHashSet<Integer> set, String r)
+	{
+		LinkedHashSet<Integer> sets = ClassicLottoHandler.sortDrawnNumber(set);
+		ArrayList<String> l = new ArrayList<>();
+		sets.stream().forEach(x -> l.add(String.valueOf(x)));
+		String s = r;
+		if(set.size() > 0)
+		{
+			s = s.replace("%choosennumber%", String.join(", ", l));
+		} else
+		{
+			s = s.replace("%choosennumber%", "/");
+		}
+		return s;
+	}
+	
+	private void sendMessageToChoose(Player player, ClassicLotto cl, ClassicLottoDraw cld, ClassicLottoTicket clt)
+	{
+		ArrayList<String> msg = new ArrayList<String>();
+		if(clt.getChoosenNumbers().size() > 0)
+		{
+			msg.add(replace(ClassicLottoHandler.sortDrawnNumber(clt.getChoosenNumbers()), 
 					plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.AlreadyChoosenNumber")));
+		} else
+		{
+			msg.add(getCmdForRandom(cl, "random", plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.RandomChoose")));
 		}
 		msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.ShouldRepeat")
 				.replace("%shouldrepeat%", 
-						getCmdForRepeat(cl, choosenNumber, repeat,
-								(repeat ? plugin.getYamlHandler().getLang().getString("IsTrue")
+						getCmdForRepeat(cl, !clt.shouldRepeate(),
+								(clt.shouldRepeate() 
+										? plugin.getYamlHandler().getLang().getString("IsTrue")
 										: plugin.getYamlHandler().getLang().getString("IsFalse")))));
-		msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.ChooseNumber"));
-		int start = cl.getFristNumberToChooseFrom();
+		msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.ChooseNumber")
+				.replace("%amountofchoosennumber%", String.valueOf(cl.getAmountOfChoosedNumber())));
+		int start = cl.getFirstNumberToChooseFrom();
 		int end = cl.getLastNumberToChooseFrom();
 		int k = 1;
 		StringBuilder sb = new StringBuilder();
 		for(int j = start; j <= end; j++)
 		{
-			if(choosenNumber.contains(j))
+			if(clt.getChoosenNumbers().contains(j))
 			{
 				sb.append(plugin.getYamlHandler().getLang().getString("WasChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, choosenNumber, repeat, j)));
+						.replace("%number%", getCmdForContainingNumbers(cl, getSpacing(j, cl.getLastNumberToChooseFrom()))));
 			} else
 			{
 				sb.append(plugin.getYamlHandler().getLang().getString("WasntNeutralChoosen")
-						.replace("%number%", getCmdForNotContainingNumbers(cl, choosenNumber, repeat, j)));
+						.replace("%number%", getCmdForContainingNumbers(cl, getSpacing(j, cl.getLastNumberToChooseFrom()))));
 			}
 			if(j < end)
 			{
-				sb.append(plugin.getYamlHandler().getLang().getString("ClassicLotto..Arg.Play.Seperator"));
+				sb.append(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.Play.Seperator"));
 			}
 			if(k == 10 || j == end)
 			{
 				msg.add(sb.toString());
 				sb = new StringBuilder();
 				k = 1;
+				continue;
 			}
 			k++;
 		}
 		MessageHandler.sendMessage(player, msg.toArray(new String[msg.size()]));
 	}
 	
-	private String replace(LinkedHashSet<Integer> set, String r)
+	public static String getSpacing(int i, int j)
 	{
-		List<String> l = List.of();
-		set.stream().forEach(x -> l.add(String.valueOf(x)));
-		String s = r.replace("%choosennumber%", String.join(", ", l));
-		return s;
+		int l1 = String.valueOf(i).length();
+		int l2 = String.valueOf(j).length();
+		return l1 < l2 ? "0".repeat(l2-l1)+String.valueOf(i) : String.valueOf(i);
+			
 	}
 	
-	private String getCmdForNotContainingNumbers(ClassicLotto cl, LinkedHashSet<Integer> set, boolean repeat, int j)
+	private String getCmdForContainingNumbers(ClassicLotto cl, String j)
 	{
-		return getCmdForRepeat(cl, set, repeat, String.valueOf(j));
-	}
-	
-	private String getCmdForContainingNumbers(ClassicLotto cl, LinkedHashSet<Integer> set, boolean repeat, int j)
-	{
-		LinkedHashSet<Integer> s = set;
-		s.remove(j);
-		return getCmdForRepeat(cl, s, repeat, String.valueOf(j));
-	}
-	
-	private String getCmdForRepeat(ClassicLotto cl, LinkedHashSet<Integer> set,  boolean repeat, String s)
-	{
-		List<String> l = List.of();
-		set.stream().forEach(x -> l.add(String.valueOf(x)));
 		return "<click:run_command:'"+
 				CommandSuggest.get(Type.CLASSICLOTTO_PLAY).getCommandString()+
-				cl.getLotteryName()+ac.getName()+" "+String.join(" ", l)+
-				String.valueOf(repeat)+
-				"'>"+s+"</click>";
+				cl.getLotteryName()+" "+
+				j+
+				"'>"+j+"</click>";
 	}
 	
-	private String getCmdForConfirm(ClassicLotto cl, LinkedHashSet<Integer> set,  boolean repeat, String s)
+	private String getCmdForRandom(ClassicLotto cl, String i, String j)
 	{
-		List<String> l = List.of();
-		set.stream().forEach(x -> l.add(String.valueOf(x)));
 		return "<click:run_command:'"+
 				CommandSuggest.get(Type.CLASSICLOTTO_PLAY).getCommandString()+
-				cl.getLotteryName()+ac.getName()+" "+String.join(" ", l)+
-				String.valueOf(repeat)+" confirm"+
-				"'>"+s+"</click>";
+				cl.getLotteryName()+" "+
+				i+
+				"'>"+j+"</click>";
+	}
+	
+	private String getCmdForRepeat(ClassicLotto cl, boolean repeat, String s)
+	{
+		return "<click:run_command:'"
+				+CommandSuggest.get(Type.CLASSICLOTTO_PLAY).getCommandString()
+				+cl.getLotteryName()+" "
+				+String.valueOf(repeat)
+				+"'>"+s+"</click>";
+	}
+	
+	private String getCmdForConfirm(ClassicLotto cl, LinkedHashSet<Integer> set, boolean repeat, String s)
+	{
+		return "<click:run_command:'"
+				+CommandSuggest.get(Type.CLASSICLOTTO_PLAY).getCommandString()
+				+cl.getLotteryName()
+				+" confirm"
+				+"'>"+s+"</click>";
 	}
 }

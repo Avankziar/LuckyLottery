@@ -13,7 +13,7 @@ public class LotteryHandler
 	{
 		return getClassicLotto().stream()
 				.filter(x -> x.getLotteryName().equals(uniquename))
-				.findFirst();
+				.findAny();
 	}
 	
 	public static Collection<LottoSuper> getLottoSuper(){return LottoSuperHandler.lottosuper;}
@@ -21,18 +21,18 @@ public class LotteryHandler
 	{
 		return getLottoSuper().stream()
 				.filter(x -> x.getLotteryName().equals(uniquename))
-				.findFirst();
+				.findAny();
 	}
 	
 	public static void initalized()
 	{
 		ClassicLottoHandler.initalizedYamls();
-		LottoSuperHandler.initalizedYamls();
+		//LottoSuperHandler.initalizedYamls();
 	}
 	
 	public static void initalizedDraws()
 	{
 		ClassicLottoHandler.initalizedDraws();
-		LottoSuperHandler.initalizedDraws();
+		///LottoSuperHandler.initalizedDraws();
 	}
 }

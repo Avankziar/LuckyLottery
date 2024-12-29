@@ -9,6 +9,8 @@ public interface MysqlTable<T>
 {
 	public String getMysqlTableName();
 	
+	public boolean setupMysql(MysqlBaseSetup mysqlSetup, ServerType serverType);
+	
 	public boolean create(Connection conn);
 	
 	public boolean update(Connection conn, String whereColumn, Object... whereObject);

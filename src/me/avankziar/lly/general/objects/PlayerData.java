@@ -24,14 +24,16 @@ public class PlayerData implements MysqlHandable<PlayerData>
 	private int id;
 	private UUID uuid;
 	private String name;
+	private boolean ignoreAdvertising;
 	
 	public PlayerData(){}
 	
-	public PlayerData(int id, UUID uuid, String name)
+	public PlayerData(int id, UUID uuid, String name, boolean ignoreAdvertising)
 	{
 		setId(id);
 		setUUID(uuid);
 		setName(name);
+		setIgnoreAdvertising(ignoreAdvertising);
 	}
 
 	public int getId()
@@ -64,6 +66,16 @@ public class PlayerData implements MysqlHandable<PlayerData>
 		this.name = name;
 	}
 	
+	public boolean isIgnoreAdvertising()
+	{
+		return ignoreAdvertising;
+	}
+
+	public void setIgnoreAdvertising(boolean ignoreAdvertising)
+	{
+		this.ignoreAdvertising = ignoreAdvertising;
+	}
+
 	public String getMysqlTableName()
 	{
 		return "llyPlayerData";
@@ -75,7 +87,8 @@ public class PlayerData implements MysqlHandable<PlayerData>
 		sql.append("CREATE TABLE IF NOT EXISTS `"+getMysqlTableName()
 				+ "` (id bigint AUTO_INCREMENT PRIMARY KEY,"
 				+ " player_uuid char(36) NOT NULL UNIQUE,"
-				+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL);");
+				+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
+				+ " ignore_advertising boolean);");
 		return mysqlSetup.baseSetup(sql.toString());
 	}
 
@@ -85,11 +98,12 @@ public class PlayerData implements MysqlHandable<PlayerData>
 		try
 		{
 			String sql = "INSERT INTO `" + getMysqlTableName()
-					+ "`(`player_uuid`, `player_name`) " 
-					+ "VALUES(?, ?)";
+					+ "`(`player_uuid`, `player_name`, `ignore_advertising`) " 
+					+ "VALUES(?, ?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getUUID().toString());
 	        ps.setString(2, getName());
+	        ps.setBoolean(3, isIgnoreAdvertising());
 	        int i = ps.executeUpdate();
 	        MysqlBaseHandler.addRows(QueryType.INSERT, i);
 	        return true;
@@ -106,12 +120,13 @@ public class PlayerData implements MysqlHandable<PlayerData>
 		try
 		{
 			String sql = "UPDATE `" + getMysqlTableName()
-				+ "` SET `player_uuid` = ?, `player_name` = ?" 
+				+ "` SET `player_uuid` = ?, `player_name` = ?, `ignore_advertising` = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, getUUID().toString());
 			ps.setString(2, getName());
-			int i = 3;
+			ps.setBoolean(3, isIgnoreAdvertising());
+			int i = 4;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -149,7 +164,8 @@ public class PlayerData implements MysqlHandable<PlayerData>
 			{
 				al.add(new PlayerData(rs.getInt("id"),
 						UUID.fromString(rs.getString("player_uuid")),
-						rs.getString("player_name")));
+						rs.getString("player_name"),
+						rs.getBoolean("ignore_advertising")));
 			}
 			return al;
 		} catch (SQLException e)

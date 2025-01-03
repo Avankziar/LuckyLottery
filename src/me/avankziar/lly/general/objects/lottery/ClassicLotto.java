@@ -1,11 +1,12 @@
 package me.avankziar.lly.general.objects.lottery;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 
 import me.avankziar.lly.general.assistance.Utility;
+import me.avankziar.lly.general.objects.Advertising;
 import me.avankziar.lly.general.objects.DrawTime;
 import me.avankziar.lly.general.objects.WinningClass;
 import me.avankziar.lly.general.objects.lottery.draw.ClassicLottoDraw;
@@ -51,7 +52,7 @@ public class ClassicLotto extends Lottery
 	/**
 	 * Time to draw the winners of the lottery.
 	 */
-	private LinkedHashSet<DrawTime> drawTime = new LinkedHashSet<>();
+	private ArrayList<DrawTime> drawTime = new ArrayList<>();
 	/**
 	 * The winningClass of the lotto.<br>
 	 * The higher the level of the winningclass is, the higher the price should be.
@@ -64,12 +65,14 @@ public class ClassicLotto extends Lottery
 	
 	private String drawOnServer;
 	
+	private ArrayList<Advertising> advertising = new ArrayList<>();
+	
 	public ClassicLotto(String lotteryName, String description, GameType gameType,
 			double standartPot, double maximumPot, double amountToAddToThePotIfNoOneIsWinning,
 			double costPerTicket, int maximalAmountOfTicketWhichCanAPlayerBuy,
 			int firstNumberToChooseFrom, int lastNumberToChooseFrom, int amountOfChoosenNumber,
-			LinkedHashSet<DrawTime> drawTime, HashSet<WinningClass> winningClass,
-			String drawOnServer, boolean drawManually)
+			ArrayList<DrawTime> drawTime, HashSet<WinningClass> winningClass,
+			String drawOnServer, boolean drawManually, ArrayList<Advertising> advertising)
 	{
 		super(lotteryName, description, gameType);
 		setStandartPot(standartPot);
@@ -84,6 +87,7 @@ public class ClassicLotto extends Lottery
 		setWinningClass(winningClass);
 		setDrawOnServer(drawOnServer);
 		setDrawManually(drawManually);
+		setAdvertising(advertising);
 	}
 
 	public double getStandartPot() {
@@ -126,11 +130,11 @@ public class ClassicLotto extends Lottery
 		this.maximalAmountOfTicketWhichCanAPlayerBuy = maximalAmountOfTicketWhichCanAPlayerBuy;
 	}
 
-	public LinkedHashSet<DrawTime> getDrawTime() {
+	public ArrayList<DrawTime> getDrawTime() {
 		return drawTime;
 	}
 
-	public void setDrawTime(LinkedHashSet<DrawTime> drawTime) {
+	public void setDrawTime(ArrayList<DrawTime> drawTime) {
 		this.drawTime = drawTime;
 	}
 
@@ -183,6 +187,16 @@ public class ClassicLotto extends Lottery
 		this.drawOnServer = drawOnServer;
 	}
 	
+	public ArrayList<Advertising> getAdvertising()
+	{
+		return advertising;
+	}
+
+	public void setAdvertising(ArrayList<Advertising> advertising)
+	{
+		this.advertising = advertising;
+	}
+
 	public boolean isDrawManually() {
 		return drawManually;
 	}

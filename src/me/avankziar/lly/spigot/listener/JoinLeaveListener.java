@@ -21,7 +21,7 @@ public class JoinLeaveListener implements Listener
 			LLY.getPlugin().getMysqlHandler().updateData(pd, "`player_uuid` = ?", pd.getUUID().toString());
 		} else
 		{
-			pd = new PlayerData(0, player.getUniqueId(), player.getName());
+			pd = new PlayerData(0, player.getUniqueId(), player.getName(), false);
 			LLY.getPlugin().getMysqlHandler().create(pd);
 		}
 	}

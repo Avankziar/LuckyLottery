@@ -1,7 +1,11 @@
 package me.avankziar.lly.spigot.handler.lottery;
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +18,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
@@ -21,7 +27,9 @@ import me.avankziar.lly.general.assistance.TimeHandler;
 import me.avankziar.lly.general.assistance.Utility;
 import me.avankziar.lly.general.cmdtree.CommandSuggest;
 import me.avankziar.lly.general.database.ServerType;
+import me.avankziar.lly.general.objects.Advertising;
 import me.avankziar.lly.general.objects.DrawTime;
+import me.avankziar.lly.general.objects.PlayerData;
 import me.avankziar.lly.general.objects.WinningClass;
 import me.avankziar.lly.general.objects.WinningClass.PayoutType;
 import me.avankziar.lly.general.objects.lottery.ClassicLotto;
@@ -61,7 +69,7 @@ public class ClassicLottoHandler
 				int fristNumberToChooseFrom = y.getInt("FristNumberToChooseFrom", 1);
 				int lastNumberToChooseFrom = y.getInt("LastNumberToChooseFrom", 49);
 				int amountOfChoosedNumber = y.getInt("AmountOfChoosedNumber", 6);
-				LinkedHashSet<DrawTime> drawTime = new LinkedHashSet<>();
+				ArrayList<DrawTime> drawTime = new ArrayList<>();
 				if(y.get("DrawTime") != null)
 				{
 					for(String s : y.getStringList("DrawTime"))
@@ -92,9 +100,8 @@ public class ClassicLottoHandler
 				String drawOnServer = y.getString("DrawOnServer", "hub");
 				boolean drawManually = y.getBoolean("DrawManually", false);
 				LinkedHashSet<WinningClass> WinningClass = new LinkedHashSet<>();
-				int i = 1;
 				boolean check = false;
-				while(i <= amountOfChoosedNumber)
+				for(int i = 1; i <= amountOfChoosedNumber; i++)
 				{
 					if(!y.contains("WinningClass."+i+".Payout"))
 					{
@@ -108,7 +115,43 @@ public class ClassicLottoHandler
 					int numberMatchToWin = y.getInt("WinningClass."+i+".NumberMatchToWin");
 					WinningClass wc = new WinningClass(i, payt, payout, numberMatchToWin);
 					WinningClass.add(wc);
-					i++;
+				}
+				ArrayList<Advertising> advertising = new ArrayList<>();
+				for(int i = 1; i < 100; i++)
+				{
+					if(!y.contains("Advertising."+i+".Message") || !y.contains("Advertising."+i+".Time"))
+					{
+						continue;
+					}
+					boolean active = y.getBoolean("Advertising."+i+".IsActive", false);
+					boolean canIgnored = y.getBoolean("Advertising."+i+".CanIgnore", false);
+					ArrayList<String> message = (ArrayList<String>) y.getStringList("Advertising."+i+".Message");
+					ArrayList<DrawTime> time = new ArrayList<>();
+					for(String s : y.getStringList("Advertising."+i+".Time"))
+					{
+						String[] a = s.split("-");
+						if(a.length != 4)
+						{
+							LLY.log.warning(lottoname+" has by AdvertisingTime a Problem! "
+											+ "AdvertisingTime "+s+" missed 3 of `-` Character! "
+											+ "AdvertisingTime was not registered!");
+							continue;
+						}
+						try
+						{
+							int weekOfMonth = Integer.valueOf(a[0]);
+							DayOfWeek dayOfWeek = DayOfWeek.valueOf(a[1]);
+							int hour = Integer.valueOf(a[2]);
+							int min = Integer.valueOf(a[3]);
+							time.add(new DrawTime(weekOfMonth, dayOfWeek, hour, min));
+						} catch(Exception e)
+						{
+							LLY.log.warning(lottoname+" has by AdvertisingTime a Problem! "
+									+ "AdvertisingTime "+s+" is incorrect!");
+							continue;
+						}
+					}
+					advertising.add(new Advertising(active, canIgnored, message, time));
 				}
 				if(check)
 				{
@@ -118,7 +161,7 @@ public class ClassicLottoHandler
 						standartPot, maximumPot, amountToAddToThePotIfNoOneIsWinning, costPerTicket, 
 						maximalAmountOfTicketWhichCanAPlayerBuy,
 						fristNumberToChooseFrom, lastNumberToChooseFrom, amountOfChoosedNumber, 
-						drawTime, WinningClass, drawOnServer, drawManually);
+						drawTime, WinningClass, drawOnServer, drawManually, advertising);
 				LLY.log.info("ClassicLotto "+lottoname+" loaded!");
 				classicLotto.add(cl);
 				ClassicLottoTicket clt = new ClassicLottoTicket(lottoname);
@@ -164,38 +207,75 @@ public class ClassicLottoHandler
 			{
 				asyncDraw();
 			}
-		}.runTaskTimer(LLY.getPlugin(), 0L, 60+20L);
+		}.runTaskTimer(LLY.getPlugin(), 0L, 60*20L);
 	}
 	
 	private static void asyncDraw()
 	{
 		final String server = LLY.getPlugin().getServername();
+		final LocalDateTime ldt = LocalDateTime.now();
 		new BukkitRunnable() 
 		{
 			@Override
 			public void run() 
-			{
-				LocalDateTime ldt = LocalDateTime.now();
+			{	
+				LLY.log.info("Now: "+DrawTime.getNow()); //REMOVEME
 				for(ClassicLotto cl : LotteryHandler.getClassicLotto())
 				{
+					LLY.log.info(" Cl: "+cl.getLotteryName()); //REMOVEME
+					for(Advertising ad : cl.getAdvertising())
+					{
+						if(!ad.isActive())
+						{
+							continue;
+						}
+						LLY.log.info("  Advertising is active."); //REMOVEME
+						for(DrawTime dr : ad.getDrawTime())
+						{
+							if(dr.isNow(ldt))
+							{
+								LLY.log.info("  Ad is now! >>> "+dr.toString()); //REMOVEME
+								advertise(cl, ad);
+							}
+						}
+					}
 					if(cl.isDrawManually())
 					{
+						LLY.log.info("  isDrawManually"); //REMOVEME
 						continue;
 					}
 					if(!cl.getDrawOnServer().equals(server))
 					{
+						LLY.log.info("  DrawOnServer isnt "+cl.getDrawOnServer() + " : "+server); //REMOVEME
 						continue;
 					}
 					for(DrawTime dr : cl.getDrawTime())
 					{
 						if(dr.isNow(ldt))
 						{
+							LLY.log.info("  DrawLott is now! >>> "+dr.toString()); //REMOVEME
 							drawLotto(cl, new LinkedHashSet<Integer>(), true);
 						}
 					}
 				}
 			}
 		}.runTaskAsynchronously(LLY.getPlugin());
+	}
+	
+	private static void advertise(final ClassicLotto cl, Advertising ad)
+	{
+		ClassicLottoDraw cld = LLY.getPlugin().getMysqlHandler().getData(cl.getDrawMysql(), "`was_drawn` = ?", false);
+		String[] sa = replacer(cl, cld, null, null, null, null, false,
+				ad.getMessage()).toArray(new String[ad.getMessage().size()]);
+		for(Player player : Bukkit.getOnlinePlayers())
+		{
+			PlayerData pd = LLY.getPlugin().getMysqlHandler().getData(new PlayerData(), "`player_uuid` = ?", player.getUniqueId().toString());
+			if(pd == null || (ad.canIgnored() && pd.isIgnoreAdvertising()))
+			{
+				continue;
+			}
+			MessageHandler.sendMessage(player, sa);
+		}
 	}
 	
 	public static void drawLotto(final ClassicLotto cl, LinkedHashSet<Integer> manuallyDrawnNumber, Boolean reopen)
@@ -235,7 +315,7 @@ public class ClassicLottoHandler
 		cld.setWasDrawn(true);
 		//Lotto Ticket call
 		ArrayList<ClassicLottoTicket> cltA = plugin.getMysqlHandler().getFullList(
-				cl.getTicketMysql(), "`id` ASC", "`draw_id` = ?", new Object[] {cld.getId()});
+				cl.getTicketMysql(), "`id` ASC", "`draw_id` = ?", cld.getId());
 		if(cltA.isEmpty())
 		{
 			//No Tickets was bought
@@ -265,10 +345,9 @@ public class ClassicLottoHandler
 		int cldNextId = plugin.getMysqlHandler().lastID(cld)+1;
 		//Adding all WinningClass to a payout object
 		ArrayList<ClassicLottoPayout> clpA = new ArrayList<>();
-		//Added WinningClass 0, for all player that lost
-		clpA.add(new ClassicLottoPayout(0, PayoutType.LUMP_SUM, 0, new HashSet<UUID>(), 0, 0));
 		//Create all WinningClasss
 		int highestWC = 1;
+		int lowestWC = 1;
 		for(WinningClass wc : cl.getWinningClass())
 		{
 			double payout = 0.0;
@@ -281,7 +360,13 @@ public class ClassicLottoHandler
 					wc.getPayoutType(),
 					payout,
 					new HashSet<UUID>(), 0, wc.getNumberMatchToWin()));
+			if(lowestWC < wc.getWinningClassLevel())
+			{
+				lowestWC = wc.getWinningClassLevel();
+			}
 		}
+		//Added WinningClass for all player that lost, the int is the highest level
+		clpA.add(new ClassicLottoPayout(lowestWC+1, PayoutType.LUMP_SUM, 0, new HashSet<UUID>(), 0, 0));
 		//Lotto Ticket Evaluation
 		String repeatCategory = plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.RepeatTicket.Category")
 				.replace("%lotteryname%", cl.getLotteryName());
@@ -352,31 +437,34 @@ public class ClassicLottoHandler
 		for(ClassicLottoPayout clp : clpA)
 		{
 			int lv = clp.getWinningClassLevel();
-			if(lv == 0 || clp.getPayout() <= 0.0)
+			if(clp.getUUIDs().size() == 0)
 			{
-				//CLP Lv 0 for all player which has Lost AND where other ticket of the same player didnt also not win.
-				if(clp.getUUIDs().size() > 0)
+				//No one won in this payout/WinningClass. Added in Next pot if the payouttype is percentage.
+				if(clp.getPayoutType() == PayoutType.PERCENTAGE)
 				{
-					for(ClassicLottoTicket clt : payoutToTicket.get(lv))
-					{
-						ArrayList<String> nowinmsg = replacer(cl, cld, null, clpA, null, null, hclp.getUUIDs().size() > 0,
-								(ArrayList<String>) plugin.getYamlHandler().getLang().getStringList("ClassicLotto.Draw.NotWon"));
-						MessageHandler.sendMessage(clt.getLotteryPlayer(), nowinmsg.toArray(new String[nowinmsg.size()]));
-						clt.setWinningClassLevel(lv);
-						plugin.getMysqlHandler().updateData(clt, "`id` = ?", clt.getID());
-					}
+					nextpot += clp.getPayout();
 				}
 				continue;
 			}
-			if(clp.getUUIDs().size() == 0)
+			if(clp.getPayout() <= 0.0)
 			{
-				//No one won in this payout/WinningClass. Added in Next pot.
-				nextpot += clp.getPayout();
+				//CLP Lv 0 for all player which has Lost AND where other ticket of the same player didnt also not win.
+				for(ClassicLottoTicket clt : payoutToTicket.get(lv))
+				{
+					ArrayList<String> nowinmsg = new ArrayList<>();
+					nowinmsg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.NotWon"));
+					nowinmsg = replacer(cl, cld, clt, clpA, null, null, hclp.getUUIDs().size() > 0,
+							nowinmsg);
+					MessageHandler.sendMessage(clt.getLotteryPlayer(), nowinmsg.toArray(new String[nowinmsg.size()]));
+					clt.setWinningClassLevel(lv);
+					plugin.getMysqlHandler().updateData(clt, "`id` = ?", clt.getID());
+				}
 				continue;
 			}
 			double payout = clp.getFinalPayoutPerUUID();
 			String wincategory = plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.Win.Category");
 			String wincomment = plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.Win.Comment")
+					.replace("%lotteryname%", cl.getLotteryName())
 					.replace("%level%", String.valueOf(lv));
 			for(ClassicLottoTicket clt : payoutToTicket.get(lv))
 			{
@@ -451,10 +539,16 @@ public class ClassicLottoHandler
 			if(payout != null)
 			{
 				s = s.replace("%payout%", EconomyHandler.format(payout));
+			} else
+			{
+				s = s.replace("%payout%", "/");
 			}
 			if(jackpotwinners != null)
 			{
 				s = s.replace("%winners%", jackpotwinners);
+			} else
+			{
+				s = s.replace("%winners%", "/");
 			}
 			if(s.contains("%classiclottocmd%"))
 			{
@@ -483,6 +577,34 @@ public class ClassicLottoHandler
 							.replace("%wc"+wc.getWinningClassLevel()+"lottopayout%", 
 									EconomyHandler.format(cl.getStandartPot() * wc.getAmount() / 100)));
 				}
+				String nextDrawTime = null;
+				
+				if(!cl.isDrawManually())
+				{
+					LocalDateTime ldt = LocalDateTime.now();
+					
+					
+					
+					if(nextDrawTime == null)
+					{
+						
+					} /*else
+					{
+						s = s.replace("%nextdraw%", nextDrawTime);
+					}*/
+				}
+			} else
+			{
+				s = s.replace("%lotteryname%", "/")
+						.replace("%description%", "/")
+						.replace("%amountofchoosennumber%", "/")
+						.replace("%amounttoaddpot%", "/")
+						.replace("%costperticket%", "/")
+						.replace("%fristnumbertochoosefrom%", "/")
+						.replace("%lastnumbertochoosefrom%", "/")
+						.replace("%maximumpot%", "/")
+						.replace("%standartpot%", "/")
+						.replace("%winningchance%", "/");
 			}
 			if(cld != null)
 			{
@@ -513,8 +635,15 @@ public class ClassicLottoHandler
 					{
 						s = s.replace("%highestwinningclass%", EconomyHandler.format(cld.getActualPot() * highest.getAmount() / 100));
 					}
-				}
-						
+				}		
+			} else
+			{
+				s = s.replace("%lotteryname%", "/")
+						.replace("%drawid%", "/")
+						.replace("%drawtime%", "/")
+						.replace("%actualpot%", "/")
+						.replace("%drawnnumber%", "/")
+						.replace("%highestwinningclass%", "/");
 			}
 			if(clt != null)
 			{
@@ -537,6 +666,13 @@ public class ClassicLottoHandler
 				s = s.replace("%lotteryname%", clt.getLotteryName())
 						.replace("%ticketid%", String.valueOf(clt.getID()))
 						.replace("%ticketplayer%", Utility.convertUUIDToName(clt.getLotteryPlayer().toString()));
+			} else
+			{
+				s = s.replace("%lotteryname%", "/")
+						.replace("%ticketid%", "/")
+						.replace("%ticketplayer%", "/")
+						.replace("%matchchoosennumber%", "/")
+						.replace("%matchchoosennumberamount%", "/");
 			}
 			if(clpA != null)
 			{
@@ -575,6 +711,10 @@ public class ClassicLottoHandler
 					}
 					s = s.replace("%nextpot%", EconomyHandler.format(nextpot));
 				}
+			} else
+			{
+				s = s.replace("%winningclasswinneramount%", "/")
+						.replace("%nextpot%", "/");
 			}
 			li.add(s);
 		}
@@ -607,7 +747,17 @@ public class ClassicLottoHandler
 				return clp.getWinningClassLevel();
 			}
 		}
-		return 0;
+		//If no CLP matched, reduce the matchNumber by one.
+		//This should done, to catch WinningClass gaps.
+		int mn = matchNumber-1;
+		if(mn < 0)
+		{
+			//Exist and Error, because it should ALWAYS be a CLP with 0 matches!
+			return 0;
+		} else
+		{
+			return getIndexPayout(list, mn);
+		}
 	}
 	
 	public static int matchChoosenNumber(LinkedHashSet<Integer> set, LinkedHashSet<Integer> choosenNumber)
@@ -621,5 +771,60 @@ public class ClassicLottoHandler
 			}
 		}
 		return i;
+	}
+	
+	//------------------------------
+	
+	public static void main(String[] args) {
+	    LocalDateTime now = LocalDateTime.now();
+	    int year = now.getYear();
+	    int month = now.getMonthValue();
+
+	    ArrayList<DrawTime> allDrawTimes = new ArrayList<>();
+	    allDrawTimes.add(new DrawTime(6, DayOfWeek.MONDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(6, DayOfWeek.TUESDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(6, DayOfWeek.WEDNESDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(6, DayOfWeek.THURSDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(6, DayOfWeek.FRIDAY, 20, 00));
+	    
+	    LocalDateTime nextDraw = findNextDraw(allDrawTimes, now, year, month);
+
+	    System.out.println("Aktuelle Zeit: " + now + " | " +DrawTime.getNow());
+	    System.out.println("Nächste Ziehung: " + nextDraw);
+	}
+    
+	private static LocalDateTime convertToDateTime(DrawTime drawTime, int year, int month) {
+	    try {
+	        YearMonth yearMonth = YearMonth.of(year, month);
+	        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+	        int offset = (drawTime.getDayOfWeek().getValue() - firstDayOfMonth.getDayOfWeek().getValue() + 7) % 7 
+	                + (drawTime.getWeekOfMonth() - 1) * 7;
+
+	        LocalDate drawDate = firstDayOfMonth.plusDays(offset);
+	        if (drawDate.getMonthValue() != month) {
+	            throw new DateTimeException("Ungültige Kombination aus Woche und Wochentag: " + drawTime);
+	        }
+
+	        return LocalDateTime.of(drawDate, LocalTime.of(drawTime.getHour(), drawTime.getMinute()));
+	    } catch (DateTimeException e) {
+	        System.err.println("Fehler bei der Konvertierung von DrawTime: " + drawTime);
+	        throw e;
+	    }
+	}
+    
+	private static LocalDateTime findNextDraw(List<DrawTime> drawTimes, LocalDateTime now, int year, int month) {
+	    return drawTimes.stream()
+	            .map(drawTime -> {
+	                try {
+	                    LocalDateTime drawDateTime = convertToDateTime(drawTime, year, month);
+	                    System.out.println("Ziehungszeit generiert: " + drawDateTime);
+	                    return drawDateTime;
+	                } catch (DateTimeException e) {
+	                    return null; // Ignoriere ungültige Zeiten
+	                }
+	            })
+	            .filter(dateTime -> dateTime != null && dateTime.isAfter(now))
+	            .min(LocalDateTime::compareTo)
+	            .orElse(null); // Falls keine zukünftige Ziehung gefunden wird
 	}
 }

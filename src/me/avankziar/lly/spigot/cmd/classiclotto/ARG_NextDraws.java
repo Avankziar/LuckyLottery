@@ -64,7 +64,7 @@ public class ARG_NextDraws extends ArgumentModule
 		int i = 0;
 		for(LocalDateTime ldt : ldtA)
 		{
-			if(i < 4)
+			if(i < 2)
 			{
 				arr.add(ldt.format(dtf));
 				i++;
@@ -80,8 +80,8 @@ public class ARG_NextDraws extends ArgumentModule
 		msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.NextDraw.NextDraws"));
 		for(ArrayList<String> a : draws)
 		{
-			msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.NextDraw.NextDrawsReplacer")+
-					String.join(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.NextDraw.SeperatorReplacer"), a));
+			msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.NextDraw.NextDrawsReplacer").replace("%next%", 
+					String.join(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.NextDraw.SeperatorReplacer"), a)));
 		}
 		msg = ClassicLottoHandler.replacer(cl, null, null, null, null, null, false, msg);
 		MessageHandler.sendMessage(player, msg.toArray(new String[arr.size()]));

@@ -1111,16 +1111,16 @@ public class YamlManager
 						"<red>No next drawing! Lottery will be drawn manually!"}));
 		languageKeys.put(path+".Arg.NextDraw.NextDraws", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>Nächste Ziehung für <white>%lotteryname%<yellow>:",
-						"<yellow>Next draw for <white>%lotteryname%<yellow>:"}));
+						"<gold>Nächste Ziehung für <white>%lotteryname%<yellow>:",
+						"<gold>Next draw for <white>%lotteryname%<yellow>:"}));
 		languageKeys.put(path+".Arg.NextDraw.NextDrawsReplacer", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>%next%",
-						"<yellow>%next%"}));
+						"<gray>%next%",
+						"<gray>%next%"}));
 		languageKeys.put(path+".Arg.NextDraw.SeperatorReplacer", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<white>, <yellow>",
-						"<white>, <yellow>"}));
+						"<white>, <gray>",
+						"<white>, <gray>"}));
 	}
 	
 	private void initLottoSuper()

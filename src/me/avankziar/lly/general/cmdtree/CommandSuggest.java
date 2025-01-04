@@ -21,6 +21,7 @@ public class CommandSuggest
 		CLASSICLOTTO_OPEN,
 		CLASSICLOTTO_TICKETLIST,
 		CLASSICLOTTO_REPEAT,
+		CLASSICLOTTO_NEXTDRAWS,
 		
 		LOTTOSUPER,
 		LOTTOSUPER_DRAWNOW,
@@ -31,6 +32,7 @@ public class CommandSuggest
 		LOTTOSUPER_OPEN,
 		LOTTOSUPER_TICKETLIST,
 		LOTTOSUPER_REPEAT,
+		LOTTOSUPER_NEXTDRAWS,
 	}
 	
 	public static LinkedHashMap<CommandSuggest.Type, BaseConstructor> map = new LinkedHashMap<>();

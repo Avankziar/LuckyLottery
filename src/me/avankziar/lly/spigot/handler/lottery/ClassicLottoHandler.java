@@ -1,11 +1,8 @@
 package me.avankziar.lly.spigot.handler.lottery;
 
-import java.time.DateTimeException;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -140,9 +137,15 @@ public class ClassicLottoHandler
 						try
 						{
 							int weekOfMonth = Integer.valueOf(a[0]);
+							weekOfMonth = weekOfMonth > 5 ? 5 
+									: (weekOfMonth < 1 ? 1 : weekOfMonth);
 							DayOfWeek dayOfWeek = DayOfWeek.valueOf(a[1]);
 							int hour = Integer.valueOf(a[2]);
+							hour = hour > 23 ? 23
+									: (hour < 0 ? 0 : hour);
 							int min = Integer.valueOf(a[3]);
+							min = min > 59 ? 59
+									: (min < 0 ? 0 : min);
 							time.add(new DrawTime(weekOfMonth, dayOfWeek, hour, min));
 						} catch(Exception e)
 						{
@@ -576,22 +579,15 @@ public class ClassicLottoHandler
 							.replace("%wc"+wc.getWinningClassLevel()+"percentage%", String.valueOf(wc.getAmount()))
 							.replace("%wc"+wc.getWinningClassLevel()+"lottopayout%", 
 									EconomyHandler.format(cl.getStandartPot() * wc.getAmount() / 100)));
-				}
-				String nextDrawTime = null;
-				
+				}				
 				if(!cl.isDrawManually())
 				{
-					LocalDateTime ldt = LocalDateTime.now();
-					
-					
-					
-					if(nextDrawTime == null)
-					{
-						
-					} /*else
-					{
-						s = s.replace("%nextdraw%", nextDrawTime);
-					}*/
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern(
+							LLY.getPlugin().getYamlHandler().getConfig().getString("DateTimeFormatter"));
+					s = s.replace("%nextdraw%", DrawTime.getNextTime(cl.getDrawTime(), null).format(dtf));
+				} else
+				{
+					s = s.replace("%nextdraw%", LLY.getPlugin().getYamlHandler().getLang().getString("Replacer.NoDraw"));
 				}
 			} else
 			{
@@ -776,55 +772,29 @@ public class ClassicLottoHandler
 	//------------------------------
 	
 	public static void main(String[] args) {
-	    LocalDateTime now = LocalDateTime.now();
-	    int year = now.getYear();
-	    int month = now.getMonthValue();
+	    LocalDateTime now = LocalDateTime.of(2025, 2, 4, 8, 21);
 
 	    ArrayList<DrawTime> allDrawTimes = new ArrayList<>();
-	    allDrawTimes.add(new DrawTime(6, DayOfWeek.MONDAY, 20, 00));
-	    allDrawTimes.add(new DrawTime(6, DayOfWeek.TUESDAY, 20, 00));
-	    allDrawTimes.add(new DrawTime(6, DayOfWeek.WEDNESDAY, 20, 00));
-	    allDrawTimes.add(new DrawTime(6, DayOfWeek.THURSDAY, 20, 00));
-	    allDrawTimes.add(new DrawTime(6, DayOfWeek.FRIDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(1, DayOfWeek.MONDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(1, DayOfWeek.WEDNESDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(1, DayOfWeek.SUNDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(2, DayOfWeek.MONDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(2, DayOfWeek.WEDNESDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(2, DayOfWeek.SUNDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(3, DayOfWeek.MONDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(3, DayOfWeek.WEDNESDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(3, DayOfWeek.SUNDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(4, DayOfWeek.MONDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(4, DayOfWeek.WEDNESDAY, 20, 00));
+	    allDrawTimes.add(new DrawTime(4, DayOfWeek.SUNDAY, 20, 00));
 	    
-	    LocalDateTime nextDraw = findNextDraw(allDrawTimes, now, year, month);
+	    LocalDateTime nextDraw = DrawTime.getNextTime(allDrawTimes, now);
+	    ArrayList<LocalDateTime> allTimes = DrawTime.getNextTimes(allDrawTimes, now);
 
-	    System.out.println("Aktuelle Zeit: " + now + " | " +DrawTime.getNow());
-	    System.out.println("Nächste Ziehung: " + nextDraw);
-	}
-    
-	private static LocalDateTime convertToDateTime(DrawTime drawTime, int year, int month) {
-	    try {
-	        YearMonth yearMonth = YearMonth.of(year, month);
-	        LocalDate firstDayOfMonth = yearMonth.atDay(1);
-	        int offset = (drawTime.getDayOfWeek().getValue() - firstDayOfMonth.getDayOfWeek().getValue() + 7) % 7 
-	                + (drawTime.getWeekOfMonth() - 1) * 7;
-
-	        LocalDate drawDate = firstDayOfMonth.plusDays(offset);
-	        if (drawDate.getMonthValue() != month) {
-	            throw new DateTimeException("Ungültige Kombination aus Woche und Wochentag: " + drawTime);
-	        }
-
-	        return LocalDateTime.of(drawDate, LocalTime.of(drawTime.getHour(), drawTime.getMinute()));
-	    } catch (DateTimeException e) {
-	        System.err.println("Fehler bei der Konvertierung von DrawTime: " + drawTime);
-	        throw e;
-	    }
-	}
-    
-	private static LocalDateTime findNextDraw(List<DrawTime> drawTimes, LocalDateTime now, int year, int month) {
-	    return drawTimes.stream()
-	            .map(drawTime -> {
-	                try {
-	                    LocalDateTime drawDateTime = convertToDateTime(drawTime, year, month);
-	                    System.out.println("Ziehungszeit generiert: " + drawDateTime);
-	                    return drawDateTime;
-	                } catch (DateTimeException e) {
-	                    return null; // Ignoriere ungültige Zeiten
-	                }
-	            })
-	            .filter(dateTime -> dateTime != null && dateTime.isAfter(now))
-	            .min(LocalDateTime::compareTo)
-	            .orElse(null); // Falls keine zukünftige Ziehung gefunden wird
+	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+	    System.out.println("Aktuelle Zeit: "+now.format(dtf)+" | " +DrawTime.getNow(now));
+	    System.out.println("Nächste Ziehung: "+nextDraw.format(dtf)+" | "+DrawTime.getNow(nextDraw));
+	    allTimes.stream().forEach(x -> System.out.println("Ziehung: "+x.format(dtf)));
+	    
 	}
 }

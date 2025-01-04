@@ -507,7 +507,6 @@ public class YamlManager
 				"Das Passwort des Users, womit er Zugang zu Mysql bekommt.",
 				"",
 				"The user's password, with which he gets access to Mysql."});
-		
 		addConfig("EnableMechanic.Modifier",
 				new Object[] {
 				true},
@@ -531,12 +530,7 @@ public class YamlManager
 				"",
 				"Enables TT to use the IFH interface ValueEntry.",
 				"It allows external plugins or commands to make value entries.",
-				"For example, it could be used to unlock certain commands or technologies for players."});
-		
-		configKeys.put("EnableCommands.Base"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
-		
+				"For example, it could be used to unlock certain commands or technologies for players."});		
 		addConfig("ValueEntry.OverrulePermission",
 				new Object[] {
 				false},
@@ -563,16 +557,14 @@ public class YamlManager
 				"so if 'OverrulePermission'=true the stored value entry is returned.",
 				"If 'OverrulePermission'=false, 'true' is returned if the stored value entry OR the permission query is 'true'.",
 				"If both are 'false', 'false' is returned."});
-		/*
-		 * The "Stringlist" are define so.
-		 */
-		configKeys.put("GuiFlatFileNames"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"guiOne",
-				"guiTwo",}));
-		/*
-		 * If there was a second language, with also 2 entry, so would Entry 1 and two for the first and 3 and 4 four the second language.
-		 */	
+		addConfig("DateTimeFormatter",
+				new Object[] {
+				"dd-MM-yyyy HH:mm"},
+				new Object[] {
+				"",
+				"Zeitformattierung für die Lotterieziehungen.",
+				"",
+				"Time formatting for lottery draws."});
 	}
 	
 	@SuppressWarnings("unused") //INFO:Commands
@@ -661,6 +653,14 @@ public class YamlManager
 				"<aqua>Commandright for <white>/classiclotto repeat",
 				"<yellow>Befehl /classiclotto repeat",
 				"<yellow>Command /classiclotto repeat");
+		argumentInput("classiclotto_nextdraws", "nextdraws", basePermission,
+				"/classiclotto nextdraws <lotteryname>", "/classiclotto nextdraws ", false,
+				"<red>/classiclotto nextdraws <lotteryname> <white>| Zeigt alle nächsten Ziehungen der Lotterie.",
+				"<red>/classiclotto nextdraws <lotteryname> <white>| Shows all upcoming lottery draws.",
+				"<aqua>Befehlsrecht für <white>/classiclotto nextdraws",
+				"<aqua>Commandright for <white>/classiclotto nextdraws",
+				"<yellow>Befehl /classiclotto nextdraws",
+				"<yellow>Command /classiclotto nextdraws");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -830,6 +830,10 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<red>Du hast nicht genug Geld!</red>",
 						"<red>You dont have enough money!</red>"}));
+		languageKeys.put("Replacer.NoDraw", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Keine Lotterieziehung",
+						"No lottery drawing"}));
 		initClassicLotto();
 		initLottoSuper();
 	}
@@ -943,11 +947,11 @@ public class YamlManager
 						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
 		languageKeys.put(path+".Cmd.GeneralInfo", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<aqua><bold>%lotteryname%:",
+						"<aqua><bold>%lotteryname%:</bold> <white>Ziehung: %nextdraw%",
 						"<gray>%description%",
 						"<red>Aktueller Pot: <white>%actualpot% | %costperticket% <red>pro Ticket.",
 						"<click:run_command:'%classiclottocmd%%lotteryname%'><gray>Klicke {hier} für mehr Infos.</click>",
-						"<aqua><bold>%lotteryname%:",
+						"<aqua><bold>%lotteryname%:</bold> <white>Draw: %nextdraw%",
 						"<gray>%description%",
 						"<red>Current pot: <white>%actualpot% | %costperticket% <red>per ticket.",
 						"<click:run_command:'%classiclottocmd%%lotteryname%'><gray>Click {here} for more info.</click>"}));
@@ -956,8 +960,9 @@ public class YamlManager
 						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
 						"<aqua><bold>%lotteryname%:",
 						"<gray>%description%",
+						"<red>Nächste Ziehung: <white>%nextdraw%",
 						"<red>Aktueller Pot: <white>%actualpot% | %costperticket% <red>pro Ticket.",
-						"<red>Gewinnchance 1:%winningchance%",
+						"<red>Gewinnchance <white>1:%winningchance%",
 						"<red>Mindest Pot: <white>%standartpot% | <red>Maximaler Pot: <white>%maximumpot%",
 						"<red>Ehöhung des Pot, falls es kein Hauptgewinner gibt: <white>%amounttoaddpot%",
 						"<click:run_command:'%classiclottobet%%lotteryname%'><gold>Klicke {hier} zum spielen.</click>",
@@ -965,8 +970,9 @@ public class YamlManager
 						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
 						"<aqua><bold>%lotteryname%:",
 						"<gray>%description%",
+						"<red>Next draw: <white>%nextdraw%",
 						"<red>Current pot: <white>%actualpot% | %costperticket% <red>per ticket.",
-						"<red>Chance of winning 1:%winningchance%",
+						"<red>Chance of winning <white>1:%winningchance%",
 						"<red>Minimum pot: <white>%standardpot% | <red>Maximum Pot: <white>%maximumpot%",
 						"<red>Increase the pot if there is no main winner: <white>%amounttoaddpot%",
 						"<click:run_command:'%classiclottobet%%lotteryname%'><gold>Click {here} to play.</click>",
@@ -1099,6 +1105,22 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow>Das Ticket %id% der Lotterie %lotteryname% wird <red>nicht <yellow>wiederholt!",
 						"<yellow>The ticket %id% of the lottery %lotteryname% will <red>not <yellow>be repeated!"}));
+		languageKeys.put(path+".Arg.NextDraw.NoDraws", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Keine nächste Ziehung! Lotterie wird manuell gezogen!",
+						"<red>No next drawing! Lottery will be drawn manually!"}));
+		languageKeys.put(path+".Arg.NextDraw.NextDraws", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Nächste Ziehung für <white>%lotteryname%<yellow>:",
+						"<yellow>Next draw for <white>%lotteryname%<yellow>:"}));
+		languageKeys.put(path+".Arg.NextDraw.NextDrawsReplacer", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>%next%",
+						"<yellow>%next%"}));
+		languageKeys.put(path+".Arg.NextDraw.SeperatorReplacer", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<white>, <yellow>",
+						"<white>, <yellow>"}));
 	}
 	
 	private void initLottoSuper()
@@ -1253,11 +1275,13 @@ public class YamlManager
 					"",
 					"Deklariert, wann die Lotterie gezogen wird. Es können mehrere Zeiten festgelegt werden.",
 					"Dabei wird zuerst immer die Woche des Monats als Zahl genannt, dann der Wochentag in Großbuchstaben, dann die Stunden und Minutenzahl.",
-					"Bedenke, dass es auch so gesehen Monate mit 5 oder sogar 6 Wochen gibt. (bspw. Dezember 2024 mit 6)",
+					"Bedenke, dass es auch Monate mit 5 Wochen gibt. Nach der ISO Regel ist aber bspw. der 1. Dezember 2024 zum 4. Woche des November gehörend.",
+					"Da immer dort wo der erste Donnerstag im Monat ist, die erste Woche des Monats ist.",
 					"",
 					"Declares when the lottery will be drawn. Multiple times can be specified.",
 					"The week of the momnth is always given first as number, than the day of the week given first in capital letters, followed by the hours and minutes.",
-					"Bear in mind that there are also months with 5 or even 6 weeks. (e.g. December 2024 with 6)"}));
+					"Remember that there are also months with 5 weeks. However, according to the ISO rule, for example, December 1, 2024 belongs to the 4th week of November.",
+					"Because wherever the first Thursday of the month is, that is the first week of the month."}));
 		// ----------
 		mapII.put("WinningClass.1.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));

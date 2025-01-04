@@ -5,10 +5,10 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.YearMonth;
 import java.time.ZoneId;
-import java.time.temporal.WeekFields;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class DrawTime 
 {
@@ -57,28 +57,8 @@ public class DrawTime
 		this.minute = minute;
 	}
 	
-	private static LocalDateTime convertToDateTime(DrawTime drawTime, int year, int month) {
-	    try {
-	        YearMonth yearMonth = YearMonth.of(year, month);
-	        LocalDate firstDayOfMonth = yearMonth.atDay(1);
-	        int offset = (drawTime.getDayOfWeek().getValue() - firstDayOfMonth.getDayOfWeek().getValue() + 7) % 7 
-	                + (drawTime.getWeekOfMonth() - 1) * 7;
-
-	        LocalDate drawDate = firstDayOfMonth.plusDays(offset);
-	        if (drawDate.getMonthValue() != month) {
-	            throw new DateTimeException("Ungültige Kombination aus Woche und Wochentag: " + drawTime);
-	        }
-
-	        return LocalDateTime.of(drawDate, LocalTime.of(drawTime.getHour(), drawTime.getMinute()));
-	    } catch (DateTimeException e) {
-	        System.err.println("Fehler bei der Konvertierung von DrawTime: " + drawTime);
-	        throw e;
-	    }
-	}
-	
-	public static String getNow() 
+	public static String getNow(LocalDateTime ldt) 
 	{
-	    LocalDateTime ldt = LocalDateTime.now();
 	    LocalDate firstDayOfMonth = ldt.withDayOfMonth(1).toLocalDate();
 
 	    // Wochentag des ersten Tages des Monats
@@ -94,6 +74,12 @@ public class DrawTime
 	    return weekNumber + "-" + ldt.getDayOfWeek().toString() + "-" + ldt.getHour() + "-" + ldt.getMinute();
 	}
 	
+	public static String getNow() 
+	{
+	    LocalDateTime ldt = LocalDateTime.now();
+	    return getNow(ldt);
+	}
+	
 	public boolean isNow(long time)
 	{
 		return isNow(LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault()));
@@ -101,9 +87,128 @@ public class DrawTime
 
 	public boolean isNow(LocalDateTime ldt)
 	{
-		LocalDateTime nldt = LocalDateTime.now();
-		LocalDateTime now = convertToDateTime(this, nldt.getYear(), nldt.getMonthValue());
-		return ldt.isEqual(now);
+		LocalDateTime today = ldt == null ? LocalDateTime.now() : ldt; // aktuelles Datum
+        int weekOfMonth = (today.getDayOfMonth() - 1) / 7 + 1; // Woche im Monat berechnen
+        return weekOfMonth == this.getWeekOfMonth() && today.getDayOfWeek() == this.getDayOfWeek()
+        		&& ldt.getHour() == this.getHour() && this.getMinute() == ldt.getMinute();
+	}
+	
+	public static LocalDateTime getNextTime(ArrayList<DrawTime> drawTimes, LocalDateTime lDT) 
+	{
+	    LocalDateTime ldt = lDT == null ? LocalDateTime.now() : lDT;
+	    return drawTimes.stream()
+	            .map(drawTime -> 
+	            {
+	                try {
+	                    int weekOfMonth = (ldt.getDayOfMonth() - 1) / 7 + 1; // Woche im Monat berechnen
+
+	                    if (weekOfMonth == drawTime.getWeekOfMonth()) {
+	                        if (ldt.getDayOfWeek() == drawTime.getDayOfWeek()) {
+	                            // Datum wäre heute.
+	                            return LocalDateTime.of(ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth(),
+	                                    drawTime.getHour(), drawTime.getMinute());
+	                        }
+	                        if (drawTime.getDayOfWeek().getValue() > ldt.getDayOfWeek().getValue()) {
+	                            // Datum ist in ein paar Tagen in derselben Woche.
+	                            return ldt.with(drawTime.getDayOfWeek())
+	                                    .withHour(drawTime.getHour())
+	                                    .withMinute(drawTime.getMinute());
+	                        }
+	                        if (drawTime.getDayOfWeek().getValue() < ldt.getDayOfWeek().getValue()) {
+	                            // Datum war bereits diese Woche, also im nächsten Monat zur gleichen Wochenzahl.
+	                            LocalDateTime nextMonthDate = ldt.plusMonths(1)
+	                                    .withDayOfMonth(1)
+	                                    .with(TemporalAdjusters.dayOfWeekInMonth(drawTime.getWeekOfMonth(), drawTime.getDayOfWeek()))
+	                                    .withHour(drawTime.getHour())
+	                                    .withMinute(drawTime.getMinute());
+	                            return nextMonthDate;
+	                        }
+	                    }
+
+	                    if (drawTime.getWeekOfMonth() > weekOfMonth) {
+	                        // Datum ist später im selben Monat.
+	                        return ldt.with(TemporalAdjusters.dayOfWeekInMonth(drawTime.getWeekOfMonth(), drawTime.getDayOfWeek()))
+	                                .withHour(drawTime.getHour())
+	                                .withMinute(drawTime.getMinute());
+	                    }
+	                    if (drawTime.getWeekOfMonth() < weekOfMonth) {
+	                        // Datum ist im nächsten Monat.
+	                        LocalDateTime nextMonthDate = ldt.plusMonths(1)
+	                                .withDayOfMonth(1)
+	                                .with(TemporalAdjusters.dayOfWeekInMonth(drawTime.getWeekOfMonth(), drawTime.getDayOfWeek()))
+	                                .withHour(drawTime.getHour())
+	                                .withMinute(drawTime.getMinute());
+	                        return nextMonthDate;
+	                    }
+	                    // Rückgabe null, falls keine Bedingung zutrifft (sollte nicht passieren).
+	                    return null;
+	                } catch (DateTimeException e) {
+	                    return null; // Ignoriere ungültige Zeiten
+	                }
+	            })
+	            .filter(dateTime -> dateTime != null && dateTime.isAfter(ldt))
+	            .min(LocalDateTime::compareTo)
+	            .orElse(null); // Falls keine zukünftige Ziehung gefunden wird
+	}
+	
+	public static ArrayList<LocalDateTime> getNextTimes(ArrayList<DrawTime> drawTimes, LocalDateTime lDT) 
+	{
+	    LocalDateTime ldt = lDT == null ? LocalDateTime.now() : lDT;
+	    ArrayList<LocalDateTime> ldtA = new ArrayList<>();
+	    drawTimes.stream()
+	            .map(drawTime -> 
+	            {
+	                try {
+	                    int weekOfMonth = (ldt.getDayOfMonth() - 1) / 7 + 1; // Woche im Monat berechnen
+
+	                    if (weekOfMonth == drawTime.getWeekOfMonth()) {
+	                        if (ldt.getDayOfWeek() == drawTime.getDayOfWeek()) {
+	                            // Datum wäre heute.
+	                            return LocalDateTime.of(ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth(),
+	                                    drawTime.getHour(), drawTime.getMinute());
+	                        }
+	                        if (drawTime.getDayOfWeek().getValue() > ldt.getDayOfWeek().getValue()) {
+	                            // Datum ist in ein paar Tagen in derselben Woche.
+	                            return ldt.with(drawTime.getDayOfWeek())
+	                                    .withHour(drawTime.getHour())
+	                                    .withMinute(drawTime.getMinute());
+	                        }
+	                        if (drawTime.getDayOfWeek().getValue() < ldt.getDayOfWeek().getValue()) {
+	                            // Datum war bereits diese Woche, also im nächsten Monat zur gleichen Wochenzahl.
+	                            LocalDateTime nextMonthDate = ldt.plusMonths(1)
+	                                    .withDayOfMonth(1)
+	                                    .with(TemporalAdjusters.dayOfWeekInMonth(drawTime.getWeekOfMonth(), drawTime.getDayOfWeek()))
+	                                    .withHour(drawTime.getHour())
+	                                    .withMinute(drawTime.getMinute());
+	                            return nextMonthDate;
+	                        }
+	                    }
+
+	                    if (drawTime.getWeekOfMonth() > weekOfMonth) {
+	                        // Datum ist später im selben Monat.
+	                        return ldt.with(TemporalAdjusters.dayOfWeekInMonth(drawTime.getWeekOfMonth(), drawTime.getDayOfWeek()))
+	                                .withHour(drawTime.getHour())
+	                                .withMinute(drawTime.getMinute());
+	                    }
+	                    if (drawTime.getWeekOfMonth() < weekOfMonth) {
+	                        // Datum ist im nächsten Monat.
+	                        LocalDateTime nextMonthDate = ldt.plusMonths(1)
+	                                .withDayOfMonth(1)
+	                                .with(TemporalAdjusters.dayOfWeekInMonth(drawTime.getWeekOfMonth(), drawTime.getDayOfWeek()))
+	                                .withHour(drawTime.getHour())
+	                                .withMinute(drawTime.getMinute());
+	                        return nextMonthDate;
+	                    }
+	                    // Rückgabe null, falls keine Bedingung zutrifft (sollte nicht passieren).
+	                    return null;
+	                } catch (DateTimeException e) {
+	                    return null; // Ignoriere ungültige Zeiten
+	                }
+	            })
+	            .filter(dateTime -> dateTime != null && dateTime.isAfter(ldt))
+	            .forEach(x -> ldtA.add(x));
+	    Collections.sort(ldtA);
+	    return ldtA;
 	}
 	
 	public String toString()

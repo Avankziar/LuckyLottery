@@ -47,6 +47,7 @@ import me.avankziar.lly.spigot.cmd.TabCompletion;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_AddPot;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_DrawNow;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_GiveTicket;
+import me.avankziar.lly.spigot.cmd.classiclotto.ARG_NextDraws;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Open;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Play;
 import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Repeat;
@@ -237,8 +238,10 @@ public class LLY extends JavaPlugin
 					0, 1, 2, false, false, classicLottoI);
 			ArgumentConstructor repeat = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_REPEAT, path+"_repeat",
 					0, 2, 2, false, false, classicLottoI);
+			ArgumentConstructor nextdraws = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_NEXTDRAWS, path+"_nextdraws",
+					0, 1, 1, false, false, classicLottoI);
 			CommandConstructor cl = new CommandConstructor(CommandSuggest.Type.CLASSICLOTTO, path, false, false,
-					drawnow, play, addpot, setpot, giveticket, open, ticketlist, repeat);
+					drawnow, play, addpot, setpot, giveticket, open, ticketlist, repeat, nextdraws);
 			registerCommand(cl, new ClassicLottoCommandExecutor(plugin, cl), tab);
 			new ARG_DrawNow(drawnow);
 			new ARG_Play(play);
@@ -248,6 +251,7 @@ public class LLY extends JavaPlugin
 			new ARG_Open(open);
 			new ARG_Ticketlist(ticketlist);
 			new ARG_Repeat(repeat);
+			new ARG_NextDraws(nextdraws);
 		}
 		
 		//ArgumentConstructor add = new ArgumentConstructor(CommandSuggest.Type.FRIEND_ADD, "friend_add", 0, 1, 1, false, playerMapI);

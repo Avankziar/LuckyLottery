@@ -1,5 +1,7 @@
 package me.avankziar.lly.general.objects;
 
+import java.util.ArrayList;
+
 public class WinningClass 
 {
 	public enum PayoutType
@@ -29,13 +31,22 @@ public class WinningClass
 	 * The lottorule, how much number you must have match to win this winningclass.
 	 */
 	private int numberMatchToWin;
+	/**
+	 * All commands, will be executed if the player wins the winningclass.
+	 */
+	private ArrayList<ExecutableCommand> executableCommands = new ArrayList<>();
 	
-	public WinningClass(int winningClassLevel, PayoutType payoutType, double amount, int numberMatchToWin)
+	private KeepsakeItem keepsakeItem;
+	
+	public WinningClass(int winningClassLevel, PayoutType payoutType, double amount, int numberMatchToWin,
+			ArrayList<ExecutableCommand> executableCommands, KeepsakeItem keepsakeItem)
 	{
 		setWinningClassLevel(winningClassLevel);
 		setPayoutType(payoutType);
 		setAmount(amount);
 		setNumberMatchToWin(numberMatchToWin);
+		setExecutableCommands(executableCommands);
+		setKeepsakeItem(keepsakeItem);
 	}
 
 	public int getWinningClassLevel() {
@@ -68,5 +79,21 @@ public class WinningClass
 
 	public void setNumberMatchToWin(int numberMatchToWin) {
 		this.numberMatchToWin = numberMatchToWin;
+	}
+
+	public ArrayList<ExecutableCommand> getExecutableCommands() {
+		return executableCommands;
+	}
+
+	public void setExecutableCommands(ArrayList<ExecutableCommand> executableCommands) {
+		this.executableCommands = executableCommands;
+	}
+
+	public KeepsakeItem getKeepsakeItem() {
+		return keepsakeItem;
+	}
+
+	public void setKeepsakeItem(KeepsakeItem keepsakeItem) {
+		this.keepsakeItem = keepsakeItem;
 	}
 }

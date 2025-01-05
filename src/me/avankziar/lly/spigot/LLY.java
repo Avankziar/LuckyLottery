@@ -29,7 +29,9 @@ import me.avankziar.ifh.general.valueentry.ValueEntry;
 import me.avankziar.ifh.spigot.administration.Administration;
 import me.avankziar.ifh.spigot.economy.Economy;
 import me.avankziar.ifh.spigot.interfaces.ProxyOnlinePlayers;
+import me.avankziar.ifh.spigot.sendable.Parcel;
 import me.avankziar.ifh.spigot.tovelocity.chatlike.MessageToVelocity;
+import me.avankziar.ifh.spigot.tovelocity.commands.CommandToVelocity;
 import me.avankziar.lly.general.assistance.Utility;
 import me.avankziar.lly.general.cmdtree.ArgumentConstructor;
 import me.avankziar.lly.general.cmdtree.BaseConstructor;
@@ -79,6 +81,8 @@ public class LLY extends JavaPlugin
 	private MessageToVelocity mtvConsumer;
 	private ProxyOnlinePlayers proxyOnlinePlayersConsumer;
 	private Economy ecoConsumer;
+	private CommandToVelocity commandToVelocityConsumer;
+	private Parcel parcelConsumer;
 	
 	private net.milkbowl.vault.economy.Economy vEco;
 	
@@ -432,6 +436,8 @@ public class LLY extends JavaPlugin
 		setupIFHMessageToVelocity();
 		setupIFHBungeeOnlinePlayers();
 		setupIFHEconomy();
+		setupIFHCommandToVelocity();
+		setupIFHParcel();
 	}
 	
 	public void setupIFHValueEntry()
@@ -732,6 +738,92 @@ public class LLY extends JavaPlugin
 	public net.milkbowl.vault.economy.Economy getVaultEco()
 	{
 		return this.vEco;
+	}
+	
+	private void setupIFHCommandToVelocity() 
+	{
+        if(Bukkit.getPluginManager().getPlugin("InterfaceHub") == null) 
+        {
+            return;
+        }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+				try
+				{
+					if(i == 20)
+				    {
+						cancel();
+						return;
+				    }
+				    RegisteredServiceProvider<me.avankziar.ifh.spigot.tovelocity.commands.CommandToVelocity> rsp = 
+		                             getServer().getServicesManager().getRegistration(
+		                            		 me.avankziar.ifh.spigot.tovelocity.commands.CommandToVelocity.class);
+				    if(rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    commandToVelocityConsumer = rsp.getProvider();
+				    log.info(pluginname + " detected InterfaceHub >>> CommandToVelocity.class is consumed!");
+				    cancel();
+				} catch(NoClassDefFoundError e)
+				{
+					cancel();
+				}			    
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+	}
+	
+	public CommandToVelocity getCtV()
+	{
+		return commandToVelocityConsumer;
+	}
+	
+	private void setupIFHParcel() 
+	{
+        if(Bukkit.getPluginManager().getPlugin("InterfaceHub") == null) 
+        {
+            return;
+        }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+				try
+				{
+					if(i == 20)
+				    {
+						cancel();
+						return;
+				    }
+				    RegisteredServiceProvider<me.avankziar.ifh.spigot.sendable.Parcel> rsp = 
+		                             getServer().getServicesManager().getRegistration(
+		                            		 me.avankziar.ifh.spigot.sendable.Parcel.class);
+				    if(rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    parcelConsumer = rsp.getProvider();
+				    log.info(pluginname + " detected InterfaceHub >>> Parcel.class is consumed!");
+				    cancel();
+				} catch(NoClassDefFoundError e)
+				{
+					cancel();
+				}			    
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+	}
+	
+	public Parcel getParcel()
+	{
+		return parcelConsumer;
 	}
 	
 	public void setupBstats()

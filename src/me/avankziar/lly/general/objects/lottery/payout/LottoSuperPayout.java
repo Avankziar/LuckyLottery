@@ -10,9 +10,9 @@ public class LottoSuperPayout extends ClassicLottoPayout
 	private int addtionalNumberMatchToWin;
 	
 	public LottoSuperPayout(int winningCategoryLevel, PayoutType payoutType, double payout, 
-			HashSet<UUID> uuids, int numberMatchToWin, int addtionalNumberMatchToWin)
+			HashSet<UUID> uuids, int winnersamount, int numberMatchToWin, int addtionalNumberMatchToWin)
 	{
-		super(winningCategoryLevel, payoutType, payout, uuids, 0, numberMatchToWin);
+		super(winningCategoryLevel, payoutType, payout, uuids, winnersamount, numberMatchToWin);
 		setAddtionalNumberMatchToWin(addtionalNumberMatchToWin);
 	}
 

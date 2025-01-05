@@ -6,6 +6,9 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
+
 import me.avankziar.lly.general.database.Language.ISO639_2B;
 import me.avankziar.lly.general.objects.WinningClass.PayoutType;
 import me.avankziar.lly.general.objects.lottery.Lottery;
@@ -834,6 +837,18 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"Keine Lotterieziehung",
 						"No lottery drawing"}));
+		languageKeys.put("Parcel.Displayname", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Lotterie Gewinnandenken",
+						"Lottery winning keepsake"}));
+		languageKeys.put("Parcel.Lore", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Du hast die Lotterie gewonnen! Dies ist ein Andenken daran, verpack als Packet.",
+						"You've won the lottery! This is a souvenir, package it up."}));
+		languageKeys.put("Parcel.Sended", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>Dir wurde ein Item als Gewinnandenken zugestellt.",
+						"<gray>You have been sent an item as a souvenir of your win."}));
 		initClassicLotto();
 		initLottoSuper();
 	}
@@ -1318,6 +1333,77 @@ public class YamlManager
 					"The number of lottery numbers that match the numbers chosen by the player to win the prize in that prize category.",
 					"In reality, it is possible that if more than 8 numbers are drawn, the first correct numbers are usually skipped in the lower prize categories.",
 					"This means that if you would theoretically draw 8 numbers you could only make 7 or 6 winning classes, so to win a prize you have to have at least 3 correct numbers."}));
+		mapII.put("WinningClass.1.ExecutableCommand", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"SPIGOT;100;1;10;false;dummy %playername% %random%",
+					"VELOCITY;100;1;10;false;dummy %playername% %random%"}));
+		mapII.put("#WinningClass.1.ExecutableCommand", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"ExecutableCommand ist eine Liste aus Befehlen, welche beim gewinnen der Gewinnklasse per Konsole ausgelöst werden. Diese Liste muss nicht bei allen Gewinnklassen dabei stehen.",
+					"Dabei ist diese Liste wie folgt aufgebaut:",
+					"Der erste Parameter ist entweder SPIGOT oder VELOCITY. Es deklariert wo der Befehl von der Konsole ausgelöst werden soll. Achtung! VELOCITY ist nur möglich wenn ein Drittplugin das Interface CommandToVelocity über IFH bereitstellt.",
+					"Der zweite Parameter determiniert eine Wahrscheinlichkeit von 0 bis 100%. D.h. dass wenn man die Gewinnklasse schon gewonnen hat, könnte man damit nochmal eine Ausführungswahrscheinlichkeit determinieren.",
+					"Der dritte und vierte Parameter ist ein Randomgenerator. Sollte man im Befehl eine Zahl benötigen, kann man diese vom Randomgenerator auswürfeln lassen. Der Dritte ist dabei der Start und der vierte das Ende des Bereichs der random generierten Zahlen.",
+					"Parameter Fünf ist ein boolean, der bestimmt dass wenn 'true' der RandomWert von 3. & 4. als Double dargestellt werden soll. Aka aus der random Zahl 12 wird dann 12.0. Wenn es eine Ganzzahl sein soll, bleibt der Wert auf false.",
+					"Der letzte Parameter ist der Befehl an sich. Dabei werden die Replacer %playername% für den Spielernamen und %random% für die Randomzahl akzeptiert.",
+					"",
+					"ExecutableCommand is a list of commands that are triggered via the console when the winning class is won. This list does not have to be included in all winningclasses.",
+					"This list is structured as follows:",
+					"The first parameter is either SPIGOT or VELOCITY. It declares where the command should be triggered from the console. Attention! VELOCITY is only possible if a third party plugin provides the CommandToVelocity interface via IFH.",
+					"The second parameter determines a probability from 0 to 100%. This means that if you have already won the prize category, you can use it to determine another probability of execution.",
+					"The third and fourth parameters are a random generator. If you need a number in the command, you can have the random generator roll it. The third is the start and the fourth is the end of the range of randomly generated numbers.",
+					"Parameter five is a boolean that determines that if 'true' the random value of 3. & 4. should be represented as a double. Aka the random number 12 becomes 12.0. If it should be an integer, the value remains false.",
+					"The last parameter is the command itself. The replacers %playername% for the player name and %random% for the random number are accepted."}));
+		mapII.put("WinningClass.1.KeepsakeItem.Material", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					Material.BEACON.toString()}));
+		mapII.put("#WinningClass.1.KeepsakeItem", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Das KeepsakeItem ist ein Andenkitem, welches Spieler bekommen sollen, die die Spieler bekommen sollen, welche diese Gewinnklass gewonnen haben.",
+					"",
+					""}));
+		mapII.put("WinningClass.1.KeepsakeItem.Amount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("WinningClass.1.KeepsakeItem.Displayname", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"&cGewinnschein der &f%lotteryname% &cLotterie",
+					"&cWinning ticket of the &f%lotteryname% &cLottery"}));
+		mapII.put("#WinningClass.1.KeepsakeItem.Displayname", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Bedenkt, beim Displayname und der Lore ist weiterhin der alte ColorCode zu nutzen.",
+					"",
+					"Please note that the old color code must still be used for the display name and the lore."}));
+		mapII.put("WinningClass.1.KeepsakeItem.Lore", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"&eDu hattest %matchchoosennumberamount% Richtige! Deine Zahlen: &f%matchchoosennumber%",
+					"&eDu hast die Gewinnklasse %wc1level% gewonnen!",
+					"&eDatum &f%drawtime%",
+					"&eDein Preis &r%winningclass1payout%",
+					"&eYou got %matchchoosennumberamount% right! Your numbers: &f%matchchoosennumber%",
+					"&eYou have won the prize category %wc1level%!",
+					"&eDate &f%drawtime%",
+					"&eYour price &r%winningclass1payout%"}));
+		mapII.put("WinningClass.1.KeepsakeItem.EnchantmentGlintOverride", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"null"}));
+		mapII.put("#WinningClass.1.KeepsakeItem.EnchantmentGlintOverride", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/meta/ItemMeta.html#getEnchantmentGlintOverride()",
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/meta/ItemMeta.html#getEnchantmentGlintOverride()"}));
+		mapII.put("WinningClass.1.KeepsakeItem.Enchantment", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"PROTECTION;2",
+					"THORNS;1"}));
+		mapII.put("#WinningClass.1.KeepsakeItem.Enchantment", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html",
+					"Sowie das Level der Verzauberung hinter dem ;",
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html",
+					"As well as the level of enchantment behind the ;"}));
+		mapII.put("WinningClass.1.KeepsakeItem.ItemFlag", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					ItemFlag.HIDE_ADDITIONAL_TOOLTIP.toString(),
+					ItemFlag.HIDE_ENCHANTS.toString()}));
+		mapII.put("#WinningClass.1.KeepsakeItem.ItemFlag", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemFlag.html",
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemFlag.html"}));
 		//------------
 		mapII.put("WinningClass.2.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));

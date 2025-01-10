@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import me.avankziar.lly.general.objects.lottery.ClassicLotto;
 import me.avankziar.lly.general.objects.lottery.LottoSuper;
+import me.avankziar.lly.general.objects.lottery.ScratchCard;
 
 public class LotteryHandler 
 {
@@ -24,15 +25,25 @@ public class LotteryHandler
 				.findAny();
 	}
 	
+	public static Collection<ScratchCard> getScratchCard(){return ScratchCardHandler.scratchcard;}
+	public static Optional<ScratchCard> getScratchCard(String uniquename)
+	{
+		return getScratchCard().stream()
+				.filter(x -> x.getLotteryName().equals(uniquename))
+				.findAny();
+	}
+	
 	public static void initalized()
 	{
 		ClassicLottoHandler.initalizedYamls();
-		//LottoSuperHandler.initalizedYamls();
+		LottoSuperHandler.initalizedYamls();
+		ScratchCardHandler.initalizedYamls();
 	}
 	
 	public static void initalizedDraws()
 	{
 		ClassicLottoHandler.initalizedDraws();
-		///LottoSuperHandler.initalizedDraws();
+		LottoSuperHandler.initalizedDraws();
+		ScratchCardHandler.initalizedDraws();
 	}
 }

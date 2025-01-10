@@ -33,6 +33,9 @@ public class CommandSuggest
 		LOTTOSUPER_TICKETLIST,
 		LOTTOSUPER_REPEAT,
 		LOTTOSUPER_NEXTDRAWS,
+		
+		SCRATCHCARD,
+		SCRATCHCARD_PLAY,
 	}
 	
 	public static LinkedHashMap<CommandSuggest.Type, BaseConstructor> map = new LinkedHashMap<>();

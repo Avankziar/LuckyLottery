@@ -153,6 +153,7 @@ public class ClassicLottoHandler
 						{
 							Material material = Material.valueOf(y.getString("WinningClass."+i+".KeepsakeItem.Material"));
 							int amount = y.getInt("WinningClass."+i+".KeepsakeItem.Amount");
+							amount = amount > 64 ? 64 : (amount < 1 ? 1 : amount);
 							String displayname = y.getString("WinningClass."+i+".KeepsakeItem.Displayname");
 							ArrayList<String> lore = new ArrayList<>();
 							if(y.contains("WinningClass."+i+".Lore"))
@@ -301,42 +302,35 @@ public class ClassicLottoHandler
 		{
 			@Override
 			public void run() 
-			{	
-				LLY.log.info("Now: "+DrawTime.getNow()); //REMOVEME
+			{
 				for(ClassicLotto cl : LotteryHandler.getClassicLotto())
 				{
-					LLY.log.info(" Cl: "+cl.getLotteryName()); //REMOVEME
 					for(Advertising ad : cl.getAdvertising())
 					{
 						if(!ad.isActive())
 						{
 							continue;
 						}
-						LLY.log.info("  Advertising is active."); //REMOVEME
 						for(DrawTime dr : ad.getDrawTime())
 						{
 							if(dr.isNow(ldt))
 							{
-								LLY.log.info("  Ad is now! >>> "+dr.toString()); //REMOVEME
 								advertise(cl, ad);
 							}
 						}
 					}
 					if(cl.isDrawManually())
 					{
-						LLY.log.info("  isDrawManually"); //REMOVEME
 						continue;
 					}
 					if(!cl.getDrawOnServer().equals(server))
 					{
-						LLY.log.info("  DrawOnServer isnt "+cl.getDrawOnServer() + " : "+server); //REMOVEME
 						continue;
 					}
 					for(DrawTime dr : cl.getDrawTime())
 					{
 						if(dr.isNow(ldt))
 						{
-							LLY.log.info("  DrawLott is now! >>> "+dr.toString()); //REMOVEME
 							drawLotto(cl, new LinkedHashSet<Integer>(), true);
 						}
 					}

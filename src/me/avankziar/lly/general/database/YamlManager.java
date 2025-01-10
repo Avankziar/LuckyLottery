@@ -851,9 +851,10 @@ public class YamlManager
 						"<gray>You have been sent an item as a souvenir of your win."}));
 		initClassicLotto();
 		initLottoSuper();
+		initScratchCard();
 	}
 	
-	private void initClassicLotto()
+	private void initClassicLotto() //INFO:ClassicLotto
 	{
 		String path = "ClassicLotto";
 		languageKeys.put(path+".NoClassicLottoFound", 
@@ -1138,13 +1139,310 @@ public class YamlManager
 						"<white>, <gray>"}));
 	}
 	
-	private void initLottoSuper()
+	private void initLottoSuper() //INFO:LottoSuper
 	{
 		String path = "LottoSuper";
+		languageKeys.put(path+".NoLottoSuperFound", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Die angegebene super Lotterie extiert nicht!",
+						"<red>The specified super lottery does not exist!"}));
+		languageKeys.put(path+".NoLottoSuperDrawFound", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Für die angegebene Lotterie wird keine Ziehung erwartet! Fehler mit der Mysql!",
+						"<red>No drawing is expected for the specified lottery! Error with MySQL!"}));
+		languageKeys.put(path+".Draw.NoTicketAreBought", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
+						"<gold>JackPot bis zu <white>%actualpot%<gold>! <aqua>Hauptgewinn <white>%highestwinningclass%<aqua>!",
+						"<yellow>Gezogene Nummer: <reset>%drawnnumber% %additionaldrawnnumber%",
+						"<red>Keine Lose wurden verkauft!",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\\\\\{...",
+						"<gold>JackPot up to <white>%actualpot%<gold>! <aqua>Main prize <white>%highestwinningclass%<aqua>!",
+						"<yellow>Drawn number: <reset>%drawnnumber% %additionaldrawnnumber%",
+						"<red>No tickets were sold!",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+		languageKeys.put(path+".Draw.RepeatTicket.Category", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%lotteryname%-Ticket",
+						"%lotteryname%-Ticket"}));
+		languageKeys.put(path+".Draw.RepeatTicket.Comment", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Lotterie Ticket wurde automatisch wiedergekauft.",
+						"Lottery ticket was automatically repurchased."}));
+		languageKeys.put(path+".Draw.WinningClassReplacer", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>GW%level%: <white>%winneramount%",
+						"<gray>GW%level%: <white>%winneramount%"}));
+		languageKeys.put(path+".Draw.WinningClassReplacerSeperator", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>, ",
+						"<gray>, "}));
+		languageKeys.put(path+".Draw.JackpotWasBreached", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
+						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber% %additionaldrawnnumber%",
+						"<gold>Gratulation an <white>%winners% <gold>zum knacken des Jackpots!",
+						"<gold>Gewonnen wurden <red><bold>%highestwinningclass% <reset><gold>verteilt auf alle Hauptgewinner.",
+						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
+						"<gray>%winningclasswinneramount%",
+						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
+						"<aqua><bold>%nextpot% zu gewinnen!",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\\\\\{...",
+						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber% %additionaldrawnnumber%",
+						"<gold>Congratulations to <white>%winners% <gold>for hitting the jackpot!",
+						"<gold>The prize money won was <red><bold>%highestwinningclass% <reset><gold>distributed among all mainwinners.",
+						"<gray>Following are the number of winners in all prize categories:",
+						"<gray>%winningclasswinneramount%",
+						"<yellow>The next lottery pot contains a total of up to ...",
+						"<aqua><bold>%nextpot% to win!",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
+		languageKeys.put(path+".Draw.JackpotIsUntouched", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Ziehung <#d2b773>===\\{...",
+						"<yellow>Folgend Zahlen wurden gezogen: <white><bold>%drawnnumber% %additionaldrawnnumber%",
+						"<gray><bold>Leider gab es keinen Hauptgewinner!",
+						"<gray>Folgend die Anzahl der Gewinner in allen Gewinnklassen:",
+						"<gray>%winningclasswinneramount%",
+						"<yellow>Im nächsten Lotteriepot sind insgesamt bis zu satte ...",
+						"<aqua><bold>%nextpot% zu gewinnen!",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>%lotteryname% <white>Draw <#d2b773>===\\\\{...",
+						"<yellow>The following numbers were drawn: <white><bold>%drawnnumber% %additionaldrawnnumber%",
+						"<gray><bold>Unfortunately there was no main winner!",
+						"<gray>Following are the number of winners in all prize categories:",
+						"<gray>%winningclasswinneramount%",
+						"<yellow>The next lottery pot contains a total of up to ...",
+						"<aqua><bold>%nextpot% to win!",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\\\\\{..."}));
+		languageKeys.put(path+".Draw.Won", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"        <gold><bold>! GEWONNEN !",
+						"<yellow>Du hattest %matchchoosennumberamount% & %matchadditionalchoosennumberamount% richtige!",
+						"<gray>Deine Nummern:<reset> %matchchoosennumber% %matchadditionalchoosennumber%",
+						"<yellow>Dein Preis: %payout%",
+						"        <gold><bold>! WON !",
+						"<yellow>You had %matchchoosennumberamount% & %matchadditionalchoosennumberamount% correct!",
+						"<gray>Your numbers:<reset> %matchchoosennumber% %matchadditionalchoosennumber%",
+						"<yellow>Your price: %payout%"}));
+		languageKeys.put(path+".Draw.NotWon", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Schade! Nicht gewonnen. %matchchoosennumber% %matchadditionalchoosennumber%",
+						"<yellow>Too bad! Not won. %matchchoosennumber% %matchadditionalchoosennumber%"}));
+		languageKeys.put(path+".Draw.Win.Category", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%lottoryname%-Gewinn",
+						"%lottoryname%-Prize"}));
+		languageKeys.put(path+".Draw.Win.Comment", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Gewonnen in der Gewinnkategory %level%.",
+						"Won in the winning category %level%."}));
+		languageKeys.put(path+".Cmd.Headline", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=== <gold>Super Lotto Info <#d2b773>===\\{...",
+						"<#d2b773>...}/=== <gold>Super Lotto Info <#d2b773>===\\{..."}));
+		languageKeys.put(path+".Cmd.BottomLine", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+		languageKeys.put(path+".Cmd.GeneralInfo", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<aqua><bold>%lotteryname%:</bold> <white>Ziehung: %nextdraw%",
+						"<gray>%description%",
+						"<red>Aktueller Pot: <white>%actualpot% | %costperticket% <red>pro Ticket.",
+						"<click:run_command:'%lottosupercmd%%lotteryname%'><gray>Klicke {hier} für mehr Infos.</click>",
+						"<aqua><bold>%lotteryname%:</bold> <white>Draw: %nextdraw%",
+						"<gray>%description%",
+						"<red>Current pot: <white>%actualpot% | %costperticket% <red>per ticket.",
+						"<click:run_command:'%lottosupercmd%%lotteryname%'><gray>Click {here} for more info.</click>"}));
+		languageKeys.put(path+".Cmd.DetailInfo", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
+						"<aqua><bold>%lotteryname%:",
+						"<gray>%description%",
+						"<red>Nächste Ziehung: <white>%nextdraw%",
+						"<red>Aktueller Pot: <white>%actualpot% | %costperticket% <red>pro Ticket.",
+						"<red>Gewinnchance <white>1:%winningchance%",
+						"<red>Mindest Pot: <white>%standartpot% | <red>Maximaler Pot: <white>%maximumpot%",
+						"<red>Ehöhung des Pot, falls es kein Hauptgewinner gibt: <white>%amounttoaddpot%",
+						"<click:run_command:'%lottosuperbet%%lotteryname%'><gold>Klicke {hier} zum spielen.</click>",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
+						"<aqua><bold>%lotteryname%:",
+						"<gray>%description%",
+						"<red>Next draw: <white>%nextdraw%",
+						"<red>Current pot: <white>%actualpot% | %costperticket% <red>per ticket.",
+						"<red>Chance of winning <white>1:%winningchance%",
+						"<red>Minimum pot: <white>%standardpot% | <red>Maximum Pot: <white>%maximumpot%",
+						"<red>Increase the pot if there is no main winner: <white>%amounttoaddpot%",
+						"<click:run_command:'%lottosuperbet%%lotteryname%'><gold>Click {here} to play.</click>",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+		languageKeys.put(path+".Arg.AddPot.Added", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Der Pot des super Lottos %lotteryname% wurde von <white>%oldpot% <yellow>auf <white>%actualpot% <yellow>um <white>%added% <yellow>erhöht!",
+						"<yellow>The pot of the super lotto %lotteryname% has been increased from <white>%oldpot% <yellow>to <white>%actualpot% <yellow>by <white>%added% <yellow>!"}));
+		languageKeys.put(path+".Arg.SetPot.Set", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Der Pot des super Lottos %lotteryname% wurde von <white>%oldpot% <yellow>auf <white>%actualpot% <yellow>gesetzt!",
+						"<yellow>The pot of the super lotto %lotteryname% was set from <white>%oldpot% <yellow>to <white>%actualpot% <yellow>!"}));
+		languageKeys.put(path+".DrawNow.OnCooldown", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<white>Achtung! <red>Die Ziehung der Lotterie %lotteryname% besitzt eine Abklingzeit!",
+						"<white>Attention! <red>The drawing of the lottery %lotteryname% has a cooldown period!"}));
+		languageKeys.put(path+".Arg.GiveTicket.Give", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gold>Gratulation! <yellow>Dir wurde von %player% ein Los in der Lotterie %lotteryname% mit folgenden Zahlen geschenkt: <white>%choosennumber% %additionalchoosennumber%",
+						"<gold>Congratulations! <yellow>You have been given a ticket in the lottery %lotteryname% by %player% with the following numbers: <white>%choosennumber% %additionalchoosennumber%"}));
+		languageKeys.put(path+".Arg.GiveTicket.Given", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Du hast <white>%amount% <yellow>Spielern <white>%value% <yellow>Ticket(s) in der Lotterie %lotteryname% geschenkt!",
+						"<yellow>You have given <white>%amount% <yellow>players <white>%value% <yellow>ticket(s) in the %lotteryname% lottery!"}));
+		languageKeys.put(path+".Arg.NextDraw.NoDraws", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Keine nächste Ziehung! Lotterie wird manuell gezogen!",
+						"<red>No next drawing! Lottery will be drawn manually!"}));
+		languageKeys.put(path+".Arg.NextDraw.NextDraws", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gold>Nächste Ziehung für <white>%lotteryname%<yellow>:",
+						"<gold>Next draw for <white>%lotteryname%<yellow>:"}));
+		languageKeys.put(path+".Arg.NextDraw.NextDrawsReplacer", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>%next%",
+						"<gray>%next%"}));
+		languageKeys.put(path+".Arg.NextDraw.SeperatorReplacer", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<white>, <gray>",
+						"<white>, <gray>"}));
+		languageKeys.put(path+".Arg.Open.AlreayOpen", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Die Lotterie %lotteryname% ist schon eröffnet.",
+						"<red>The lottery %lotteryname% is already open."}));
+		languageKeys.put(path+".Arg.Open.Open", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Die Lotterie %lotteryname% ist nun eröffnet mit einem aktuellen Jackpot von bis zu %actualpot%<yellow>.",
+						"<yellow>The lottery %lotteryname% is now open with a current jackpot of up to %actualpot%<yellow>."}));
+		languageKeys.put(path+".Arg.Play.LotteryNotOpen", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Die Lotterie erlaubt zurzeit keinen Ticketkauf!",
+						"<red>The lottery currently does not allow ticket purchases!"}));
+		languageKeys.put(path+".Arg.Play.TooManyTickets", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Du hast schon %amount% Lose für die Lotterie %lotteryname%. Pro Ziehung sind nur maximal %maximum% Lose erlaubt.",
+						"<red>You already have %amount% tickets for the lottery %lotteryname%. Only a maximum of %maximum% tickets are allowed per drawing."}));
+		languageKeys.put(path+".Arg.Play.AlreadyChoosenNumber", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<aqua>Deine bisher gewählten Nummern: <white>%choosennumber% %additionalchoosennumber%",
+						"<aqua>Your previously selected numbers: <white>%choosennumber% %additionalchoosennumber%"}));
+		languageKeys.put(path+".Arg.Play.RandomChoose", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Klicke <red>{hier} <yellow>um deine Nummber <white>zufällig <yellow>auszuwählen!",
+						"<yellow>Click <red>{here} <yellow>to select your Nummber <white>randomly <yellow>!"}));
+		languageKeys.put(path+".Arg.Play.ShouldRepeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Soll dein Ticket sich nach einer Ziehung wiederholen: <reset>%shouldrepeat% <gray>(Klicke aufs Icon)",
+						"<yellow>Should your ticket repeat after a draw: <reset>%shouldrepeat% <gray>(Click on icon)"}));
+		languageKeys.put(path+".Arg.Play.ChooseNumber", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Bitte wähle deine gewünschten %amountofchoosennumber% Zahlen aus:",
+						"<yellow>Please select your desired %amountofchoosennumber% numbers:"}));
+		languageKeys.put(path+".Arg.Play.AdditionalChooseNumber", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Bitte wähle deine gewünschten %additionalamountofchoosennumber% super Zahlen aus:",
+						"<yellow>Please select your desired %additionalamountofchoosennumber% super numbers:"}));
+		languageKeys.put(path+".Arg.Play.Seperator", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						" ",
+						" "}));
+		languageKeys.put(path+".Arg.Play.Category", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%lotteryname%-Ticket",
+						"%lotteryname%-Ticket"}));
+		languageKeys.put(path+".Arg.Play.Comment", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Lotterie Ticket wurde gekauft.",
+						"Lottery ticket was purchased."}));
+		languageKeys.put(path+".Arg.Play.TicketBought", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Du hast ein Ticket gekauft! Viel Glück! Gewählte Zahlen: <white>%choosennumber% %additionalchoosennumber%",
+						"<yellow>You have bought a ticket! Good luck! Chosen numbers: <white>%choosennumber% %additionalchoosennumber%"}));
+		languageKeys.put(path+".Arg.Play.MayYouConfirm", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Gewählte Zahlen: <white>%choosennumber% %additionalchoosennumber%",
+						"<yellow>Die Kosten belaufen sich auf <white>%costperticket%",
+						"<yellow>Möchtest du bestätigen? <red>Klicke {hier}!",
+						"<yellow>Numbers chosen: <white>%choosennumber% %additionalchoosennumber%",
+						"<yellow>The costs amount to <white>%costperticket%",
+						"<yellow>Would you like to confirm? <red>Click {here}!"}));
+		languageKeys.put(path+".Arg.Repeat.DontExist", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red> Das Ticket %id% der Lotterie %lotteryname% existiert nicht!",
+						"<red> The ticket %id% of the lottery %lotteryname% does not exist!"}));
+		languageKeys.put(path+".Arg.Repeat.DontYours", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red> Das Ticket %id% der Lotterie %lotteryname% gehört dir nicht!",
+						"<red> The ticket %id% of the lottery %lotteryname% does not belong to you!"}));
+		languageKeys.put(path+".Arg.Repeat.TicketCreated", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow> Die Ziehung der Lotterie, welche das Ticket angehört, wurde schon gezogen! <green>Ticket für nächste Ziehung neu erstellt!",
+						"<yellow> The lottery to which the ticket belongs has already been drawn! <green>New ticket created for next draw!"}));
+		languageKeys.put(path+".Arg.Repeat.Repeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Das Ticket %id% der Lotterie %lotteryname% wurde wiederholt!",
+						"<yellow>The ticket %id% of the lottery %lotteryname% was repeated!"}));
+		languageKeys.put(path+".Arg.Repeat.DontRepeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Das Ticket %id% der Lotterie %lotteryname% wird <red>nicht <yellow>wiederholt!",
+						"<yellow>The ticket %id% of the lottery %lotteryname% will <red>not <yellow>be repeated!"}));
+		languageKeys.put(path+".Arg.TicketList.NoTickets", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Du hast in dieser Lotterie keine Tickets!",
+						"<red>You have no tickets in this lottery!"}));
+		languageKeys.put(path+".Arg.TicketList.Headline", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>===== <yellow>Lotterie <gold>%lotteryname% <gray>=====",
+						"<gray>===== <yellow>Lottery <gold>%lotteryname% <gray>====="}));
+		languageKeys.put(path+".Arg.TicketList.Listed", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>ID: <white>%id% | <red>Status: <white>%status% %repeat%",
+						"<red>ID: <white>%id% | <red>Status: <white>%status% %repeat%"}));
+		languageKeys.put(path+".Arg.TicketList.StatusWon", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<green>Gewonnen! >> <white>%numbers% %additionalnumbers% <gray>GW<white>%winningclass% : %prize%",
+						"<green>Won! >> <white>%numbers% %additionalnumbers% <gray>GW<white>%winningclass% : %prize%"}));
+		languageKeys.put(path+".Arg.TicketList.StatusDontWon", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gray>Verloren >> <white>%numbers% %additionalnumbers%",
+						"<gray>Lost >> <white>%numbers% %additionalnumbers%"}));
+		languageKeys.put(path+".Arg.TicketList.StatusPending", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Ziehung folgt >> <white>%numbers% %additionalnumbers%",
+						"<yellow>Drawing follows >> <white>%numbers% %additionalnumbers%"}));
+		languageKeys.put(path+".Arg.TicketList.Repeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<click:suggest_command:'%classiclottorepeat%%lotteryname% %id%'><gray>{Wiederholen?}</click>",
+						"<click:suggest_command:'%classiclottorepeat%%lotteryname% %id%'><gray>{Repeat?}</click>"}));
+		languageKeys.put(path+".Arg.TicketList.DontRepeat", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<click:suggest_command:'%classiclottorepeat%%lotteryname% %id%'><gray>{Nicht wiederholen?}</click>",
+						"<click:suggest_command:'%classiclottorepeat%%lotteryname% %id%'><gray>{Not repeat?}</click>"}));
 		languageKeys.put(path+"", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"",
 						""}));
+	}
+	
+	private void initScratchCard() //INFO:LottoSuper
+	{
+		String path = "ScratchCard";
+		languageKeys.put(path+".NoScratchCardFound", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<red>Die angegebene Rubbellose extiert nicht!",
+						"<red>The specified scratchcard does not exist!"}));
+		languageKeys.put(path+".Arg.Play.FieldWin", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<white>%d% <gray>x %amount% <gray>= %result%",
+						"<white>%d% <gray>x %amount% <gray>= %result%"}));
 	}
 	
 	private void initModifierValueEntryLanguage() //INFO:BonusMalusLanguages
@@ -1175,9 +1473,10 @@ public class YamlManager
 	{
 		initDefaultClassicLotto();
 		initDefaultLottoSuper();
+		initDefaultScratchCard();
 	}
 	
-	private void initDefaultClassicLotto()
+	private void initDefaultClassicLotto() //INFO:DefaultClassicLotto
 	{
 		Lottery.GameType type = GameType.X_FROM_Y;
 		LinkedHashMap<String, LinkedHashMap<String, Language>> mapI = new LinkedHashMap<>();
@@ -1359,7 +1658,7 @@ public class YamlManager
 					"",
 					"Das KeepsakeItem ist ein Andenkitem, welches Spieler bekommen sollen, die die Spieler bekommen sollen, welche diese Gewinnklass gewonnen haben.",
 					"",
-					""}));
+					"The KeepsakeItem is an Andean item that players who have won this prize class should receive."}));
 		mapII.put("WinningClass.1.KeepsakeItem.Amount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
 		mapII.put("WinningClass.1.KeepsakeItem.Displayname", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -1514,7 +1813,7 @@ public class YamlManager
 		getLottery().put(type, mapI);
 	}
 	
-	private void initDefaultLottoSuper()
+	private void initDefaultLottoSuper() //INFO:DefaultLottoSuper
 	{
 		Lottery.GameType type = GameType.X_FROM_Y_AND_Z_FROM_U;
 		LinkedHashMap<String, LinkedHashMap<String, Language>> mapI = new LinkedHashMap<>();
@@ -1647,9 +1946,13 @@ public class YamlManager
 					"",
 					"Deklariert, wann die Lotterie gezogen wird. Es können mehrere Zeiten festgelegt werden.",
 					"Dabei wird zuerst immer die Woche des Monats als Zahl genannt, dann der Wochentag in Großbuchstaben, dann die Stunden und Minutenzahl.",
+					"Bedenke, dass es auch Monate mit 5 Wochen gibt. Nach der ISO Regel ist aber bspw. der 1. Dezember 2024 zum 4. Woche des November gehörend.",
+					"Da immer dort wo der erste Donnerstag im Monat ist, die erste Woche des Monats ist.",
 					"",
 					"Declares when the lottery will be drawn. Multiple times can be specified.",
-					"The week of the momnth is always given first as number, than the day of the week given first in capital letters, followed by the hours and minutes."}));
+					"The week of the momnth is always given first as number, than the day of the week given first in capital letters, followed by the hours and minutes.",
+					"Remember that there are also months with 5 weeks. However, according to the ISO rule, for example, December 1, 2024 belongs to the 4th week of November.",
+					"Because wherever the first Thursday of the month is, that is the first week of the month."}));
 		mapII.put("WinningClass.1.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));
 		mapII.put("#WinningClass.1.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -1685,13 +1988,64 @@ public class YamlManager
 					"=> https://www.powerball.com/powerball-prize-chart"}));
 		mapII.put("WinningClass.1.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
-		mapII.put("#WinningClass.9.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+		mapII.put("#WinningClass.1.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Anzahl an additionalen Lottozahlen (meist SuperZahlen genannt),",
 					"die den vom Spieler gewählten additionalen Zahlen gleicht um den Preis in dieser Gewinnklasse zu erhalten. (In Kombination mit den normalen Zahlen)",
 					"",
-					"The number of lottery numbers that match the numbers chosen",
-					"by the player to win the prize in that prize category. (In combination with the normal numbers)"}));
+					"The number of additional lottery numbers (usually called SuperNumbers)",
+					"that matches the additional numbers chosen by the player to win the prize in that prize category. (In combination with the normal numbers)"}));
+		mapII.put("WinningClass.1.KeepsakeItem.Material", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					Material.BEACON.toString()}));
+		mapII.put("#WinningClass.1.KeepsakeItem", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Das KeepsakeItem ist ein Andenkitem, welches Spieler bekommen sollen, die die Spieler bekommen sollen, welche diese Gewinnklass gewonnen haben.",
+					"",
+					"The KeepsakeItem is an Andean item that players who have won this prize class should receive."}));
+		mapII.put("WinningClass.1.KeepsakeItem.Amount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1}));
+		mapII.put("WinningClass.1.KeepsakeItem.Displayname", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"&cGewinnschein der &f%lotteryname% &cLotterie",
+					"&cWinning ticket of the &f%lotteryname% &cLottery"}));
+		mapII.put("#WinningClass.1.KeepsakeItem.Displayname", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Bedenkt, beim Displayname und der Lore ist weiterhin der alte ColorCode zu nutzen.",
+					"",
+					"Please note that the old color code must still be used for the display name and the lore."}));
+		mapII.put("WinningClass.1.KeepsakeItem.Lore", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"&eDu hattest %matchchoosennumberamount% & %matchadditionalchoosennumberamount% Richtige! Deine Zahlen: &f%matchchoosennumber% %matchadditionalchoosennumber%",
+					"&eDu hast die Gewinnklasse %wc1level% gewonnen!",
+					"&eDatum &f%drawtime%",
+					"&eDein Preis &r%winningclass1payout%",
+					"&eYou got %matchchoosennumberamount% & %matchadditionalchoosennumberamount% right! Your numbers: &f%matchchoosennumber% %matchadditionalchoosennumber%",
+					"&eYou have won the prize category %wc1level%!",
+					"&eDate &f%drawtime%",
+					"&eYour price &r%winningclass1payout%"}));
+		mapII.put("WinningClass.1.KeepsakeItem.EnchantmentGlintOverride", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"null"}));
+		mapII.put("#WinningClass.1.KeepsakeItem.EnchantmentGlintOverride", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/meta/ItemMeta.html#getEnchantmentGlintOverride()",
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/meta/ItemMeta.html#getEnchantmentGlintOverride()"}));
+		mapII.put("WinningClass.1.KeepsakeItem.Enchantment", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"PROTECTION;2",
+					"THORNS;1"}));
+		mapII.put("#WinningClass.1.KeepsakeItem.Enchantment", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html",
+					"Sowie das Level der Verzauberung hinter dem ;",
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html",
+					"As well as the level of enchantment behind the ;"}));
+		mapII.put("WinningClass.1.KeepsakeItem.ItemFlag", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					ItemFlag.HIDE_ADDITIONAL_TOOLTIP.toString(),
+					ItemFlag.HIDE_ENCHANTS.toString()}));
+		mapII.put("#WinningClass.1.KeepsakeItem.ItemFlag", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemFlag.html",
+					"",
+					"=> https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemFlag.html"}));
 		mapII.put("WinningClass.2.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));
 		mapII.put("WinningClass.2.Payout", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -1756,7 +2110,260 @@ public class YamlManager
 					0}));
 		mapII.put("WinningClass.9.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
+		mapII.put("Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					true}));
+		mapII.put("#Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Wenn 'true', dann wird die Nachricht gesendet.",
+					"",
+					"If 'true', the message is sent."}));
+		mapII.put("Advertising.1.CanIgnore", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					false}));
+		mapII.put("#Advertising.1.CanIgnore", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Der Boolean, welcher definiert, ob Spieler mit dem toggeln des Ingamebefehls diese Nachricht ausblenden kann oder nicht.",
+					"",
+					"The boolean that defines whether or not the player can hide this message by toggling the ingame command."}));
+		mapII.put("Advertising.1.Message", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"<#d2b773>...}/=== <white>%lotteryname% <#d2b773>===\\{...",
+					"<gold>Aktueller JackPot bis zu <white>%actualpot%<gold>!",
+					"<aqua>Hauptgewinn <white>%highestwinningclass%<aqua>!",
+					"<red>Heute schon Lotto gespielt? <click:run_command:'%classiclottobet%%lotteryname%'><white><yellow>Klicke {hier}</click>",
+					"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+					"<#d2b773>...}/=== <gold>%lotteryname% <#d2b773>===\\\\\\\\{...",
+					"<gold>JackPot up to <white>%actualpot%<gold>!",
+					"<aqua>Main prize <white>%highestwinningclass%<aqua>!",
+					"<red>Have you played the lottery today? <click:run_command:'%classiclottobet%%lotteryname%'><white><yellow>Click {here}</click>",
+					"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+		mapII.put("#Advertising.1.Message", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Nachricht, welchen allen auf dem Server Spielern gesendet werden soll von dieser Lotterie.",
+					"",
+					"The message to be sent to all players on the server from this lottery."}));
+		mapII.put("Advertising.1.Time", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"1-MONDAY-14-00",
+					"1-TUESDAY-14-00",
+					"1-WEDNESDAY-14-00",
+					"1-THURSDAY-14-00",
+					"1-FRIDAY-14-00",
+					"1-SATURDAY-14-00",
+					"1-SUNDAY-14-00",
+					"2-MONDAY-14-00",
+					"2-TUESDAY-14-00",
+					"2-WEDNESDAY-14-00",
+					"2-THURSDAY-14-00",
+					"2-FRIDAY-14-00",
+					"2-SATURDAY-14-00",
+					"2-SUNDAY-14-00",
+					"3-MONDAY-14-00",
+					"3-TUESDAY-14-00",
+					"3-WEDNESDAY-14-00",
+					"3-THURSDAY-14-00",
+					"3-FRIDAY-14-00",
+					"3-SATURDAY-14-00",
+					"3-SUNDAY-14-00",
+					"4-MONDAY-14-00",
+					"4-TUESDAY-14-00",
+					"4-WEDNESDAY-14-00",
+					"4-THURSDAY-14-00",
+					"4-FRIDAY-14-00",
+					"4-SATURDAY-14-00",
+					"4-SUNDAY-14-00",
+					"5-MONDAY-14-00",
+					"5-TUESDAY-14-00",
+					"5-WEDNESDAY-14-00",
+					"5-THURSDAY-14-00",
+					"5-FRIDAY-14-00",
+					"5-SATURDAY-14-00",
+					"5-SUNDAY-14-00"}));
+		mapII.put("#Advertising.1.Time", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Zeiten, wann diese Nachrichten den Spieler geschickt werden soll. Gleiches Prinzip wie bei 'DrawTime'.",
+					"",
+					"The times when these messages should be sent to the player. Same principle as for 'DrawTime'."}));
 		mapI.put("PowerBall", mapII);
+		getLottery().put(type, mapI);
+	}
+	
+	private void initDefaultScratchCard() //INFO:DefaultScratchCard
+	{
+		Lottery.GameType type = GameType.X_NUMBER_OF_FIELDS;
+		LinkedHashMap<String, LinkedHashMap<String, Language>> mapI = new LinkedHashMap<>();
+		LinkedHashMap<String, Language> mapII = new LinkedHashMap<>();
+		mapII.put("LotteryName", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"Silver8"}));
+		mapII.put("#LotteryName", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Name der Lotterie. Dieser MUSS einzigartig sein!",
+					"",
+					"Name of the lottery. This MUST be unique!"}));
+		mapII.put("Description", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"<yellow>Die Super Lotterie. Ausgewählt werden 5 Zahlen aus 69 sowie 1 Zahl aus 26. Gewinnchance ist 1:292.201.338",
+					"<yellow>The Super Lottery. 5 numbers from 69 and 1 number from 26 are selected. Chance of winning is 1:292,201,338"}));
+		mapII.put("#Description", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Beschreibung sollte das Spiel in ein paar Sätzen erklären.",
+					"",
+					"The description should explain the game in a few sentences."}));
+		mapII.put("CostPerTicket", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					2.5}));
+		mapII.put("#CostPerTicket", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Menge an Geld, was ein Los dieser Lotterie kostet.",
+					"",
+					"The amount of money a ticket in this lottery costs."}));
+		mapII.put("AmountOfField", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					8}));
+		mapII.put("#AmountOfField", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Gesamtanzahl aller Rubbelfelder der Lotterie.",
+					"",
+					""}));
+		mapII.put("AmountOfSameFieldToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					2}));
+		mapII.put("#AmountOfSameFieldToWin", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Anzahl des selben Feldes um den beschriebenen Preis zu gewinnen.",
+					"",
+					""}));
+		mapII.put("Display.FieldPerLine", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					4}));
+		mapII.put("#Display.FieldPerLine", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Definiert, wieviele von den Felder pro Chatreihe dargestellt werden soll.",
+					"Mit 3 X, geht in Minecraft bis zu 7 mal. Mit 4 X, 6 Mal. Mit 5 X, 5 Mal etc.",
+					"",
+					"Defines how many of the fields should be displayed per chat row.",
+					"With 3 X, goes up to 7 times in Minecraft. With 4 X, 6 times. With 5 X, 5 times etc."}));
+		mapII.put("Display.FieldUnscratched", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"+-------+ ",
+					"| XXXXXX | ",
+					"+-------+ "}));
+		mapII.put("#Display.FieldUnscratched", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Dies ist das Rubbelfeld, welches im Chat angezeigt wird, wenn ein Feld nocht nicht frei gerubbelt worden ist.",
+					"Die X sind an den höchsten ganzzahliegen Geldwert anzupassen (plus Währungssymbol! wenn gewünscht). Sowie auch dann die - oben und unten.",
+					"",
+					"This is the scratch field that is displayed in the chat if a field has not yet been scratched free.",
+					"The X are to be adjusted to the highest integer monetary value (plus currency symbol! if desired). As well as the - above and below."}));
+		mapII.put("Display.FieldScratched", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"+-------+ ",
+					"| X | ",
+					"+-------+ "}));
+		mapII.put("#Display.FieldScratched", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Hier wird aus Vereinfachung alles, was im FieldUnscratched beschrieben worden ist genommen und auf ein einzeles X reduziert zum ersetzten der aufgedecken Zahlenwerte.",
+					"",
+					"Here, for simplicity, everything described in FieldUnscratched is taken and reduced to a single X to replace the revealed numerical values."}));
+		mapII.put("ScratchCardField.1.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					80_000.0}));
+		mapII.put("#ScratchCardField.1.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Beschreibt einen der zu gewinnenen Preise.",
+					"",
+					""}));
+		mapII.put("ScratchCardField.1.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					0.1}));
+		mapII.put("#ScratchCardField.1.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Beschreibt, wie hoch die Wahrscheinlickeit in Prozent (0.0 bis 100.0) ist, dass der Wert als Feld erscheint.",
+					"Achtung! Damit eine Zahl tatsächlich gezogen wird, müssen zwei Dinge geschehen.",
+					"Zu einem wählt der Zufallsgenerator als ALLEN ScratchCardFields eine aus. Die Wahrscheinlichkeit richtet sich danach, wieviele ScratchCardFields generell vorhanden sind.",
+					"Erst danach prüft es die angegebene Wahrscheinlichkeit. Sollte die Wahrscheinlichkeit nicht zutreffen, so fängt das System erneut an. Bis zu 42 Mal hintereinander.",
+					"Beim letzten Mal, wird das gewählte Element einfach so genommen, aus Sicherheitsgründen.",
+					"",
+					"",
+					"",
+					"",
+					"",
+					""}));
+		mapII.put("ScratchCardField.1.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<gold><bold>80000$</bold></gold>"}));
+		mapII.put("#", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Dies ist der Ersatz für das einzelne X in FieldScratched.",
+					"Falls Farben etc. benutzt werden, wäre es für ästhetische Gründe besser diese wieder zu schließen.",
+					"",
+					""}));
+		mapII.put("", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					0}));
+		mapII.put("#", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"",
+					"",
+					""}));
+		mapII.put("Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					true}));
+		mapII.put("#Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Wenn 'true', dann wird die Nachricht gesendet.",
+					"",
+					"If 'true', the message is sent."}));
+		mapII.put("Advertising.1.CanIgnore", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					false}));
+		mapII.put("#Advertising.1.CanIgnore", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Der Boolean, welcher definiert, ob Spieler mit dem toggeln des Ingamebefehls diese Nachricht ausblenden kann oder nicht.",
+					"",
+					"The boolean that defines whether or not the player can hide this message by toggling the ingame command."}));
+		mapII.put("Advertising.1.Message", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"<#d2b773>...}/=== <white>%lotteryname% <#d2b773>===\\{...",
+					"<gold>Aktueller JackPot bis zu <white>%actualpot%<gold>!",
+					"<aqua>Hauptgewinn <white>%highestwinningclass%<aqua>!",
+					"<red>Heute schon Lotto gespielt? <click:run_command:'%classiclottobet%%lotteryname%'><white><yellow>Klicke {hier}</click>",
+					"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+					"<#d2b773>...}/=== <gold>%lotteryname% <#d2b773>===\\\\\\\\{...",
+					"<gold>JackPot up to <white>%actualpot%<gold>!",
+					"<aqua>Main prize <white>%highestwinningclass%<aqua>!",
+					"<red>Have you played the lottery today? <click:run_command:'%classiclottobet%%lotteryname%'><white><yellow>Click {here}</click>",
+					"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+		mapII.put("#Advertising.1.Message", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Nachricht, welchen allen auf dem Server Spielern gesendet werden soll von dieser Lotterie.",
+					"",
+					"The message to be sent to all players on the server from this lottery."}));
+		mapII.put("Advertising.1.Time", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"1-MONDAY-14-00",
+					"1-TUESDAY-14-00",
+					"1-WEDNESDAY-14-00",
+					"1-THURSDAY-14-00",
+					"1-FRIDAY-14-00",
+					"1-SATURDAY-14-00",
+					"1-SUNDAY-14-00",
+					"2-MONDAY-14-00",
+					"2-TUESDAY-14-00",
+					"2-WEDNESDAY-14-00",
+					"2-THURSDAY-14-00",
+					"2-FRIDAY-14-00",
+					"2-SATURDAY-14-00",
+					"2-SUNDAY-14-00",
+					"3-MONDAY-14-00",
+					"3-TUESDAY-14-00",
+					"3-WEDNESDAY-14-00",
+					"3-THURSDAY-14-00",
+					"3-FRIDAY-14-00",
+					"3-SATURDAY-14-00",
+					"3-SUNDAY-14-00",
+					"4-MONDAY-14-00",
+					"4-TUESDAY-14-00",
+					"4-WEDNESDAY-14-00",
+					"4-THURSDAY-14-00",
+					"4-FRIDAY-14-00",
+					"4-SATURDAY-14-00",
+					"4-SUNDAY-14-00",
+					"5-MONDAY-14-00",
+					"5-TUESDAY-14-00",
+					"5-WEDNESDAY-14-00",
+					"5-THURSDAY-14-00",
+					"5-FRIDAY-14-00",
+					"5-SATURDAY-14-00",
+					"5-SUNDAY-14-00"}));
+		mapII.put("#Advertising.1.Time", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Die Zeiten, wann diese Nachrichten den Spieler geschickt werden soll. Gleiches Prinzip wie bei 'DrawTime'.",
+					"",
+					"The times when these messages should be sent to the player. Same principle as for 'DrawTime'."}));
+		mapI.put("Silver8", mapII);
 		getLottery().put(type, mapI);
 	}
 }

@@ -159,6 +159,7 @@ public class LottoSuperHandler
 						{
 							Material material = Material.valueOf(y.getString("WinningClass."+i+".KeepsakeItem.Material"));
 							int amount = y.getInt("WinningClass."+i+".KeepsakeItem.Amount");
+							amount = amount > 64 ? 64 : (amount < 1 ? 1 : amount);
 							String displayname = y.getString("WinningClass."+i+".KeepsakeItem.Displayname");
 							ArrayList<String> lore = new ArrayList<>();
 							if(y.contains("WinningClass."+i+".Lore"))
@@ -426,7 +427,7 @@ public class LottoSuperHandler
 			//No Tickets was bought
 			List<String> msgl = replacer(ls, lsd, null, null, null, null, false,
 					(ArrayList<String>) plugin.getYamlHandler().getLang()
-					.getStringList("ClassicLotto.Draw.NoTicketAreBought"));
+					.getStringList("LottoSuper.Draw.NoTicketAreBought"));
 			MessageHandler.sendMessage(msgl.toArray(new String[msgl.size()]));
 			double nextpot = lsd.getActualPot();
 			if(nextpot < ls.getStandartPot())
@@ -476,9 +477,9 @@ public class LottoSuperHandler
 		//Added WinningClass for all player that lost, the int is the highest level
 		lspA.add(new LottoSuperPayout(lowestWC+1, PayoutType.LUMP_SUM, 0, new HashSet<UUID>(), 0, 0, 0));
 		//Lotto Ticket Evaluation
-		String repeatCategory = plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.RepeatTicket.Category")
+		String repeatCategory = plugin.getYamlHandler().getLang().getString("LottoSuper.Draw.RepeatTicket.Category")
 				.replace("%lotteryname%", ls.getLotteryName());
-		String repeatComment = plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.RepeatTicket.Comment");
+		String repeatComment = plugin.getYamlHandler().getLang().getString("LottoSuper.Draw.RepeatTicket.Comment");
 		LinkedHashMap<Integer, ArrayList<LottoSuperTicket>> payoutToTicket = new LinkedHashMap<>();
 		for(LottoSuperTicket lst : lstA)
 		{
@@ -529,13 +530,13 @@ public class LottoSuperHandler
 			double payout = lsd.getActualPot();
 			globalMsg = replacer(ls, lsd, null, lspA, payout, String.join(", ", jackpotWinners), hlsp.getUUIDs().size() > 0,
 					(ArrayList<String>) plugin.getYamlHandler().getLang()
-					.getStringList("ClassicLotto.Draw.JackpotWasBreached"));
+					.getStringList("LottoSuper.Draw.JackpotWasBreached"));
 		} else
 		{
 			double payout = lsd.getActualPot();
 			globalMsg = replacer(ls, lsd, null, lspA, payout, String.join(", ", jackpotWinners), hlsp.getUUIDs().size() > 0,
 					(ArrayList<String>) plugin.getYamlHandler().getLang()
-					.getStringList("ClassicLotto.Draw.JackpotIsUntouched"));
+					.getStringList("LottoSuper.Draw.JackpotIsUntouched"));
 		}
 		//Send all OnlinePlayers the normal message
 		MessageHandler.sendMessage(globalMsg.toArray(new String[globalMsg.size()]));
@@ -562,7 +563,7 @@ public class LottoSuperHandler
 				for(LottoSuperTicket lst : payoutToTicket.get(lv))
 				{
 					ArrayList<String> nowinmsg = new ArrayList<>();
-					nowinmsg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.NotWon"));
+					nowinmsg.add(plugin.getYamlHandler().getLang().getString("LottoSuper.Draw.NotWon"));
 					nowinmsg = replacer(ls, lsd, lst, lspA, null, null, hlsp.getUUIDs().size() > 0,
 							nowinmsg);
 					MessageHandler.sendMessage(lst.getLotteryPlayer(), nowinmsg.toArray(new String[nowinmsg.size()]));
@@ -572,8 +573,8 @@ public class LottoSuperHandler
 				continue;
 			}
 			double payout = lsp.getFinalPayoutPerUUID();
-			String wincategory = plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.Win.Category");
-			String wincomment = plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.Win.Comment")
+			String wincategory = plugin.getYamlHandler().getLang().getString("LottoSuper.Draw.Win.Category");
+			String wincomment = plugin.getYamlHandler().getLang().getString("LottoSuper.Draw.Win.Comment")
 					.replace("%lotteryname%", ls.getLotteryName())
 					.replace("%level%", String.valueOf(lv));
 			WinningClassSuper wcs = ls.getWinningClassSuper().stream()
@@ -582,7 +583,7 @@ public class LottoSuperHandler
 			for(LottoSuperTicket lst : payoutToTicket.get(lv))
 			{
 				ArrayList<String> winmsg = replacer(ls, lsd, lst, lspA, payout, null, hlsp.getUUIDs().size() > 0,
-						(ArrayList<String>) plugin.getYamlHandler().getLang().getStringList("ClassicLotto.Draw.Won"));
+						(ArrayList<String>) plugin.getYamlHandler().getLang().getStringList("LottoSuper.Draw.Won"));
 				EconomyHandler.deposit(lst.getLotteryPlayer(), payout, 
 						wincategory, 
 						wincomment);
@@ -688,23 +689,26 @@ public class LottoSuperHandler
 		{
 			s = s.replace("%winners%", "/");
 		}
-		if(s.contains("%classiclottocmd%"))
+		if(s.contains("%lottosupercmd%"))
 		{
-			s = s.replace("%classiclottocmd%", CommandSuggest.getCmdString(CommandSuggest.Type.CLASSICLOTTO));
+			s = s.replace("%lottosupercmd%", CommandSuggest.getCmdString(CommandSuggest.Type.LOTTOSUPER));
 		}
-		if(s.contains("%classiclottobet%"))
+		if(s.contains("%lottosuperbet%"))
 		{
-			s = s.replace("%classiclottobet%", CommandSuggest.getCmdString(CommandSuggest.Type.CLASSICLOTTO_PLAY));
+			s = s.replace("%lottosuperbet%", CommandSuggest.getCmdString(CommandSuggest.Type.LOTTOSUPER_PLAY));
 		}
 		if(ls != null)
 		{
 			s = s.replace("%lotteryname%", ls.getLotteryName())
 					.replace("%description%", ls.getDescription())
 					.replace("%amountofchoosennumber%", String.valueOf(ls.getAmountOfChoosedNumber()))
+					.replace("%additionalamountofchoosennumber%", String.valueOf(ls.getAdditionalAmountOfChoosenNumber()))
 					.replace("%amounttoaddpot%", EconomyHandler.format(ls.getAmountToAddToThePotIfNoOneIsWinning()))
 					.replace("%costperticket%", EconomyHandler.format(ls.getCostPerTicket()))
-					.replace("%fristnumbertochoosefrom%", String.valueOf(ls.getFirstNumberToChooseFrom()))
+					.replace("%firstnumbertochoosefrom%", String.valueOf(ls.getFirstNumberToChooseFrom()))
 					.replace("%lastnumbertochoosefrom%", String.valueOf(ls.getLastNumberToChooseFrom()))
+					.replace("%additionalfirstnumbertochoosefrom%", String.valueOf(ls.getAdditionalFirstNumberToChooseFrom()))
+					.replace("%additionallastnumbertochoosefrom%", String.valueOf(ls.getAdditionalLastNumberToChooseFrom()))
 					.replace("%maximumpot%", EconomyHandler.format(ls.getMaximumPot()))
 					.replace("%standartpot%", EconomyHandler.format(ls.getStandartPot()))
 					.replace("%winningchance%", String.valueOf(ls.getWinningChance().longValue()));
@@ -729,10 +733,13 @@ public class LottoSuperHandler
 			s = s.replace("%lotteryname%", "/")
 					.replace("%description%", "/")
 					.replace("%amountofchoosennumber%", "/")
+					.replace("%additionalamountofchoosennumber%", "/")
 					.replace("%amounttoaddpot%", "/")
 					.replace("%costperticket%", "/")
 					.replace("%fristnumbertochoosefrom%", "/")
 					.replace("%lastnumbertochoosefrom%", "/")
+					.replace("%additionalfirstnumbertochoosefrom%", "/")
+					.replace("%additionallastnumbertochoosefrom%", "/")
 					.replace("%maximumpot%", "/")
 					.replace("%standartpot%", "/")
 					.replace("%winningchance%", "/");
@@ -742,15 +749,20 @@ public class LottoSuperHandler
 			ArrayList<String> ccn = new ArrayList<>();
 			for(Iterator<Integer> iter = lsd.getChoosenNumbers().iterator(); iter.hasNext();)
 			{
-				int cn = iter.next();
-				ccn.add(String.valueOf(cn));
+				ccn.add(String.valueOf(iter.next()));
+			}
+			ArrayList<String> ccna = new ArrayList<>();
+			for(Iterator<Integer> iter = lsd.getAdditionalChoosenNumbers().iterator(); iter.hasNext();)
+			{
+				ccna.add(String.valueOf(iter.next()));
 			}
 			s = s.replace("%lotteryname%", lsd.getLotteryName())
 					.replace("%drawid%", String.valueOf(lsd.getId()))
 					.replace("%drawtime%", lsd.wasDrawn() ? TimeHandler.getDate(lsd.getDrawTime()) 
 							: LLY.getPlugin().getYamlHandler().getLang().getString("WasntDrawn"))
 					.replace("%actualpot%", EconomyHandler.format(lsd.getActualPot()))
-					.replace("%drawnnumber%", "["+String.join(", ", ccn)+"]");
+					.replace("%drawnnumber%", "["+String.join(", ", ccn)+"]")
+					.replace("%additionaldrawnnumber%", "["+String.join(", ", ccn)+"]");
 			if(ls != null)
 			{
 				WinningClassSuper highest = null;
@@ -774,7 +786,8 @@ public class LottoSuperHandler
 					.replace("%drawtime%", "/")
 					.replace("%actualpot%", "/")
 					.replace("%drawnnumber%", "/")
-					.replace("%highestwinningclass%", "/");
+					.replace("%highestwinningclass%", "/")
+					.replace("%additionaldrawnnumber%", "/");
 		}
 		if(lst != null)
 		{
@@ -791,8 +804,21 @@ public class LottoSuperHandler
 						matches++;
 					}
 				}
+				ArrayList<String> ccna = new ArrayList<>();
+				int matchesa = 0;
+				for(Iterator<Integer> iter = lst.getAdditionalChoosenNumbers().iterator(); iter.hasNext();)
+				{
+					int cn = iter.next();
+					ccna.add(matchChoosenNumber(lsd.getChoosenNumbers(), cn));
+					if(lsd.getAdditionalChoosenNumbers().contains(cn))
+					{
+						matchesa++;
+					}
+				}
 				s = s.replace("%matchchoosennumber%", "["+String.join(", ", ccn)+"]")
-						.replace("%matchchoosennumberamount%", String.valueOf(matches));
+						.replace("%matchchoosennumberamount%", String.valueOf(matches))
+						.replace("%matchadditionalchoosennumber%", "["+String.join(", ", ccna)+"]")
+						.replace("%matchadditionalchoosennumberamount%", String.valueOf(matchesa));
 			}
 			s = s.replace("%lotteryname%", lst.getLotteryName())
 					.replace("%ticketid%", String.valueOf(lst.getID()))
@@ -803,7 +829,9 @@ public class LottoSuperHandler
 					.replace("%ticketid%", "/")
 					.replace("%ticketplayer%", "/")
 					.replace("%matchchoosennumber%", "/")
-					.replace("%matchchoosennumberamount%", "/");
+					.replace("%matchchoosennumberamount%", "/")
+					.replace("%matchadditionalchoosennumber%", "/")
+					.replace("%matchadditionalchoosennumberamount%", "/");
 		}
 		if(lspA != null)
 		{
@@ -817,13 +845,13 @@ public class LottoSuperHandler
 				}
 				ClassicLottoPayout clp = lspA.get(i);
 				wcwinneramount.append(LLY.getPlugin().getYamlHandler().getLang()
-						.getString("ClassicLotto.Draw.WinningClassReplacer")
+						.getString("LottoSuper.Draw.WinningClassReplacer")
 						.replace("%level%", String.valueOf(clp.getWinningClassLevel()))
 						.replace("%winneramount%", String.valueOf(clp.getWinnersAmount())));
 				if(i+1 < lspA.size())
 				{
 					wcwinneramount.append(LLY.getPlugin().getYamlHandler().getLang()
-							.getString("ClassicLotto.Draw.WinningClassReplacerSeperator"));
+							.getString("LottoSuper.Draw.WinningClassReplacerSeperator"));
 				}
 				if(clp.getUUIDs().size() <= 0)
 				{

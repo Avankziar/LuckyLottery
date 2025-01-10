@@ -23,7 +23,7 @@ import me.avankziar.lly.spigot.handler.MessageHandler;
 import me.avankziar.lly.spigot.handler.lottery.ClassicLottoHandler;
 import me.avankziar.lly.spigot.handler.lottery.LotteryHandler;
 
-public class ClassicLottoCommandExecutor  implements CommandExecutor
+public class ClassicLottoCommandExecutor implements CommandExecutor
 {
 	private LLY plugin;
 	private static CommandConstructor cc;

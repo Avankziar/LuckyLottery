@@ -41,20 +41,13 @@ import me.avankziar.lly.general.database.ServerType;
 import me.avankziar.lly.general.database.YamlHandler;
 import me.avankziar.lly.general.database.YamlManager;
 import me.avankziar.lly.general.objects.lottery.ClassicLotto;
+import me.avankziar.lly.general.objects.lottery.LottoSuper;
 import me.avankziar.lly.spigot.ModifierValueEntry.Bypass;
 import me.avankziar.lly.spigot.assistance.BackgroundTask;
 import me.avankziar.lly.spigot.cmd.ClassicLottoCommandExecutor;
+import me.avankziar.lly.spigot.cmd.LottoSuperCommandExecutor;
 import me.avankziar.lly.spigot.cmd.LuckyLotteryCommandExecutor;
 import me.avankziar.lly.spigot.cmd.TabCompletion;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_AddPot;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_DrawNow;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_GiveTicket;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_NextDraws;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Open;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Play;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Repeat;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_SetPot;
-import me.avankziar.lly.spigot.cmd.classiclotto.ARG_Ticketlist;
 import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
 import me.avankziar.lly.spigot.database.MysqlHandler;
 import me.avankziar.lly.spigot.database.MysqlSetup;
@@ -218,6 +211,14 @@ public class LLY extends JavaPlugin
 		}
 		classicLottoI.put(1, list);
 		
+		LinkedHashMap<Integer, ArrayList<String>> lottoSuperI = new LinkedHashMap<>();
+		list = new ArrayList<>();
+		for(LottoSuper ls : LotteryHandler.getLottoSuper())
+		{
+			list.add(ls.getLotteryName());
+		}
+		lottoSuperI.put(1, list);
+		
 		TabCompletion tab = new TabCompletion();
 		
 		CommandConstructor lly = new CommandConstructor(CommandSuggest.Type.LLY, "lly", false, false);
@@ -226,14 +227,14 @@ public class LLY extends JavaPlugin
 		if(LotteryHandler.getClassicLotto().size() > 0)
 		{
 			String path = "classiclotto";
-			ArgumentConstructor drawnow = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_DRAWNOW, path+"_drawnow",
-					0, 1, 999, true, false, classicLottoI);
-			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_PLAY, path+"_play",
-					0, 1, 2, false, false, classicLottoI);
 			ArgumentConstructor addpot = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_ADDPOT, path+"_addpot",
 					0, 2, 3, false, false, classicLottoI);
 			ArgumentConstructor setpot = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_SETPOT, path+"_setpot",
 					0, 2, 3, false, false, classicLottoI);
+			ArgumentConstructor drawnow = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_DRAWNOW, path+"_drawnow",
+					0, 1, 999, true, false, classicLottoI);
+			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_PLAY, path+"_play",
+					0, 1, 2, false, false, classicLottoI);
 			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_GIVETICKET, path+"_giveticket",
 					0, 1, 2, false, false, classicLottoI);
 			ArgumentConstructor open = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_OPEN, path+"_open",
@@ -247,15 +248,50 @@ public class LLY extends JavaPlugin
 			CommandConstructor cl = new CommandConstructor(CommandSuggest.Type.CLASSICLOTTO, path, false, false,
 					drawnow, play, addpot, setpot, giveticket, open, ticketlist, repeat, nextdraws);
 			registerCommand(cl, new ClassicLottoCommandExecutor(plugin, cl), tab);
-			new ARG_DrawNow(drawnow);
-			new ARG_Play(play);
-			new ARG_AddPot(addpot);
-			new ARG_SetPot(setpot);
-			new ARG_GiveTicket(giveticket);
-			new ARG_Open(open);
-			new ARG_Ticketlist(ticketlist);
-			new ARG_Repeat(repeat);
-			new ARG_NextDraws(nextdraws);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_AddPot(addpot);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_SetPot(setpot);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_DrawNow(drawnow);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_GiveTicket(giveticket);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_NextDraws(nextdraws);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_Open(open);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_Play(play);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_Ticketlist(ticketlist);
+			new me.avankziar.lly.spigot.cmd.classiclotto.ARG_Repeat(repeat);	
+		}
+		
+		if(LotteryHandler.getLottoSuper().size() > 0)
+		{
+			String path = "lottosuper";
+			ArgumentConstructor addpot = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_ADDPOT, path+"_addpot",
+					0, 2, 3, false, false, lottoSuperI);
+			ArgumentConstructor setpot = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_SETPOT, path+"_setpot",
+					0, 2, 3, false, false, lottoSuperI);
+			ArgumentConstructor drawnow = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_DRAWNOW, path+"_drawnow",
+					0, 1, 999, true, false, lottoSuperI);
+			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_GIVETICKET, path+"_giveticket",
+					0, 1, 2, false, false, lottoSuperI);
+			ArgumentConstructor nextdraws = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_NEXTDRAWS, path+"_nextdraws",
+					0, 1, 1, false, false, lottoSuperI);
+			ArgumentConstructor open = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_OPEN, path+"_open",
+					0, 1, 1, true, false, lottoSuperI);
+			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_PLAY, path+"_play",
+					0, 1, 2, false, false, lottoSuperI);
+			ArgumentConstructor repeat = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_REPEAT, path+"_repeat",
+					0, 2, 2, false, false, lottoSuperI);
+			ArgumentConstructor ticketlist = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_TICKETLIST, path+"_ticketlist",
+					0, 1, 2, false, false, lottoSuperI);
+			CommandConstructor ls = new CommandConstructor(CommandSuggest.Type.LOTTOSUPER, path, false, false,
+					addpot, setpot, drawnow, giveticket, nextdraws, open, play, ticketlist, repeat);
+			registerCommand(ls, new LottoSuperCommandExecutor(plugin, ls), tab);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_AddPot(addpot);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_SetPot(setpot);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_DrawNow(drawnow);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_GiveTicket(giveticket);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_NextDraws(nextdraws);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_Open(open);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_Play(play);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_Repeat(repeat);
+			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_Ticketlist(ticketlist);
 		}
 		
 		//ArgumentConstructor add = new ArgumentConstructor(CommandSuggest.Type.FRIEND_ADD, "friend_add", 0, 1, 1, false, playerMapI);

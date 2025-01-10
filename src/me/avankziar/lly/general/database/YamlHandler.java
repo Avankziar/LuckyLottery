@@ -77,6 +77,12 @@ public class YamlHandler implements YamlHandling
 		return lottoSuper;
 	}
 	
+	private static ArrayList<YamlDocument> scratchcard = new ArrayList<>();
+	public ArrayList<YamlDocument> getScratchCard()
+	{
+		return scratchcard;
+	}
+	
 	public YamlHandler(YamlManager.Type type, String pluginname, Logger logger, Path directory, String administrationLanguage)
 	{
 		this.pluginname = pluginname;
@@ -240,7 +246,37 @@ public class YamlHandler implements YamlHandling
 			{
 				loadFiles(lottoSuperFolder, lottoSuper);
 			}
-		}		
+		}
+		if(yamlManager.getLottery().containsKey(GameType.X_NUMBER_OF_FIELDS))
+		{
+			File scratchCardFolder = new File(lottery, "/ScratchCard/");
+			if(!scratchCardFolder.exists())
+			{
+				scratchCardFolder.mkdirs();
+				for(Entry<String, LinkedHashMap<String, Language>> entry : yamlManager.getLottery()
+																			.get(GameType.X_NUMBER_OF_FIELDS).entrySet())
+				{
+					String cl = entry.getKey();
+					LinkedHashMap<String, Language> map = entry.getValue();
+					try
+				    {
+						YamlDocument y = YamlDocument.create(new File(scratchCardFolder,"%f%.yml".replace("%f%", cl)),
+								getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
+						if(!setupStaticFile(cl, y, map))
+						{
+							return false;
+						}
+						scratchcard.add(y);
+				    } catch (IOException e)
+				    {
+				    	logger.severe("Could not create/load config.yml file! Plugin will shut down!");
+				    }
+				}
+			} else
+			{
+				loadFiles(scratchCardFolder, lottoSuper);
+			}
+		}
 		return true;
 	}
 	

@@ -274,7 +274,7 @@ public class YamlHandler implements YamlHandling
 				}
 			} else
 			{
-				loadFiles(scratchCardFolder, lottoSuper);
+				loadFiles(scratchCardFolder, scratchcard);
 			}
 		}
 		return true;

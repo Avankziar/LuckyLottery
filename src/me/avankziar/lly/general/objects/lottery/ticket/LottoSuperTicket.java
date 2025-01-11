@@ -44,7 +44,7 @@ public class LottoSuperTicket extends LotteryTicket implements MysqlLottery<Lott
 			UUID lotteryPlayer, boolean shouldRepeate, int winningClassLevel, double winningPrize,
 			LinkedHashSet<Integer> choosenNumbers, LinkedHashSet<Integer> additionalChoosenNumbers)
 	{
-		super(0, drawid, lotteryname);
+		super(id, drawid, lotteryname);
 		setLotteryPlayer(lotteryPlayer);
 		setShouldRepeate(shouldRepeate);
 		setChoosenNumbers(choosenNumbers);
@@ -128,11 +128,11 @@ public class LottoSuperTicket extends LotteryTicket implements MysqlLottery<Lott
 				+ " winning_price double");
 		for(int i = 1; i <= ls.getAmountOfChoosedNumber(); i++)
         {
-			sql.append(" ,`ball_"+i+"`");
+			sql.append(", `ball_"+i+"` int");
         }
 		for(int i = 1; i <= ls.getAdditionalAmountOfChoosenNumber(); i++)
         {
-			sql.append(" ,`super_ball_"+i+"`");
+			sql.append(", `super_ball_"+i+"` int");
         }
 		sql.append(");");
 		return mysqlSetup.baseSetup(sql.toString());
@@ -152,16 +152,16 @@ public class LottoSuperTicket extends LotteryTicket implements MysqlLottery<Lott
 			String tablename = getMysqlTableName();
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO `" + tablename
-					+ "`(`draw_id`, `player_uuid`, `should_repeat`");
+					+ "`(`draw_id`, `player_uuid`, `should_repeat`, `winning_class_level`, `winning_price`");
 			for(int i = 1; i <= ls.getAmountOfChoosedNumber(); i++)
 	        {
-				sql.append(" ,`ball_"+i+"`");
+				sql.append(", `ball_"+i+"`");
 	        }
 			for(int i = 1; i <= ls.getAdditionalAmountOfChoosenNumber(); i++)
 	        {
-				sql.append(" ,`super_ball_"+i+"`");
+				sql.append(", `super_ball_"+i+"`");
 	        }
-			sql.append(") VALUES(?, ?, ?");
+			sql.append(") VALUES(?, ?, ?, ?, ?");
 			for(int i = 1; i <= ls.getAmountOfChoosedNumber(); i++)
 	        {
 				sql.append(", ?");
@@ -214,7 +214,7 @@ public class LottoSuperTicket extends LotteryTicket implements MysqlLottery<Lott
 			String tablename = getMysqlTableName();
 			StringBuilder sql = new StringBuilder();
 			sql.append("UPDATE `" + tablename
-				+ "` SET `draw_id` = ?, `player_uuid` = ?, `should_repeat` = ?");
+				+ "` SET `draw_id` = ?, `player_uuid` = ?, `should_repeat` = ?, `winning_class_level` = ?, `winning_price` = ?");
 			for(int i = 1; i <= ls.getAmountOfChoosedNumber(); i++)
 	        {
 				sql.append(", `ball_"+i+"` = ?");
@@ -286,14 +286,13 @@ public class LottoSuperTicket extends LotteryTicket implements MysqlLottery<Lott
 			ArrayList<LottoSuperTicket> al = new ArrayList<>();
 			while (rs.next()) 
 			{
-			
 				LinkedHashSet<Integer> set = new LinkedHashSet<>();
-				for(int ii = 0; ii < ls.getAmountOfChoosedNumber(); ii++)
+				for(int ii = 1; ii <= ls.getAmountOfChoosedNumber(); ii++)
 		        {
 					set.add(rs.getInt("ball_"+ii));
 		        }
 				LinkedHashSet<Integer> sets = new LinkedHashSet<>();
-				for(int ii = 0; ii < ls.getAdditionalAmountOfChoosenNumber(); ii++)
+				for(int ii = 1; ii <= ls.getAdditionalAmountOfChoosenNumber(); ii++)
 		        {
 					sets.add(rs.getInt("super_ball_"+ii));
 		        }

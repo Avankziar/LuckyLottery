@@ -48,6 +48,7 @@ import me.avankziar.lly.spigot.assistance.BackgroundTask;
 import me.avankziar.lly.spigot.cmd.ClassicLottoCommandExecutor;
 import me.avankziar.lly.spigot.cmd.LottoSuperCommandExecutor;
 import me.avankziar.lly.spigot.cmd.LuckyLotteryCommandExecutor;
+import me.avankziar.lly.spigot.cmd.ScratchCardCommandExecutor;
 import me.avankziar.lly.spigot.cmd.TabCompletion;
 import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
 import me.avankziar.lly.spigot.database.MysqlHandler;
@@ -312,7 +313,7 @@ public class LLY extends JavaPlugin
 					0, 1, 2, false, false, scratchCardI);
 			CommandConstructor sc = new CommandConstructor(CommandSuggest.Type.SCRATCHCARD, path, false, false,
 					giveticket, play);
-			registerCommand(sc, new LottoSuperCommandExecutor(plugin, sc), tab);
+			registerCommand(sc, new ScratchCardCommandExecutor(plugin, sc), tab);
 			new me.avankziar.lly.spigot.cmd.scratchcard.ARG_GiveTicket(giveticket);
 			new me.avankziar.lly.spigot.cmd.scratchcard.ARG_Play(play);
 		}

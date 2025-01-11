@@ -131,7 +131,10 @@ public class ARG_Ticketlist extends ArgumentModule
 			sb.append(ChatApi.click(plugin.getYamlHandler().getLang().getString("Past"), "RUN_COMMAND",
 					CommandSuggest.getCmdString(Type.CLASSICLOTTO_TICKETLIST) + (page+1)));
 		}
-		msg.add(sb.toString());
+		if(!sb.toString().isEmpty())
+		{
+			msg.add(sb.toString());
+		}	
 		MessageHandler.sendMessage(player, msg.toArray(new String[msg.size()]));
 	}
 	

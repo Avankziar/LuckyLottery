@@ -664,6 +664,14 @@ public class YamlManager
 				"<aqua>Commandright for <white>/classiclotto nextdraws",
 				"<yellow>Befehl /classiclotto nextdraws",
 				"<yellow>Command /classiclotto nextdraws");
+		commandsInput("lottosuper", "lottosuper", "lottosuper.cmd", 
+				"/lottosuper [lotteryname]", "/lottosuper ", false,
+				"<red>/lottosuper [Lotteriename] <white>| Listet alle super Lotterien auf und bei optionalen Argument gibt detailierte Information.",
+				"<red>/lottosuper [lotteryname] <white>| Lists all super Lotteries and with optional argument gives detailed information.",
+				"<aqua>Befehlsrecht für <white>/lottosuper",
+				"<aqua>Commandright for <white>/lottosuper",
+				"<yellow>Befehl /lottosuper",
+				"<yellow>Command /lottosuper");
 		basePermission = "lottosuper";
 		commandsInput("lottosuper", "lottosuper", "lottosuper.cmd", 
 				"/lottosuper [lotteryname]", "/lottosuper ", false,
@@ -745,6 +753,14 @@ public class YamlManager
 				"<aqua>Commandright for <white>/lottosuper nextdraws",
 				"<yellow>Befehl /lottosuper nextdraws",
 				"<yellow>Command /lottosuper nextdraws");
+		commandsInput("scratchcard", "scratchcard", "scratchcard.cmd", 
+				"/scratchcard [lotteryname]", "/scratchcard ", false,
+				"<red>/scratchcard [Lotteriename] <white>| Listet alle Rubbelloslotterien auf und bei optionalen Argument gibt detailierte Information.",
+				"<red>/scratchcard [lotteryname] <white>| Lists all scratchcard Lotteries and with optional argument gives detailed information.",
+				"<aqua>Befehlsrecht für <white>/scratchcard",
+				"<aqua>Commandright for <white>/scratchcard",
+				"<yellow>Befehl /scratchcard",
+				"<yellow>Command /scratchcard");
 		basePermission = "scratchcard";
 		argumentInput("scratchcard_play", "play", basePermission,
 				"/scratchcard play <lotteryname> [numbers|-a]", "/scratchcard play ", false,
@@ -1390,8 +1406,8 @@ public class YamlManager
 						"<white>Attention! <red>The drawing of the lottery %lotteryname% has a cooldown period!"}));
 		languageKeys.put(path+".Arg.GiveTicket.Give", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<gold>Gratulation! <yellow>Dir wurde von %player% ein Los in der Lotterie %lotteryname% mit folgenden Zahlen geschenkt: <white>%choosennumber% %additionalchoosennumber%",
-						"<gold>Congratulations! <yellow>You have been given a ticket in the lottery %lotteryname% by %player% with the following numbers: <white>%choosennumber% %additionalchoosennumber%"}));
+						"<gold>Gratulation! <yellow>Dir wurde von %player% ein Los in der Lotterie %lotteryname% mit folgenden Zahlen geschenkt: <white>%choosennumber% <red>%additionalchoosennumber%",
+						"<gold>Congratulations! <yellow>You have been given a ticket in the lottery %lotteryname% by %player% with the following numbers: <white>%choosennumber% <red>%additionalchoosennumber%"}));
 		languageKeys.put(path+".Arg.GiveTicket.Given", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow>Du hast <white>%amount% <yellow>Spielern <white>%value% <yellow>Ticket(s) in der Lotterie %lotteryname% geschenkt!",
@@ -1430,8 +1446,8 @@ public class YamlManager
 						"<red>You already have %amount% tickets for the lottery %lotteryname%. Only a maximum of %maximum% tickets are allowed per drawing."}));
 		languageKeys.put(path+".Arg.Play.AlreadyChoosenNumber", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<aqua>Deine bisher gewählten Nummern: <white>%choosennumber% %additionalchoosennumber%",
-						"<aqua>Your previously selected numbers: <white>%choosennumber% %additionalchoosennumber%"}));
+						"<aqua>Deine bisher gewählten Nummern: <white>%choosennumber% <red>%additionalchoosennumber%",
+						"<aqua>Your previously selected numbers: <white>%choosennumber% <red>%additionalchoosennumber%"}));
 		languageKeys.put(path+".Arg.Play.RandomChoose", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow>Klicke <red>{hier} <yellow>um deine Nummber <white>zufällig <yellow>auszuwählen!",
@@ -1462,14 +1478,14 @@ public class YamlManager
 						"Lottery ticket was purchased."}));
 		languageKeys.put(path+".Arg.Play.TicketBought", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>Du hast ein Ticket gekauft! Viel Glück! Gewählte Zahlen: <white>%choosennumber% %additionalchoosennumber%",
-						"<yellow>You have bought a ticket! Good luck! Chosen numbers: <white>%choosennumber% %additionalchoosennumber%"}));
+						"<yellow>Du hast ein Ticket gekauft! Viel Glück! Gewählte Zahlen: <white>%choosennumber% <red>%additionalchoosennumber%",
+						"<yellow>You have bought a ticket! Good luck! Chosen numbers: <white>%choosennumber% <red>%additionalchoosennumber%"}));
 		languageKeys.put(path+".Arg.Play.MayYouConfirm", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<yellow>Gewählte Zahlen: <white>%choosennumber% %additionalchoosennumber%",
+						"<yellow>Gewählte Zahlen: <white>%choosennumber% <red>%additionalchoosennumber%",
 						"<yellow>Die Kosten belaufen sich auf <white>%costperticket%",
 						"<yellow>Möchtest du bestätigen? <red>Klicke {hier}!",
-						"<yellow>Numbers chosen: <white>%choosennumber% %additionalchoosennumber%",
+						"<yellow>Numbers chosen: <white>%choosennumber% <red>%additionalchoosennumber%",
 						"<yellow>The costs amount to <white>%costperticket%",
 						"<yellow>Would you like to confirm? <red>Click {here}!"}));
 		languageKeys.put(path+".Arg.Repeat.DontExist", 
@@ -1537,6 +1553,40 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<red>Die angegebene Rubbellose extiert nicht!",
 						"<red>The specified scratchcard does not exist!"}));
+		languageKeys.put(path+".Cmd.Headline", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=== <gold>Rubbellos Info <#d2b773>===\\{...",
+						"<#d2b773>...}/=== <gold>ScratchCard Info <#d2b773>===\\{..."}));
+		languageKeys.put(path+".Cmd.BottomLine", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
+		languageKeys.put(path+".Cmd.GeneralInfo", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<aqua><bold>%lotteryname%:</bold>",
+						"<gray>%description%",
+						"<red>Jackpot: <white>%jackpotamount% | %costperticket% <red>pro Ticket.",
+						"<click:run_command:'%lottosupercmd%%lotteryname%'><gray>Klicke {hier} für mehr Infos.</click>",
+						"<aqua><bold>%lotteryname%:</bold> <white>Draw: %nextdraw%",
+						"<gray>%description%",
+						"<redJackpot: <white>%jackpotamount% | %costperticket% <red>per ticket.",
+						"<click:run_command:'%lottosupercmd%%lotteryname%'><gray>Click {here} for more info.</click>"}));
+		languageKeys.put(path+".Cmd.DetailInfo", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
+						"<aqua><bold>%lotteryname%:",
+						"<gray>%description%",
+						"<red>Jackpot: <white>%jackpotamount% | %costperticket% <red>pro Ticket.",
+						"<red>Gewinnchance <white>1:%winningchance%",
+						"<click:run_command:'%lottosuperbet%%lotteryname%'><gold>Klicke {hier} zum spielen.</click>",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
+						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
+						"<aqua><bold>%lotteryname%:",
+						"<gray>%description%",
+						"<red>Jackpot: <white>%jackpotamount% | %costperticket% <red>per ticket.",
+						"<red>Chance of winning <white>1:%winningchance%",
+						"<click:run_command:'%lottosuperbet%%lotteryname%'><gold>Click {here} to play.</click>",
+						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
 		languageKeys.put(path+".Arg.Play.Info", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow>Ein Rubbellos kostet %costperticket%.",
@@ -1766,12 +1816,12 @@ public class YamlManager
 					"This means that if you would theoretically draw 8 numbers you could only make 7 or 6 winning classes, so to win a prize you have to have at least 3 correct numbers."}));
 		mapII.put("WinningClass.1.ExecutableCommand", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"SPIGOT;100;1;10;false;dummy %playername% %random%",
-					"VELOCITY;100;1;10;false;dummy %playername% %random%"}));
+					"PROXY;100;1;10;false;dummy %playername% %random%"}));
 		mapII.put("#WinningClass.1.ExecutableCommand", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"ExecutableCommand ist eine Liste aus Befehlen, welche beim gewinnen der Gewinnklasse per Konsole ausgelöst werden. Diese Liste muss nicht bei allen Gewinnklassen dabei stehen.",
 					"Dabei ist diese Liste wie folgt aufgebaut:",
-					"Der erste Parameter ist entweder SPIGOT oder VELOCITY. Es deklariert wo der Befehl von der Konsole ausgelöst werden soll. Achtung! VELOCITY ist nur möglich wenn ein Drittplugin das Interface CommandToVelocity über IFH bereitstellt.",
+					"Der erste Parameter ist entweder SPIGOT oder PROXY. Es deklariert wo der Befehl von der Konsole ausgelöst werden soll. Achtung! VELOCITY ist nur möglich wenn ein Drittplugin das Interface CommandToVelocity über IFH bereitstellt.",
 					"Der zweite Parameter determiniert eine Wahrscheinlichkeit von 0 bis 100%. D.h. dass wenn man die Gewinnklasse schon gewonnen hat, könnte man damit nochmal eine Ausführungswahrscheinlichkeit determinieren.",
 					"Der dritte und vierte Parameter ist ein Randomgenerator. Sollte man im Befehl eine Zahl benötigen, kann man diese vom Randomgenerator auswürfeln lassen. Der Dritte ist dabei der Start und der vierte das Ende des Bereichs der random generierten Zahlen.",
 					"Parameter Fünf ist ein boolean, der bestimmt dass wenn 'true' der RandomWert von 3. & 4. als Double dargestellt werden soll. Aka aus der random Zahl 12 wird dann 12.0. Wenn es eine Ganzzahl sein soll, bleibt der Wert auf false.",
@@ -1779,7 +1829,7 @@ public class YamlManager
 					"",
 					"ExecutableCommand is a list of commands that are triggered via the console when the winning class is won. This list does not have to be included in all winningclasses.",
 					"This list is structured as follows:",
-					"The first parameter is either SPIGOT or VELOCITY. It declares where the command should be triggered from the console. Attention! VELOCITY is only possible if a third party plugin provides the CommandToVelocity interface via IFH.",
+					"The first parameter is either SPIGOT or PROXY. It declares where the command should be triggered from the console. Attention! VELOCITY is only possible if a third party plugin provides the CommandToVelocity interface via IFH.",
 					"The second parameter determines a probability from 0 to 100%. This means that if you have already won the prize category, you can use it to determine another probability of execution.",
 					"The third and fourth parameters are a random generator. If you need a number in the command, you can have the random generator roll it. The third is the start and the fourth is the end of the range of randomly generated numbers.",
 					"Parameter five is a boolean that determines that if 'true' the random value of 3. & 4. should be represented as a double. Aka the random number 12 becomes 12.0. If it should be an integer, the value remains false.",
@@ -2127,6 +2177,26 @@ public class YamlManager
 					"",
 					"The number of additional lottery numbers (usually called SuperNumbers)",
 					"that matches the additional numbers chosen by the player to win the prize in that prize category. (In combination with the normal numbers)"}));
+		mapII.put("WinningClass.1.ExecutableCommand", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"SPIGOT;100;1;10;false;dummy %playername% %random%",
+					"PROXY;100;1;10;false;dummy %playername% %random%"}));
+		mapII.put("#WinningClass.1.ExecutableCommand", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"ExecutableCommand ist eine Liste aus Befehlen, welche beim gewinnen der Gewinnklasse per Konsole ausgelöst werden. Diese Liste muss nicht bei allen Gewinnklassen dabei stehen.",
+					"Dabei ist diese Liste wie folgt aufgebaut:",
+					"Der erste Parameter ist entweder SPIGOT oder PROXY. Es deklariert wo der Befehl von der Konsole ausgelöst werden soll. Achtung! VELOCITY ist nur möglich wenn ein Drittplugin das Interface CommandToVelocity über IFH bereitstellt.",
+					"Der zweite Parameter determiniert eine Wahrscheinlichkeit von 0 bis 100%. D.h. dass wenn man die Gewinnklasse schon gewonnen hat, könnte man damit nochmal eine Ausführungswahrscheinlichkeit determinieren.",
+					"Der dritte und vierte Parameter ist ein Randomgenerator. Sollte man im Befehl eine Zahl benötigen, kann man diese vom Randomgenerator auswürfeln lassen. Der Dritte ist dabei der Start und der vierte das Ende des Bereichs der random generierten Zahlen.",
+					"Parameter Fünf ist ein boolean, der bestimmt dass wenn 'true' der RandomWert von 3. & 4. als Double dargestellt werden soll. Aka aus der random Zahl 12 wird dann 12.0. Wenn es eine Ganzzahl sein soll, bleibt der Wert auf false.",
+					"Der letzte Parameter ist der Befehl an sich. Dabei werden die Replacer %playername% für den Spielernamen und %random% für die Randomzahl akzeptiert.",
+					"",
+					"ExecutableCommand is a list of commands that are triggered via the console when the winning class is won. This list does not have to be included in all winningclasses.",
+					"This list is structured as follows:",
+					"The first parameter is either SPIGOT or PROXY. It declares where the command should be triggered from the console. Attention! VELOCITY is only possible if a third party plugin provides the CommandToVelocity interface via IFH.",
+					"The second parameter determines a probability from 0 to 100%. This means that if you have already won the prize category, you can use it to determine another probability of execution.",
+					"The third and fourth parameters are a random generator. If you need a number in the command, you can have the random generator roll it. The third is the start and the fourth is the end of the range of randomly generated numbers.",
+					"Parameter five is a boolean that determines that if 'true' the random value of 3. & 4. should be represented as a double. Aka the random number 12 becomes 12.0. If it should be an integer, the value remains false.",
+					"The last parameter is the command itself. The replacers %playername% for the player name and %random% for the random number are accepted."}));
 		mapII.put("WinningClass.1.KeepsakeItem.Material", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					Material.BEACON.toString()}));
 		mapII.put("#WinningClass.1.KeepsakeItem", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -2330,8 +2400,8 @@ public class YamlManager
 					"",
 					"Name of the lottery. This MUST be unique!"}));
 		mapII.put("Description", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"<yellow>Die Super Lotterie. Ausgewählt werden 5 Zahlen aus 69 sowie 1 Zahl aus 26. Gewinnchance ist 1:292.201.338",
-					"<yellow>The Super Lottery. 5 numbers from 69 and 1 number from 26 are selected. Chance of winning is 1:292,201,338"}));
+					"<yellow>Das Rubbellos Silver8. 8 Felder zum freirubbeln. Gewinnchance 1:40.000",
+					"<yellow>The scratchcard Silver8. 8 field to scratch. Chance of winning is 1:292,201,338"}));
 		mapII.put("#Description", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Beschreibung sollte das Spiel in ein paar Sätzen erklären.",
@@ -2395,9 +2465,9 @@ public class YamlManager
 					"Ein oder mehrere Joker heben die Anzahl des höchsten Wert, welcher aufgedeckt wird.",
 					"Bspw. wenn man als höchsten Wert 1000.0 und 2 Joker aufgedeckt hat, wird es so gehandhabt das die 1000.0 drei mal gezogen wurde.",
 					"",
-					"",
-					"",
-					""}));
+					"Describes one of the prizes to be won. A joker must have a value of -1.0.",
+					"One or more jokers increase the number of the highest value that is revealed.",
+					"For example, if the highest value is 1000.0 and 2 jokers are revealed, the 1000.0 is drawn three times."}));
 		mapII.put("ScratchCardField.1.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0.1}));
 		mapII.put("#ScratchCardField.1.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -2408,20 +2478,20 @@ public class YamlManager
 					"Erst danach prüft es die angegebene Wahrscheinlichkeit. Sollte die Wahrscheinlichkeit nicht zutreffen, so fängt das System erneut an. Bis zu 42 Mal hintereinander.",
 					"Beim letzten Mal, wird das gewählte Element einfach so genommen, aus Sicherheitsgründen.",
 					"",
-					"",
-					"",
-					"",
-					"",
-					""}));
+					"Describes the probability in percent (0.0 to 100.0) that the value will appear as a field.",
+					"Attention! Two things have to happen for a number to actually be drawn.",
+					"Firstly, the random generator selects one ScratchCardField from ALL ScratchCardFields. The probability depends on how many ScratchCardFields are generally available.",
+					"Only then does it check the specified probability. If the probability is not correct, the system starts again. Up to 42 times in succession.",
+					"The last time, the selected element is simply taken for safety reasons."}));
 		mapII.put("ScratchCardField.1.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"<gold><bold>88888$</bold></gold>"}));
-		mapII.put("#", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+		mapII.put("#ScratchCardField.1.Display", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Dies ist der Ersatz für das einzelne X in FieldScratched.",
 					"Falls Farben etc. benutzt werden, wäre es für ästhetische Gründe besser diese wieder zu schließen.",
 					"",
-					"",
-					""}));
+					"This is the replacement for the single X in FieldScratched.",
+					"If colors etc. are used, it would be better to close them again for aesthetic reasons."}));
 		mapII.put("ScratchCardField.2.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					44_444.0}));
 		mapII.put("ScratchCardField.2.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {

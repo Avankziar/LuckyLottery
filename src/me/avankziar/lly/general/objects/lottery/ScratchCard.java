@@ -1,5 +1,7 @@
 package me.avankziar.lly.general.objects.lottery;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import me.avankziar.lly.general.objects.Advertising;
@@ -57,7 +59,7 @@ public class ScratchCard extends Lottery
 		ScratchCardField jackpot = null;
 		for(ScratchCardField x : scratchCardFields)
 		{
-			jackpot = jackpot.getWinningAmount() < x.getWinningAmount() ? x : jackpot;
+			jackpot = jackpot == null ? x : (jackpot.getWinningAmount() < x.getWinningAmount() ? x : jackpot);
 			if(x.getWinningAmount() == -1.0)
 			{
 				joker = x;
@@ -163,6 +165,15 @@ public class ScratchCard extends Lottery
 	public void setAdvertising(ArrayList<Advertising> advertising)
 	{
 		this.advertising = advertising;
+	}
+	
+	public String getWinningChance()
+	{
+		BigDecimal scf = BigDecimal.valueOf(getScratchCardFields().size());
+		BigDecimal jp = BigDecimal.valueOf(jackpot.getChance());
+		BigDecimal aosf = BigDecimal.valueOf(getAmountOfSameFieldToWin());
+		DecimalFormat df = new DecimalFormat("#");
+		return df.format(aosf.multiply(scf.multiply(BigDecimal.valueOf(100).divide(jp))).doubleValue());
 	}
 
 	public ScratchCardTicket getTicketMysql()

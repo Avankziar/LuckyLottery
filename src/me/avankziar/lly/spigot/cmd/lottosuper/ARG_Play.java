@@ -85,7 +85,7 @@ public class ARG_Play extends ArgumentModule
 			int n = Integer.valueOf(value);
 			if(n >= ls.getFirstNumberToChooseFrom() && n <= ls.getLastNumberToChooseFrom())
 			{
-				addRemoveNumber(player.getUniqueId(), ls, lsd, Integer.valueOf(value));
+				addRemoveNumber(player.getUniqueId(), ls, lsd, n);
 			}
 		}
 		if(value.startsWith("a"))
@@ -96,7 +96,7 @@ public class ARG_Play extends ArgumentModule
 				int n = Integer.valueOf(a);
 				if(n >= ls.getAdditionalFirstNumberToChooseFrom() && n <= ls.getAdditionalLastNumberToChooseFrom())
 				{
-					addRemoveAdditionalNumber(player.getUniqueId(), ls, lsd, Integer.valueOf(value));
+					addRemoveAdditionalNumber(player.getUniqueId(), ls, lsd, n);
 				}
 			}
 		}
@@ -114,6 +114,10 @@ public class ARG_Play extends ArgumentModule
 					LottoSuperHandler.drawLotteryNumber(
 					ls.getFirstNumberToChooseFrom(), ls.getLastNumberToChooseFrom(), ls.getAmountOfChoosedNumber()));
 			set.stream().forEach(x -> addRemoveNumber(player.getUniqueId(), ls, lsd, x));
+			LinkedHashSet<Integer> aset = LottoSuperHandler.sortDrawnNumber(
+					LottoSuperHandler.drawLotteryNumber(
+					ls.getAdditionalFirstNumberToChooseFrom(), ls.getAdditionalLastNumberToChooseFrom(), ls.getAdditionalAmountOfChoosenNumber()));
+			aset.stream().forEach(x -> addRemoveAdditionalNumber(player.getUniqueId(), ls, lsd, x));
 		}
 		if("confirm".equalsIgnoreCase(value) || "bestätigen".equalsIgnoreCase(value))
 		{
@@ -214,19 +218,19 @@ public class ARG_Play extends ArgumentModule
 		LinkedHashSet<Integer> sets = LottoSuperHandler.sortDrawnNumber(set);
 		ArrayList<String> l = new ArrayList<>();
 		sets.stream().forEach(x -> l.add(String.valueOf(x)));
-		LinkedHashSet<Integer> asets = LottoSuperHandler.sortDrawnNumber(set);
+		LinkedHashSet<Integer> asets = LottoSuperHandler.sortDrawnNumber(aset);
 		ArrayList<String> al = new ArrayList<>();
 		asets.stream().forEach(x -> al.add(String.valueOf(x)));
 		String s = r;
 		if(set.size() > 0 && asets.size() > 0)
 		{
-			s = s.replace("%choosennumber%", String.join(", ", l)).replace("%additionalchoosennumber%", String.join(", ", l));
+			s = s.replace("%choosennumber%", String.join(", ", l)).replace("%additionalchoosennumber%", String.join(", ", al));
 		} else if(set.size() > 0 && asets.size() == 0)
 		{
 			s = s.replace("%choosennumber%", String.join(", ", l)).replace("%additionalchoosennumber%", "/");
 		} else if(set.size() == 0 && asets.size() > 0)
 		{
-			s = s.replace("%choosennumber%", "/").replace("%additionalchoosennumber%", String.join(", ", l));
+			s = s.replace("%choosennumber%", "/").replace("%additionalchoosennumber%", String.join(", ", al));
 		} else
 		{
 			s = s.replace("%choosennumber%", "/").replace("%additionalchoosennumber%", "/");
@@ -263,11 +267,11 @@ public class ARG_Play extends ArgumentModule
 			if(clt.getChoosenNumbers().contains(j))
 			{
 				sb.append(plugin.getYamlHandler().getLang().getString("WasChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, "a"+getSpacing(j, cl.getLastNumberToChooseFrom()))));
+						.replace("%number%", getCmdForContainingNumbers(cl, getSpacing(j, cl.getLastNumberToChooseFrom()))));
 			} else
 			{
 				sb.append(plugin.getYamlHandler().getLang().getString("WasntNeutralChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, "a"+getSpacing(j, cl.getLastNumberToChooseFrom()))));
+						.replace("%number%", getCmdForContainingNumbers(cl, getSpacing(j, cl.getLastNumberToChooseFrom()))));
 			}
 			if(j < end)
 			{
@@ -293,11 +297,11 @@ public class ARG_Play extends ArgumentModule
 			if(clt.getAdditionalChoosenNumbers().contains(j))
 			{
 				sb.append(plugin.getYamlHandler().getLang().getString("WasChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, getSpacing(j, cl.getAdditionalLastNumberToChooseFrom()))));
+						.replace("%number%", getCmdForContainingNumbers(cl, "a"+getSpacing(j, cl.getAdditionalLastNumberToChooseFrom()))));
 			} else
 			{
 				sb.append(plugin.getYamlHandler().getLang().getString("WasntNeutralChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, getSpacing(j, cl.getAdditionalLastNumberToChooseFrom()))));
+						.replace("%number%", getCmdForContainingNumbers(cl, "a"+getSpacing(j, cl.getAdditionalLastNumberToChooseFrom()))));
 			}
 			if(j < end)
 			{

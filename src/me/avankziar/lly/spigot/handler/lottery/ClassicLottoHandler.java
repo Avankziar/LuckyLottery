@@ -120,7 +120,7 @@ public class ClassicLottoHandler
 						for(String s : y.getStringList("WinningClass."+i+".ExecutableCommand"))
 						{
 							String[] sp = s.split(";");
-							if(sp.length != 5)
+							if(sp.length != 6)
 							{
 								LLY.log.warning(lottoname+" WinningClass number "+i+" is has a small issue! "+
 										"ExecutableCommands skipt the row: "+s);

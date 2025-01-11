@@ -90,10 +90,10 @@ public class ScratchCardTicket extends LotteryTicket implements MysqlLottery<Scr
 		sql.append("CREATE TABLE IF NOT EXISTS `"+getMysqlTableName()
 				+ "` (id bigint AUTO_INCREMENT PRIMARY KEY,"
 				+ " player_uuid char(36) NOT NULL,"
-				+ " winning_amount double,");
+				+ " winning_amount double");
 		for(int i = 1; i <= sc.getAmountOfFields(); i++)
         {
-			sql.append(", `field_"+i+"` int");
+			sql.append(", field_"+i+" int");
         }
 		sql.append(");");
 		return mysqlSetup.baseSetup(sql.toString());

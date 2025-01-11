@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -106,14 +105,10 @@ public class LottoSuperHandler
 				String drawOnServer = y.getString("DrawOnServer", "hub");
 				boolean drawManually = y.getBoolean("DrawManually", false);
 				LinkedHashSet<WinningClassSuper> winningClassSuper = new LinkedHashSet<>();
-				boolean check = false;
-				for(int i = 1; i <= amountOfChoosedNumber; i++)
+				for(int i = 1; i <= amountOfChoosedNumber * (additionalAmountOfChoosedNumber+1); i++)
 				{
 					if(!y.contains("WinningClass."+i+".Payout"))
 					{
-						check = true;
-						LLY.log.warning(lottoname+" WinningClass number "+i+" is missing! "+
-								lottoname+" will not be registered!");
 						break;
 					}
 					PayoutType payt = PayoutType.valueOf(y.getString("WinningClass."+i+".PayoutType", PayoutType.LUMP_SUM.toString()));
@@ -126,7 +121,7 @@ public class LottoSuperHandler
 						for(String s : y.getStringList("WinningClass."+i+".ExecutableCommand"))
 						{
 							String[] sp = s.split(";");
-							if(sp.length != 5)
+							if(sp.length != 6)
 							{
 								LLY.log.warning(lottoname+" WinningClass number "+i+" is has a small issue! "+
 										"ExecutableCommands skipt the row: "+s);
@@ -242,10 +237,6 @@ public class LottoSuperHandler
 						}
 					}
 					advertising.add(new Advertising(active, canIgnored, message, time));
-				}
-				if(check)
-				{
-					continue;
 				}
 				LottoSuper ls = new LottoSuper(lottoname, description, GameType.X_FROM_Y_AND_Z_FROM_U,
 						standartPot, maximumPot, amountToAddToThePotIfNoOneIsWinning, costPerTicket, 
@@ -417,6 +408,7 @@ public class LottoSuperHandler
 		}
 		//Update Object
 		lsd.setChoosenNumbers(drawnNumber);
+		lsd.setAdditionalChoosenNumbers(addtitionalDrawnNumber);
 		lsd.setDrawTime(drawTime);
 		lsd.setWasDrawn(true);
 		//Lotto Ticket call
@@ -451,19 +443,20 @@ public class LottoSuperHandler
 		//Get Next ClassicLottoDraw ID
 		int lsdNextId = plugin.getMysqlHandler().lastID(lsd)+1;
 		//Adding all WinningClass to a payout object
-		ArrayList<LottoSuperPayout> lspA = new ArrayList<>();
+		LinkedHashMap<Integer, LottoSuperPayout> lspA = new LinkedHashMap<>();
 		//Create all WinningClasss
 		int highestWC = 1;
 		int lowestWC = 1;
 		for(WinningClassSuper wcs : ls.getWinningClassSuper())
 		{
+			LLY.log.info("WinningClassSuper: "+wcs.getWinningClassLevel());//REMOVEME
 			double payout = 0.0;
 			switch(wcs.getPayoutType())
 			{
 			case LUMP_SUM: payout = wcs.getAmount(); break;
 			case PERCENTAGE: payout = lsd.getActualPot() * wcs.getAmount() / 100; break;
 			}
-			lspA.add(new LottoSuperPayout(wcs.getWinningClassLevel(),
+			lspA.put(wcs.getWinningClassLevel(), new LottoSuperPayout(wcs.getWinningClassLevel(),
 					wcs.getPayoutType(),
 					payout,
 					new HashSet<UUID>(), 0,
@@ -475,7 +468,7 @@ public class LottoSuperHandler
 			}
 		}
 		//Added WinningClass for all player that lost, the int is the highest level
-		lspA.add(new LottoSuperPayout(lowestWC+1, PayoutType.LUMP_SUM, 0, new HashSet<UUID>(), 0, 0, 0));
+		lspA.put(lowestWC+1, new LottoSuperPayout(lowestWC+1, PayoutType.LUMP_SUM, 0, new HashSet<UUID>(), 0, 0, 0));
 		//Lotto Ticket Evaluation
 		String repeatCategory = plugin.getYamlHandler().getLang().getString("LottoSuper.Draw.RepeatTicket.Category")
 				.replace("%lotteryname%", ls.getLotteryName());
@@ -492,7 +485,7 @@ public class LottoSuperHandler
 			LottoSuperPayout lsp = getPayout(lspA, index);
 			lsp.getUUIDs().add(lst.getLotteryPlayer());
 			lsp.setWinnersAmount(lsp.getWinnersAmount()+1);
-			lspA.set(index, lsp);
+			lspA.put(index, lsp);
 			if(lst.shouldRepeate())
 			{
 				//If ticket should repeat, create new one and update the old one.
@@ -542,10 +535,12 @@ public class LottoSuperHandler
 		MessageHandler.sendMessage(globalMsg.toArray(new String[globalMsg.size()]));
 		//Put all Player in a hashset to check if there won to not send a "you lost" msg.
 		//Therefor reverse the sorting of the clp.
-		lspA.sort(Comparator.comparingInt(LottoSuperPayout::getWinningClassLevel).reversed());
+		ArrayList<LottoSuperPayout> lspAl = new ArrayList<>();
+		lspA.entrySet().forEach(x -> lspAl.add(x.getValue()));
+		lspAl.sort(Comparator.comparingInt(LottoSuperPayout::getWinningClassLevel).reversed());
 		//Give Players a the price and send a message
 		double nextpot = 0.0;
-		for(LottoSuperPayout lsp : lspA)
+		for(LottoSuperPayout lsp : lspAl)
 		{
 			int lv = lsp.getWinningClassLevel();
 			if(lsp.getUUIDs().size() == 0)
@@ -658,7 +653,7 @@ public class LottoSuperHandler
 	 * Replacer for message in the drawing of the lottery.
 	 */
 	public static ArrayList<String> replacer(LottoSuper ls, LottoSuperDraw lsd, LottoSuperTicket lst,
-			ArrayList<LottoSuperPayout> lspA, Double payout, String jackpotwinners, boolean wasJackpotBreached,
+			LinkedHashMap<Integer, LottoSuperPayout> lspA, Double payout, String jackpotwinners, boolean wasJackpotBreached,
 			ArrayList<String> list)
 	{
 		ArrayList<String> li = new ArrayList<>();
@@ -671,7 +666,7 @@ public class LottoSuperHandler
 	}
 	
 	public static String replacer(LottoSuper ls, LottoSuperDraw lsd, LottoSuperTicket lst,
-			ArrayList<LottoSuperPayout> lspA, Double payout, String jackpotwinners, boolean wasJackpotBreached,
+			LinkedHashMap<Integer, LottoSuperPayout> lspA, Double payout, String jackpotwinners, boolean wasJackpotBreached,
 			String r)
 	{
 		String s = r;
@@ -762,7 +757,7 @@ public class LottoSuperHandler
 							: LLY.getPlugin().getYamlHandler().getLang().getString("WasntDrawn"))
 					.replace("%actualpot%", EconomyHandler.format(lsd.getActualPot()))
 					.replace("%drawnnumber%", "["+String.join(", ", ccn)+"]")
-					.replace("%additionaldrawnnumber%", "["+String.join(", ", ccn)+"]");
+					.replace("%additionaldrawnnumber%", "["+String.join(", ", ccna)+"]");
 			if(ls != null)
 			{
 				WinningClassSuper highest = null;
@@ -894,18 +889,15 @@ public class LottoSuperHandler
 						.replace("%number%", String.valueOf(i)); 
 	}
 	
-	public static LottoSuperPayout getPayout(ArrayList<LottoSuperPayout> list, int level)
+	public static LottoSuperPayout getPayout(LinkedHashMap<Integer, LottoSuperPayout> list, int level)
 	{
-		Optional<LottoSuperPayout> op = list.stream()
-				.filter(x -> x.getWinningClassLevel() == level)
-				.findFirst();
-		return op.isPresent() ? op.get() : null;
+		return list.get(level);
 	}
 	
-	public static int getIndexPayout(ArrayList<LottoSuperPayout> list, 
+	public static int getIndexPayout(LinkedHashMap<Integer, LottoSuperPayout> list, 
 	        int matchNumber, int additionMatchNumber, int originalAdditionMatchNumber) 
 	{
-	    for (LottoSuperPayout lsp : list) 
+	    for (LottoSuperPayout lsp : list.values()) 
 	    {
 	        if (lsp.getNumberMatchToWin() == matchNumber
 	                && lsp.getAddtionalNumberMatchToWin() == additionMatchNumber) 

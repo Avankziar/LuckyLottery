@@ -53,15 +53,12 @@ public class ScratchCardHandler
 				int amountOfField = y.getInt("AmountOfField");
 				int amountOfSameFieldToWin = y.getInt("AmountOfSameFieldToWin");
 				ArrayList<ScratchCardField> scratchCardField = new ArrayList<>();
-				boolean check = false;
-				for(int i = 1; i <= 1000; i++)
+				for(int i = 1; i <= 100; i++)
 				{
 					if(!y.contains("ScratchCardField."+i+".WinningAmount")
 							|| !y.contains("ScratchCardField."+i+".Chance")
 							|| !y.contains("ScratchCardField."+i+".Display"))
 					{
-						LLY.log.warning(lottoname+" ScratchCardField number "+i+" is missing! "+
-								lottoname+" will not be skiped!");
 						continue;
 					}
 					double winningAmount = y.getDouble("ScratchCardField."+i+".WinningAmount");
@@ -123,9 +120,9 @@ public class ScratchCardHandler
 					ScratchCardField scf = new ScratchCardField(winningAmount, chance, display, ksi);
 					scratchCardField.add(scf);
 				}
-				if(scratchCardField.size() < 5)
+				if(scratchCardField.size() < 3)
 				{
-					LLY.log.warning(lottoname+" ScratchCardField amount < 5! "+
+					LLY.log.warning(lottoname+" ScratchCardField amount < 3! "+
 							"ScratchCard will not be registered!");
 					continue;
 				}
@@ -172,13 +169,17 @@ public class ScratchCardHandler
 					}
 					advertising.add(new Advertising(active, canIgnored, message, time));
 				}
-				if(check)
-				{
-					continue;
-				}
 				int fieldPerLine = y.getInt("Display.FieldPerLine");
 				ArrayList<String> displayFieldUnscratched = new ArrayList<>();
+				if(y.contains("Display.FieldUnscratched"))
+				{
+					y.getStringList("Display.FieldUnscratched").stream().forEach(x -> displayFieldUnscratched.add(x));
+				}
 				ArrayList<String> displayFieldScratched = new ArrayList<>();
+				if(y.contains("Display.FieldScratched"))
+				{
+					y.getStringList("Display.FieldScratched").stream().forEach(x -> displayFieldScratched.add(x));
+				}
 				ScratchCard sc = new ScratchCard(lottoname, description, GameType.X_NUMBER_OF_FIELDS,
 						costPerTicket, amountOfField, amountOfSameFieldToWin, scratchCardField, advertising,
 						fieldPerLine, displayFieldUnscratched, displayFieldScratched);
@@ -300,7 +301,8 @@ public class ScratchCardHandler
 					.replace("%amountofchoosennumber%", String.valueOf(sc.getAmountOfFields()))
 					.replace("%additionalamountofchoosennumber%", String.valueOf(sc.getAmountOfSameFieldToWin()))
 					.replace("%jackpotamount%", EconomyHandler.format(sc.getJackpot().getWinningAmount()))
-					.replace("%costperticket%", EconomyHandler.format(sc.getCostPerTicket()));
+					.replace("%costperticket%", EconomyHandler.format(sc.getCostPerTicket()))
+					.replace("%winningchance%", sc.getWinningChance());
 		} else
 		{
 			s = s.replace("%lotteryname%", "/")
@@ -308,7 +310,8 @@ public class ScratchCardHandler
 					.replace("%amountofchoosennumber%", "/")
 					.replace("%additionalamountofchoosennumber%", "/")
 					.replace("%jackpotamount%", "/")
-					.replace("%costperticket%", "/");
+					.replace("%costperticket%", "/")
+					.replace("%winningchance%", "/");
 		}
 		if(lst != null)
 		{

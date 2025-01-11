@@ -1,4 +1,4 @@
-1-0-0
+Future
 - EuroJackpot: 5 aus 50 und 2 aus 12. Bis zu 120 Mio. € Gewinn. Kosten 2,5€. Gewinnchance 1:140.000.000
 - Glückspirale: 7 Zahlen. Jede weitere richtige Zahl erhöht die Gewinnklasse. Bis zu 2 Mio. €. Gewinnchance 1:10.000.000
 - KENO: Mindesten 2 bis zu 10 aus 70. Jedoch werden 20 Zahlen gezogen. Bis zu 100 T€. Kosten 1,8€. Gewinnchance 1:2.100.000
@@ -16,3 +16,8 @@
 - Custom Lotterie: Server gibt den Preis sowie die Gewinnklassen an. Die Gewinne sollten durch Konsolenbefehle durchgeführt werden.
 
 - Benachrichtigung wieviel im Lotteriepot
+
+1-0-0
+- ClassicLotto
+- LottoSuper
+- ScratchCard

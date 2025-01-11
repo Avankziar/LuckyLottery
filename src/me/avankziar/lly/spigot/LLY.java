@@ -42,6 +42,7 @@ import me.avankziar.lly.general.database.YamlHandler;
 import me.avankziar.lly.general.database.YamlManager;
 import me.avankziar.lly.general.objects.lottery.ClassicLotto;
 import me.avankziar.lly.general.objects.lottery.LottoSuper;
+import me.avankziar.lly.general.objects.lottery.ScratchCard;
 import me.avankziar.lly.spigot.ModifierValueEntry.Bypass;
 import me.avankziar.lly.spigot.assistance.BackgroundTask;
 import me.avankziar.lly.spigot.cmd.ClassicLottoCommandExecutor;
@@ -219,6 +220,14 @@ public class LLY extends JavaPlugin
 		}
 		lottoSuperI.put(1, list);
 		
+		LinkedHashMap<Integer, ArrayList<String>> scratchCardI = new LinkedHashMap<>();
+		list = new ArrayList<>();
+		for(ScratchCard ls : LotteryHandler.getScratchCard())
+		{
+			list.add(ls.getLotteryName());
+		}
+		scratchCardI.put(1, list);
+		
 		TabCompletion tab = new TabCompletion();
 		
 		CommandConstructor lly = new CommandConstructor(CommandSuggest.Type.LLY, "lly", false, false);
@@ -292,6 +301,20 @@ public class LLY extends JavaPlugin
 			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_Play(play);
 			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_Repeat(repeat);
 			new me.avankziar.lly.spigot.cmd.lottosuper.ARG_Ticketlist(ticketlist);
+		}
+		
+		if(LotteryHandler.getScratchCard().size() > 0)
+		{
+			String path = "scratchcard";
+			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.SCRATCHCARD_GIVETICKET, path+"_giveticket",
+					0, 1, 2, false, false, scratchCardI);
+			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.SCRATCHCARD_PLAY, path+"_play",
+					0, 1, 2, false, false, scratchCardI);
+			CommandConstructor sc = new CommandConstructor(CommandSuggest.Type.SCRATCHCARD, path, false, false,
+					giveticket, play);
+			registerCommand(sc, new LottoSuperCommandExecutor(plugin, sc), tab);
+			new me.avankziar.lly.spigot.cmd.scratchcard.ARG_GiveTicket(giveticket);
+			new me.avankziar.lly.spigot.cmd.scratchcard.ARG_Play(play);
 		}
 		
 		//ArgumentConstructor add = new ArgumentConstructor(CommandSuggest.Type.FRIEND_ADD, "friend_add", 0, 1, 1, false, playerMapI);

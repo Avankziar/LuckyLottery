@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,18 +18,18 @@ import me.avankziar.lly.general.cmdtree.CommandSuggest;
 import me.avankziar.lly.general.cmdtree.CommandSuggest.Type;
 import me.avankziar.lly.general.objects.ScratchCardField;
 import me.avankziar.lly.general.objects.lottery.ScratchCard;
+import me.avankziar.lly.general.objects.lottery.payout.ScratchCardPayout;
 import me.avankziar.lly.general.objects.lottery.ticket.ScratchCardTicket;
 import me.avankziar.lly.spigot.LLY;
 import me.avankziar.lly.spigot.cmdtree.ArgumentModule;
 import me.avankziar.lly.spigot.handler.EconomyHandler;
 import me.avankziar.lly.spigot.handler.MessageHandler;
 import me.avankziar.lly.spigot.handler.lottery.LotteryHandler;
-import me.avankziar.lly.spigot.handler.lottery.LottoSuperHandler;
 
 public class ARG_Play extends ArgumentModule
 {
 	private LLY plugin;
-	private LinkedHashMap<UUID, LinkedHashMap<Integer, ScratchCardField>> playingNumber = new LinkedHashMap<>();
+	private static LinkedHashMap<UUID, LinkedHashMap<Integer, ScratchCardField>> playingNumber = new LinkedHashMap<>();
 	
 	public ARG_Play(ArgumentConstructor ac)
 	{
@@ -38,7 +38,7 @@ public class ARG_Play extends ArgumentModule
 	}
 
 	/**
-	 * => /scratchcard play lotteryname [fieldnumber|-a|-start]
+	 * => /scratchcard play lotteryname [fieldnumber|-a]
 	 */
 	@Override
 	public void run(CommandSender sender, String[] args) throws IOException 
@@ -59,26 +59,10 @@ public class ARG_Play extends ArgumentModule
 		ScratchCard ls = ols.get();
 		if(args.length <= 2 && !playingNumber.containsKey(player.getUniqueId()))
 		{
-			sendInfoMessageToScratch(player, ls, getSet(player.getUniqueId()));
+			sendInfoMessageToScratch(player, ls);
 			return;
 		}
-		String value = args[2];
-		if(value.startsWith("-a"))
-		{
-			if(!hasStarted(player.getUniqueId(), ls))
-			{
-				start(player.getUniqueId(), ls);
-			}
-			LinkedHashMap<Integer, ScratchCardField> iscf = getSet(player.getUniqueId());
-			for(int i = 1; i <= ls.getAmountOfFields(); i--)
-			{
-				scratchField(player.getUniqueId(), ls, i);
-			}
-			iscf = getSet(player.getUniqueId());
-			sendFinishMessage(player, ls, iscf);
-			return;
-		}
-		if(!playingNumber.containsKey(player.getUniqueId()))
+		if(!hasStarted(player.getUniqueId(), ls))
 		{
 			//Send Start Message
 			if(!EconomyHandler.hasBalance(player.getUniqueId(), ls.getCostPerTicket()))
@@ -91,8 +75,19 @@ public class ARG_Play extends ArgumentModule
 			EconomyHandler.withdraw(player.getUniqueId(), ls.getCostPerTicket(), cat, comment);
 			MessageHandler.sendMessage(player, plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.TicketBought"));
 			start(player.getUniqueId(), ls);
+			return;
+		}
+		String value = args[2];
+		if(value.startsWith("-a"))
+		{
 			LinkedHashMap<Integer, ScratchCardField> iscf = getSet(player.getUniqueId());
-			sendMessageWithFieldToScratch(player, ls, iscf);
+			for(int i = 1; i <= ls.getAmountOfFields(); i--)
+			{
+				scratchField(player.getUniqueId(), ls, i);
+			}
+			iscf = getSet(player.getUniqueId());
+			sendFinishMessage(player.getUniqueId(), ls, iscf);
+			playingNumber.remove(player.getUniqueId());
 			return;
 		}
 		if(MatchApi.isInteger(value))
@@ -104,13 +99,31 @@ public class ARG_Play extends ArgumentModule
 		} else if(allScratched(player.getUniqueId(), ls))
 		{
 			LinkedHashMap<Integer, ScratchCardField> iscf = getSet(player.getUniqueId());
-			sendFinishMessage(player, ls, iscf);
+			sendFinishMessage(player.getUniqueId(), ls, iscf);
 			playingNumber.remove(player.getUniqueId());
+			return;
+		} else
+		{
+			LinkedHashMap<Integer, ScratchCardField> iscf = getSet(player.getUniqueId());
+			sendMessageWithFieldToScratch(player, ls, iscf);
 			return;
 		}
 	}
 	
-	private LinkedHashMap<Integer, ScratchCardField> getSet(UUID uuid)
+	public static void doGivedTickets(UUID uuid, ScratchCard sc)
+	{
+		start(uuid, sc);
+		LinkedHashMap<Integer, ScratchCardField> iscf = getSet(uuid);
+		for(int i = 1; i <= sc.getAmountOfFields(); i--)
+		{
+			scratchField(uuid, sc, i);
+		}
+		iscf = getSet(uuid);
+		sendFinishMessage(uuid, sc, iscf);
+		playingNumber.remove(uuid);
+	}
+	
+	private static LinkedHashMap<Integer, ScratchCardField> getSet(UUID uuid)
 	{
 		if(playingNumber.containsKey(uuid))
 		{
@@ -139,7 +152,7 @@ public class ARG_Play extends ArgumentModule
 		return c > 0 && c < sc.getAmountOfFields();
 	}
 	
-	private void start(UUID uuid, ScratchCard sc)
+	private static void start(UUID uuid, ScratchCard sc)
 	{
 		LinkedHashMap<Integer, ScratchCardField> map = getSet(uuid);
 		for(int i = 1; i <= sc.getAmountOfFields(); i++)
@@ -148,7 +161,7 @@ public class ARG_Play extends ArgumentModule
 		}
 	}
 	
-	private void scratchField(UUID uuid, ScratchCard sc, int i)
+	private static void scratchField(UUID uuid, ScratchCard sc, int i)
 	{
 		LinkedHashMap<Integer, ScratchCardField> iscf = getSet(uuid);
 		if(!iscf.containsKey(i))
@@ -173,108 +186,14 @@ public class ARG_Play extends ArgumentModule
 		return c >= sc.getAmountOfFields();
 	}
 	
-	public static String replace(LinkedHashSet<Integer> set, LinkedHashSet<Integer> aset, String r)
-	{
-		LinkedHashSet<Integer> sets = LottoSuperHandler.sortDrawnNumber(set);
-		ArrayList<String> l = new ArrayList<>();
-		sets.stream().forEach(x -> l.add(String.valueOf(x)));
-		LinkedHashSet<Integer> asets = LottoSuperHandler.sortDrawnNumber(set);
-		ArrayList<String> al = new ArrayList<>();
-		asets.stream().forEach(x -> al.add(String.valueOf(x)));
-		String s = r;
-		if(set.size() > 0 && asets.size() > 0)
-		{
-			s = s.replace("%choosennumber%", String.join(", ", l)).replace("%additionalchoosennumber%", String.join(", ", l));
-		} else if(set.size() > 0 && asets.size() == 0)
-		{
-			s = s.replace("%choosennumber%", String.join(", ", l)).replace("%additionalchoosennumber%", "/");
-		} else if(set.size() == 0 && asets.size() > 0)
-		{
-			s = s.replace("%choosennumber%", "/").replace("%additionalchoosennumber%", String.join(", ", l));
-		} else
-		{
-			s = s.replace("%choosennumber%", "/").replace("%additionalchoosennumber%", "/");
-		}
-		return s;
-	}
-	
-	private void sendInfoMessageToScratch(Player player, ScratchCard cl, LinkedHashMap<Integer, ScratchCardField> clt)
+	private void sendInfoMessageToScratch(Player player, ScratchCard sc)
 	{
 		ArrayList<String> msg = new ArrayList<String>();
-		if(clt.getChoosenNumbers().size() > 0)
+		for(String s : plugin.getYamlHandler().getLang().getStringList("ScratchCard.Arg.Play.Info"))
 		{
-			msg.add(replace(LottoSuperHandler.sortDrawnNumber(clt.getChoosenNumbers()), 
-					LottoSuperHandler.sortDrawnNumber(clt.getAdditionalChoosenNumbers()), 
-					plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.AlreadyChoosenNumber")));
-		} else
-		{
-			msg.add(getCmdForRandom(cl, "random", plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.RandomChoose")));
-		}
-		msg.add(plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.ShouldRepeat")
-				.replace("%shouldrepeat%", 
-						getCmdForRepeat(cl, !clt.shouldRepeate(),
-								(clt.shouldRepeate() 
-										? plugin.getYamlHandler().getLang().getString("IsTrue")
-										: plugin.getYamlHandler().getLang().getString("IsFalse")))));
-		msg.add(plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.ChooseNumber")
-				.replace("%amountofchoosennumber%", String.valueOf(cl.getAmountOfChoosedNumber())));
-		int start = cl.getFirstNumberToChooseFrom();
-		int end = cl.getLastNumberToChooseFrom();
-		int k = 1;
-		StringBuilder sb = new StringBuilder();
-		for(int j = start; j <= end; j++)
-		{
-			if(clt.getChoosenNumbers().contains(j))
-			{
-				sb.append(plugin.getYamlHandler().getLang().getString("WasChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, "a"+getSpacing(j, cl.getLastNumberToChooseFrom()))));
-			} else
-			{
-				sb.append(plugin.getYamlHandler().getLang().getString("WasntNeutralChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, "a"+getSpacing(j, cl.getLastNumberToChooseFrom()))));
-			}
-			if(j < end)
-			{
-				sb.append(plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.Seperator"));
-			}
-			if(k == 10 || j == end)
-			{
-				msg.add(sb.toString());
-				sb = new StringBuilder();
-				k = 1;
-				continue;
-			}
-			k++;
-		}
-		msg.add(plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.AdditionalChooseNumber")
-				.replace("%additionalamountofchoosennumber%", String.valueOf(cl.getAdditionalAmountOfChoosenNumber())));
-		start = cl.getAdditionalFirstNumberToChooseFrom();
-		end = cl.getAdditionalLastNumberToChooseFrom();
-		k = 1;
-		sb = new StringBuilder();
-		for(int j = start; j <= end; j++)
-		{
-			if(clt.getAdditionalChoosenNumbers().contains(j))
-			{
-				sb.append(plugin.getYamlHandler().getLang().getString("WasChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, getSpacing(j, cl.getAdditionalLastNumberToChooseFrom()))));
-			} else
-			{
-				sb.append(plugin.getYamlHandler().getLang().getString("WasntNeutralChoosen")
-						.replace("%number%", getCmdForContainingNumbers(cl, getSpacing(j, cl.getAdditionalLastNumberToChooseFrom()))));
-			}
-			if(j < end)
-			{
-				sb.append(plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.Seperator"));
-			}
-			if(k == 10 || j == end)
-			{
-				msg.add(sb.toString());
-				sb = new StringBuilder();
-				k = 1;
-				continue;
-			}
-			k++;
+			msg.add(s.replace("%scratchcardbet%", CommandSuggest.getCmdString(Type.SCRATCHCARD_PLAY))
+					.replace("%lotteryname%", sc.getLotteryName() + " b")
+					.replace("%costperticket%", EconomyHandler.format(sc.getCostPerTicket())));
 		}
 		MessageHandler.sendMessage(player, msg.toArray(new String[msg.size()]));
 	}
@@ -282,53 +201,148 @@ public class ARG_Play extends ArgumentModule
 	private void sendMessageWithFieldToScratch(Player player, ScratchCard sc, LinkedHashMap<Integer, ScratchCardField> map)
 	{
 		ArrayList<String> msg = new ArrayList<>();
-		
+		msg.addAll(plugin.getYamlHandler().getLang().getStringList("ScratchCard.Arg.Play.ScratchInfo"));
+		sendScratchFields(sc, map);
 	}
 	
-	private void sendFinishMessage(Player player, ScratchCard sc, LinkedHashMap<Integer, ScratchCardField> map)
+	private static void sendFinishMessage(UUID uuid, ScratchCard sc, LinkedHashMap<Integer, ScratchCardField> map)
 	{
+		ArrayList<String> msg = new ArrayList<>();
 		ArrayList<String> samefield = new ArrayList<>();
 		double winamount = 0.0;
 		ArrayList<Double> fields = new ArrayList<>();
 		HashSet<Integer> alreadycheck = new HashSet<>();
-		for(Entry<Integer, ScratchCardField> e : map.entrySet())
+		List<Integer> jokerIndices = new ArrayList<>();
+		boolean hasWon = false;
+		for (Entry<Integer, ScratchCardField> e : map.entrySet()) 
 		{
-			if(!alreadycheck.contains(e.getKey()))
+		    if (e.getValue().getWinningAmount() == -1) 
+		    {
+		        jokerIndices.add(e.getKey());
+		    }
+		}
+		if(jokerIndices.size() >= sc.getAmountOfFields())
+		{
+			//Jackpot x amount Of Fields
+			int d = jokerIndices.size();
+			double result = d * sc.getJackpot().getWinningAmount();
+			winamount += result;
+			samefield.add(LLY.getPlugin().getYamlHandler().getLang().getString("ScratchCard.Arg.Play.FieldWin")
+					.replace("%d%", String.valueOf(d))
+					.replace("%amount%", String.valueOf(sc.getJackpot().getDisplay()))
+					.replace("%result%", EconomyHandler.format(result)));
+			for(String s : LLY.getPlugin().getYamlHandler().getLang().getStringList("ScratchCard.Arg.Play.Won"))
 			{
-				alreadycheck.add(e.getKey());
-				int c = 1;
-				for(Entry<Integer, ScratchCardField> ee : map.entrySet())
+				msg.add(s.replace("%winamount%", EconomyHandler.format(winamount)));
+			}
+			MessageHandler.sendMessage(uuid, msg.toArray(new String[msg.size()]));
+			if(samefield.size() > 0)
+			{
+				MessageHandler.sendMessage(uuid, samefield.toArray(new String[samefield.size()]));
+			}
+			jokerIndices.forEach(x -> fields.add(-1.0));
+			ScratchCardTicket sct = new ScratchCardTicket(0, sc.getLotteryName(), uuid, winamount, fields);
+			LLY.getPlugin().getMysqlHandler().create(sct);
+			return;
+		} else
+		{
+			ArrayList<ScratchCardPayout> scpA = new ArrayList<>();
+			ScratchCardPayout highestscp = null;
+			for(Entry<Integer, ScratchCardField> e : map.entrySet())
+			{
+				if(e.getValue().getWinningAmount() == sc.getJoker().getWinningAmount())
 				{
-					if(alreadycheck.contains(ee.getKey()))
-					{
-						continue;
-					}
-					alreadycheck.add(ee.getKey());
-					if(e.getValue().getWinningAmount() != ee.getValue().getChance())
-					{
-						continue;
-					}
-					c++;
+					continue;
 				}
-				if(c >= sc.getAmountOfSameFieldToWin())
+				if(!alreadycheck.contains(e.getKey()))
 				{
+					alreadycheck.add(e.getKey());
+					int c = 1;
+					for(Entry<Integer, ScratchCardField> ee : map.entrySet())
+					{
+						if(ee.getValue().getWinningAmount() == sc.getJoker().getWinningAmount())
+						{
+							continue;
+						}
+						if(alreadycheck.contains(ee.getKey()))
+						{
+							continue;
+						}
+						alreadycheck.add(ee.getKey());
+						if(e.getValue().getWinningAmount() != ee.getValue().getChance())
+						{
+							continue;
+						}
+						c++;
+					}
 					int d = c - sc.getAmountOfSameFieldToWin() + 1;
-					double result = d * e.getValue().getWinningAmount();
+					ScratchCardPayout scp = new ScratchCardPayout(e.getValue(), d);
+					if(d > 0)
+					{
+						hasWon = true;
+						scpA.add(scp);
+						if(highestscp == null 
+								|| highestscp.getScratchCardField().getWinningAmount() < e.getValue().getWinningAmount())
+						{
+							highestscp = scp;
+							
+						}
+					}
+					if(d <= 0 && jokerIndices.size() > 0)
+					{
+						if(highestscp == null 
+								|| highestscp.getScratchCardField().getWinningAmount() < e.getValue().getWinningAmount())
+						{	
+							hasWon = true;
+							highestscp = scp;
+						}
+					}					
+				}
+				fields.add(e.getValue().getWinningAmount());
+			}
+			if(hasWon)
+			{
+				int d = highestscp.getAmountDrawn() + jokerIndices.size();
+				double result = d * highestscp.getScratchCardField().getWinningAmount();
+				winamount += result;
+				samefield.add(LLY.getPlugin().getYamlHandler().getLang().getString("ScratchCard.Arg.Play.FieldWin")
+						.replace("%d%", String.valueOf(d))
+						.replace("%amount%", String.valueOf(highestscp.getScratchCardField().getDisplay()))
+						.replace("%result%", EconomyHandler.format(result)));
+				for(ScratchCardPayout scp : scpA)
+				{
+					if(scp.getScratchCardField().getWinningAmount() == highestscp.getScratchCardField().getWinningAmount())
+					{
+						continue;
+					}
+					d = scp.getAmountDrawn();
+					result = d * scp.getScratchCardField().getWinningAmount();
 					winamount += result;
-					samefield.add(plugin.getYamlHandler().getLang().getString("ScratchCard.Arg.Play.FieldWin")
+					samefield.add(LLY.getPlugin().getYamlHandler().getLang().getString("ScratchCard.Arg.Play.FieldWin")
 							.replace("%d%", String.valueOf(d))
-							.replace("%amount%", String.valueOf(e.getValue().getDisplay()))
+							.replace("%amount%", String.valueOf(scp.getScratchCardField().getDisplay()))
 							.replace("%result%", EconomyHandler.format(result)));
 				}
 			}
-			fields.add(e.getValue().getWinningAmount());
 		}
-		if(samefield.size() > 0)
+		if(hasWon)
 		{
-			MessageHandler.sendMessage(player, samefield.toArray(new String[samefield.size()]));
+			for(String s : LLY.getPlugin().getYamlHandler().getLang().getStringList("ScratchCard.Arg.Play.Won"))
+			{
+				msg.add(s.replace("%winamount%", EconomyHandler.format(winamount)));
+			}
+			MessageHandler.sendMessage(uuid, msg.toArray(new String[msg.size()]));
+			if(samefield.size() > 0)
+			{
+				MessageHandler.sendMessage(uuid, samefield.toArray(new String[samefield.size()]));
+			}
+		} else
+		{
+			msg.add(LLY.getPlugin().getYamlHandler().getLang().getString("ScratchCard.Arg.Play.NotWon"));
+			MessageHandler.sendMessage(uuid, msg.toArray(new String[msg.size()]));
 		}
-		ScratchCardTicket sct = new ScratchCardTicket(0, sc.getLotteryName(), player.getUniqueId(), winamount, fields);
-		plugin.getMysqlHandler().create(sct);
+		ScratchCardTicket sct = new ScratchCardTicket(0, sc.getLotteryName(), uuid, winamount, fields);
+		LLY.getPlugin().getMysqlHandler().create(sct);
 	}
 	
 	private ArrayList<String> sendScratchFields(ScratchCard sc, LinkedHashMap<Integer, ScratchCardField> map)

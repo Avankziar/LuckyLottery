@@ -664,6 +664,104 @@ public class YamlManager
 				"<aqua>Commandright for <white>/classiclotto nextdraws",
 				"<yellow>Befehl /classiclotto nextdraws",
 				"<yellow>Command /classiclotto nextdraws");
+		basePermission = "lottosuper";
+		commandsInput("lottosuper", "lottosuper", "lottosuper.cmd", 
+				"/lottosuper [lotteryname]", "/lottosuper ", false,
+				"<red>/lottosuper [Lotteriename] <white>| Listet alle super Lotterien auf und bei optionalen Argument gibt detailierte Information.",
+				"<red>/lottosuper [lotteryname] <white>| Lists all super Lotteries and with optional argument gives detailed information.",
+				"<aqua>Befehlsrecht für <white>/lottosuper",
+				"<aqua>Commandright for <white>/lottosuper",
+				"<yellow>Befehl /lottosuper",
+				"<yellow>Command /lottosuper");
+		argumentInput("lottosuper_drawnow", "drawnow", basePermission,
+				"/lottosuper drawnow <lotteryname> [numbersanumbers|reopen]", "/lottosuper drawnow ", false,
+				"<red>/lottosuper drawnow <Lotteriename> [Nummer|aNummer|reopen] <white>| Zieht die Lotterie jetzt. Optional können die geltenden Zahlen mitangegeben werden (Superzahlen mit a vor der Zahl) und oder Wiedereröffnung der Lotterie nach der Ziehung für maneuell gezogene Lotterien.",
+				"<red>/lottosuper drawnow <lotteryname> [numbers|anumbers|reopen] <white>| Draw the lottery now. Optionally, the applicable numbers can be specified (Super numbers with a in front of the number) and or reopening the lottery after the draw for manually drawn lotteries.",
+				"<aqua>Befehlsrecht für <white>/lottosuper drawnow",
+				"<aqua>Commandright for <white>/lottosuper drawnow",
+				"<yellow>Befehl /lottosuper drawnow",
+				"<yellow>Command /lottosuper drawnow");
+		argumentInput("lottosuper_play", "play", basePermission,
+				"/lottosuper play <lotteryname> [numbers|anumbers] [boolean repeat] [confirm]", "/lottosuper play ", false,
+				"<red>/lottosuper play <Lotteriename> [Nummer|aNummer] [boolean Wiederholung] [bestätigen] <white>| Spielt in der angegeben Lotterie.",
+				"<red>/lottosuper play <lotteryname> [numbers|anumbers] [boolean repeat] [confirm] <white>| Play in the specified lottery.",
+				"<aqua>Befehlsrecht für <white>/lottosuper play",
+				"<aqua>Commandright for <white>/lottosuper play",
+				"<yellow>Befehl /lottosuper play",
+				"<yellow>Command /lottosuper play");
+		argumentInput("lottosuper_addpot", "addpot", basePermission,
+				"/lottosuper addpot <lotteryname> <AmountToAdd> [-broadcast]", "/lottosuper addpot ", false,
+				"<red>/lottosuper addpot <Lotteriename> <MengeZumHinzufügen> [-broadcast] <white>| Fügt dem aktuellen Pot den angegebenen Betrag hinzu. Optional mit Broadcast für alle Onlinespieler.",
+				"<red>/lottosuper addpot <lotteryname> <AmountToAdd> [-broadcast] <white>| Adds the specified amount to the current pot. Optionally with broadcast to all online players.",
+				"<aqua>Befehlsrecht für <white>/lottosuper addpot",
+				"<aqua>Commandright for <white>/lottosuper addpot",
+				"<yellow>Befehl /lottosuper addpot",
+				"<yellow>Command /lottosuper addpot");
+		argumentInput("lottosuper_setpot", "setpot", basePermission,
+				"/lottosuper setpot <lotteryname> <AmountToSet> [-broadcast]", "/lottosuper setpot ", false,
+				"<red>/lottosuper setpot <Lotteriename> <MengeZumSetzten> [-broadcast] <white>| Setzt den Pot der Lotterie neu fest. Optional mit Broadcast für alle Onlinespieler.",
+				"<red>/lottosuper setpot <lotteryname> <AmountToSet> [-broadcast] <white>| Sets the lottery pot. Optionally with broadcast to all online players.",
+				"<aqua>Befehlsrecht für <white>/lottosuper setpot",
+				"<aqua>Commandright for <white>/lottosuper setpot",
+				"<yellow>Befehl /lottosuper setpot",
+				"<yellow>Command /lottosuper setpot");
+		argumentInput("lottosuper_giveticket", "giveticket", basePermission,
+				"/lottosuper giveticket <lotteryname> [amountOfTicket]", "/lottosuper giveticket ", false,
+				"<red>/lottosuper giveticket <Lotteriename> [amountOfTicket] <white>| Gibt allen online Spieler ein Ticket in der Lotterie. Optional mit Anzahl an zu vergebenden Tickets.",
+				"<red>/lottosuper giveticket <lotteryname> [amountOfTicket] <white>| Gives all online players a ticket in the lottery. Optional with number of tickets to be allocated.",
+				"<aqua>Befehlsrecht für <white>/lottosuper giveticket",
+				"<aqua>Commandright for <white>/lottosuper giveticket",
+				"<yellow>Befehl /lottosuper giveticket",
+				"<yellow>Command /lottosuper giveticket");
+		argumentInput("lottosuper_open", "open", basePermission,
+				"/lottosuper open", "/lottosuper open ", false,
+				"<red>/lottosuper open <white>| Öffnet eine Lotterie. Sofern die Lotterie manuell gezogen wird, muss dies dann auch über einen Befehl erfolgen.",
+				"<red>/lottosuper open <white>| Opens a lottery. If the lottery is drawn manually, this must also be done using a command.",
+				"<aqua>Befehlsrecht für <white>/lottosuper open",
+				"<aqua>Commandright for <white>/lottosuper open",
+				"<yellow>Befehl /lottosuper open",
+				"<yellow>Command /lottosuper open");
+		argumentInput("lottosuper_ticketlist", "ticketlist", basePermission,
+				"/lottosuper ticketlist [page]", "/lottosuper ticketlist ", false,
+				"<red>/lottosuper ticketlist [Seite] <white>| Listet die letzten 10 Tickets der angegebenen Lotteriea auf.",
+				"<red>/lottosuper ticketlist [page] <white>| Lists the last 10 tickets of the specified lottery.",
+				"<aqua>Befehlsrecht für <white>/lottosuper ticketlist",
+				"<aqua>Commandright for <white>/lottosuper ticketlist",
+				"<yellow>Befehl /lottosuper ticketlist",
+				"<yellow>Command /lottosuper ticketlist");
+		argumentInput("lottosuper_repeat", "repeat", basePermission,
+				"/lottosuper repeat <lotteryname> <id>", "/lottosuper repeat ", false,
+				"<red>/lottosuper repeat <lotteryname> <id> <white>| Setzt das Ticket auf wiederholung der Zahlen. Sollte die Ziehung schon abgelaufen sein, wird ein neues Ticket erstellt.",
+				"<red>/lottosuper repeat <lotteryname> <id> <white>| Sets the ticket to repeat the numbers. If the draw has already expired, a new ticket is created.",
+				"<aqua>Befehlsrecht für <white>/lottosuper repeat",
+				"<aqua>Commandright for <white>/lottosuper repeat",
+				"<yellow>Befehl /lottosuper repeat",
+				"<yellow>Command /lottosuper repeat");
+		argumentInput("lottosuper_nextdraws", "nextdraws", basePermission,
+				"/lottosuper nextdraws <lotteryname>", "/lottosuper nextdraws ", false,
+				"<red>/lottosuper nextdraws <lotteryname> <white>| Zeigt alle nächsten Ziehungen der Lotterie.",
+				"<red>/lottosuper nextdraws <lotteryname> <white>| Shows all upcoming lottery draws.",
+				"<aqua>Befehlsrecht für <white>/lottosuper nextdraws",
+				"<aqua>Commandright for <white>/lottosuper nextdraws",
+				"<yellow>Befehl /lottosuper nextdraws",
+				"<yellow>Command /lottosuper nextdraws");
+		basePermission = "scratchcard";
+		argumentInput("scratchcard_play", "play", basePermission,
+				"/scratchcard play <lotteryname> [numbers|-a]", "/scratchcard play ", false,
+				"<red>/scratchcard play <Lotteriename> [Nummer|-a] <white>| Spielt in der angegeben Rubbellose.",
+				"<red>/scratchcard play <lotteryname> [numbers|-a] <white>| Play in the specified scratchcards.",
+				"<aqua>Befehlsrecht für <white>/scratchcard play",
+				"<aqua>Commandright for <white>/scratchcard play",
+				"<yellow>Befehl /scratchcard play",
+				"<yellow>Command /scratchcard play");
+		argumentInput("scratchcard_giveticket", "giveticket", basePermission,
+				"/scratchcard giveticket <lotteryname> [amountOfTicket]", "/scratchcard giveticket ", false,
+				"<red>/scratchcard giveticket <Lotteriename> [amountOfTicket] <white>| Gibt allen online Spieler ein Ticket in der Rubbellos Lotterie. Optional mit Anzahl an zu vergebenden Tickets.",
+				"<red>/scratchcard giveticket <lotteryname> [amountOfTicket] <white>| Gives all online players a ticket in the scratchcard lottery. Optional with number of tickets to be allocated.",
+				"<aqua>Befehlsrecht für <white>/scratchcard giveticket",
+				"<aqua>Commandright for <white>/scratchcard giveticket",
+				"<yellow>Befehl /scratchcard giveticket",
+				"<yellow>Command /scratchcard giveticket");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -1439,10 +1537,44 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<red>Die angegebene Rubbellose extiert nicht!",
 						"<red>The specified scratchcard does not exist!"}));
+		languageKeys.put(path+".Arg.Play.Info", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Ein Rubbellos kostet %costperticket%.",
+						"<click:run_command:'%scratchcardbet%%lotteryname%'><gold>Klicke {<red>hier<gold>} zum spielen!</click>",
+						"<yellow>A scratch card costs %costperticket%.",
+						"<click:run_command:'%scratchcardbet%%lotteryname%'><gold>Click {<red>here<gold>} to play!</click>"}));
+		languageKeys.put(path+".Arg.Play.ScratchInfo", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Alle folgenden Felder müssen nun freigerubbelt werden!",
+						"<gray>(Beachte, solange nicht alle Felder frei sind erhälst du nicht deinen vermeitlichen Gewinn, auch wenn das Ticket schon bezahlt ist!",
+						"<yellow>All following fields must now be scratched off!",
+						"<gray>(Please note that as long as not all fields are free you will not receive your supposed winnings, even if the ticket has already been paid for!"}));
 		languageKeys.put(path+".Arg.Play.FieldWin", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<white>%d% <gray>x %amount% <gray>= %result%",
 						"<white>%d% <gray>x %amount% <gray>= %result%"}));
+		languageKeys.put(path+".Arg.Play.Won", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"        <gold><bold>! GEWONNEN !",
+						"<yellow>Du gewinnst </yellow>%winamount%<yellow>!",
+						"        <gold><bold>! WON !",
+						"<yellow>You win </yellow>%winamount%<yellow>!"}));
+		languageKeys.put(path+".Arg.Play.NotWon", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Schade! Nicht gewonnen.",
+						"<yellow>Too bad! Not won."}));
+		languageKeys.put(path+".Arg.GiveTicket.Given", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"",
+						""}));
+		languageKeys.put(path+".Arg.GiveTicket.Give", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<gold>Gratulation! <yellow>Dir wurde von %player% %amount% Rubbellos(e) in der Lotterie %lotteryname% geschenkt!",
+						"<gold>Congratulations! <yellow>You have been given %amount% ticket(s) in the lottery %lotteryname% by %player%!"}));
+		languageKeys.put(path+".Arg.GiveTicket.Given", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Du hast <white>%amount% <yellow>Spielern <white>%value% <yellow>Rubbellos(e) in der Lotterie %lotteryname% geschenkt!",
+						"<yellow>You have given <white>%amount% <yellow>players <white>%value% <yellow>scratchticket(s) in the %lotteryname% lottery!"}));
 	}
 	
 	private void initModifierValueEntryLanguage() //INFO:BonusMalusLanguages
@@ -2236,9 +2368,9 @@ public class YamlManager
 					"Defines how many of the fields should be displayed per chat row.",
 					"With 3 X, goes up to 7 times in Minecraft. With 4 X, 6 times. With 5 X, 5 times etc."}));
 		mapII.put("Display.FieldUnscratched", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"+-------+ ",
-					"| XXXXXX | ",
-					"+-------+ "}));
+					"<yellow>+-------+</yellow> ",
+					"<yellow>|</yellow> XXXXXX <yellow>|</yellow> ",
+					"<yellow>+-------+</yellow> "}));
 		mapII.put("#Display.FieldUnscratched", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Dies ist das Rubbelfeld, welches im Chat angezeigt wird, wenn ein Feld nocht nicht frei gerubbelt worden ist.",
@@ -2247,19 +2379,23 @@ public class YamlManager
 					"This is the scratch field that is displayed in the chat if a field has not yet been scratched free.",
 					"The X are to be adjusted to the highest integer monetary value (plus currency symbol! if desired). As well as the - above and below."}));
 		mapII.put("Display.FieldScratched", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"+-------+ ",
-					"| X | ",
-					"+-------+ "}));
+					"<yellow>+-------+</yellow> ",
+					"<yellow>|</yellow>    X   <yellow>|</yellow> ",
+					"<yellow>+-------+</yellow> "}));
 		mapII.put("#Display.FieldScratched", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Hier wird aus Vereinfachung alles, was im FieldUnscratched beschrieben worden ist genommen und auf ein einzeles X reduziert zum ersetzten der aufgedecken Zahlenwerte.",
 					"",
 					"Here, for simplicity, everything described in FieldUnscratched is taken and reduced to a single X to replace the revealed numerical values."}));
 		mapII.put("ScratchCardField.1.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					80_000.0}));
+					88_888.0}));
 		mapII.put("#ScratchCardField.1.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
-					"Beschreibt einen der zu gewinnenen Preise.",
+					"Beschreibt einen der zu gewinnenen Preise. Ein Joker muss den Wert -1.0 haben.",
+					"Ein oder mehrere Joker heben die Anzahl des höchsten Wert, welcher aufgedeckt wird.",
+					"Bspw. wenn man als höchsten Wert 1000.0 und 2 Joker aufgedeckt hat, wird es so gehandhabt das die 1000.0 drei mal gezogen wurde.",
+					"",
+					"",
 					"",
 					""}));
 		mapII.put("ScratchCardField.1.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -2278,20 +2414,134 @@ public class YamlManager
 					"",
 					""}));
 		mapII.put("ScratchCardField.1.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<gold><bold>80000$</bold></gold>"}));
+					"<gold><bold>88888$</bold></gold>"}));
 		mapII.put("#", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Dies ist der Ersatz für das einzelne X in FieldScratched.",
 					"Falls Farben etc. benutzt werden, wäre es für ästhetische Gründe besser diese wieder zu schließen.",
 					"",
-					""}));
-		mapII.put("", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					0}));
-		mapII.put("#", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"",
-					"",
 					"",
 					""}));
+		mapII.put("ScratchCardField.2.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					44_444.0}));
+		mapII.put("ScratchCardField.2.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					0.5}));
+		mapII.put("ScratchCardField.2.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<light_purple><bold>44444$</bold></light_purple>"}));
+		mapII.put("ScratchCardField.3.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					22_222.0}));
+		mapII.put("ScratchCardField.3.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1.0}));
+		mapII.put("ScratchCardField.3.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<light_purple><bold>22222$</bold></light_purple>"}));
+		mapII.put("ScratchCardField.4.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					11_111.0}));
+		mapII.put("ScratchCardField.4.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					2.0}));
+		mapII.put("ScratchCardField.4.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<light_purple><bold>11111$</bold></light_purple>"}));
+		mapII.put("ScratchCardField.5.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					8_888.0}));
+		mapII.put("ScratchCardField.5.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					4.0}));
+		mapII.put("ScratchCardField.5.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<blue><bold> 8888$</bold></blue>"}));
+		mapII.put("ScratchCardField.6.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					4_444.0}));
+		mapII.put("ScratchCardField.6.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					5.0}));
+		mapII.put("ScratchCardField.6.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<blue><bold> 4444$</bold></blue>"}));
+		mapII.put("ScratchCardField.7.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					2_222.0}));
+		mapII.put("ScratchCardField.7.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					12.0}));
+		mapII.put("ScratchCardField.7.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<blue><bold> 2222$</bold></blue>"}));
+		mapII.put("ScratchCardField.8.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					1_111.0}));
+		mapII.put("ScratchCardField.8.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					16.0}));
+		mapII.put("ScratchCardField.8.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<blue><bold> 1111$</bold></blue>"}));
+		mapII.put("ScratchCardField.9.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					888.0}));
+		mapII.put("ScratchCardField.9.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					20.0}));
+		mapII.put("ScratchCardField.9.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold> 888$ </bold></green>"}));
+		mapII.put("ScratchCardField.10.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					444.0}));
+		mapII.put("ScratchCardField.10.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					28.0}));
+		mapII.put("ScratchCardField.10.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold> 444$ </bold></green>"}));
+		mapII.put("ScratchCardField.11.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					444.0}));
+		mapII.put("ScratchCardField.11.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					28.0}));
+		mapII.put("ScratchCardField.11.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold> 444$ </bold></green>"}));
+		mapII.put("ScratchCardField.12.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					222.0}));
+		mapII.put("ScratchCardField.12.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					36.0}));
+		mapII.put("ScratchCardField.12.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold> 222$ </bold></green>"}));
+		mapII.put("ScratchCardField.13.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					111.0}));
+		mapII.put("ScratchCardField.13.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					44.0}));
+		mapII.put("ScratchCardField.13.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold> 111$ </bold></green>"}));
+		mapII.put("ScratchCardField.14.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					88.0}));
+		mapII.put("ScratchCardField.14.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					52.0}));
+		mapII.put("ScratchCardField.14.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold>  88$ </bold></green>"}));
+		mapII.put("ScratchCardField.15.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					44.0}));
+		mapII.put("ScratchCardField.15.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					60.0}));
+		mapII.put("ScratchCardField.15.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold>  44$ </bold></green>"}));
+		mapII.put("ScratchCardField.16.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					22.0}));
+		mapII.put("ScratchCardField.16.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					68.0}));
+		mapII.put("ScratchCardField.16.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold>  22$ </bold></green>"}));
+		mapII.put("ScratchCardField.17.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					11.0}));
+		mapII.put("ScratchCardField.17.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					76.0}));
+		mapII.put("ScratchCardField.17.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<green><bold>  11$ </bold></green>"}));
+		mapII.put("ScratchCardField.18.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					8.0}));
+		mapII.put("ScratchCardField.18.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					84.0}));
+		mapII.put("ScratchCardField.18.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<white><bold>  8$  </bold></white>"}));
+		mapII.put("ScratchCardField.19.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					4.0}));
+		mapII.put("ScratchCardField.19.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					92.0}));
+		mapII.put("ScratchCardField.19.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<white><bold>  4$  </bold></white>"}));
+		mapII.put("ScratchCardField.20.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					2.0}));
+		mapII.put("ScratchCardField.20.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					100.0}));
+		mapII.put("ScratchCardField.20.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<white><bold>  2$  </bold></white>"}));
+		mapII.put("ScratchCardField.21.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					-1.0}));
+		mapII.put("ScratchCardField.21.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					0.01}));
+		mapII.put("ScratchCardField.21.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<red><bold> Joker</bold></red>"}));
 		mapII.put("Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
 		mapII.put("#Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

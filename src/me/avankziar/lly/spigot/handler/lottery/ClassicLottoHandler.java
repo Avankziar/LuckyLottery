@@ -579,11 +579,11 @@ public class ClassicLottoHandler
 			nextpot = cl.getStandartPot();
 		} else
 		{
+			nextpot += cl.getAmountToAddToThePotIfNoOneIsWinning();
 			if(nextpot < cl.getStandartPot())
 			{
 				nextpot = cl.getStandartPot();
-			}
-			nextpot += cl.getAmountToAddToThePotIfNoOneIsWinning();
+			}			
 			if(nextpot > cl.getMaximumPot())
 			{
 				nextpot = cl.getMaximumPot();
@@ -758,7 +758,8 @@ public class ClassicLottoHandler
 					}
 				}
 				s = s.replace("%matchchoosennumber%", "["+String.join(", ", ccn)+"]")
-						.replace("%matchchoosennumberamount%", String.valueOf(matches));
+						.replace("%matchchoosennumberamount%", String.valueOf(matches))
+						.replace("%matchchoosennumber%", String.join(", ", ccn));
 			}
 			s = s.replace("%lotteryname%", clt.getLotteryName())
 					.replace("%ticketid%", String.valueOf(clt.getID()))

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -121,8 +122,11 @@ public class KeepsakeItem
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(ChatApiItem.tl(displayname));
 		ArrayList<String> l = new ArrayList<>();
-		lore.stream().forEach(x -> l.add(ChatApiItem.tl(x)));
-		im.setLore(l);
+		for(String s : lore)
+		{
+			l.add(ChatApiItem.tl(s));
+		}
+		im.setLore((List<String>) l);
 		enchantments.keySet().forEach(x -> im.addEnchant(x, enchantments.get(x), true));
 		itemFlags.stream().forEach(x -> im.addItemFlags(x));
 		im.setEnchantmentGlintOverride(enchantmentGlintOverride);

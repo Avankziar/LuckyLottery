@@ -11,7 +11,60 @@ public class ChatApiItem
 {	
 	public static String tl(String s)
 	{
-		return parseHex(ChatColor.translateAlternateColorCodes('&', s));
+		return parseHex(ChatColor.translateAlternateColorCodes('&', getKyoriAdventureConvertBukkitColor(s)));
+	}
+	
+	private static String getKyoriAdventureConvertBukkitColor(String s)
+	{
+		String r = "";
+		r = s.replace("<black>", "&0")
+				.replace("<black>", "")
+				.replace("<dark_blue>", "&1")
+				.replace("</dark_blue>", "")
+				.replace("<dark_green>", "&2")
+				.replace("</dark_green>", "")
+				.replace("<dark_aqua>", "&3")
+				.replace("</dark_aqua>", "")
+				.replace("<dark_red>", "&4")
+				.replace("</dark_red>", "")
+				.replace("<dark_purple>", "&5")
+				.replace("</dark_purple>", "")
+				.replace("<gold>", "&6")
+				.replace("</gold>", "")
+				.replace("<gray>", "&7")
+				.replace("</gray>", "")
+				.replace("<dark_gray>", "&8")
+				.replace("</dark_gray>", "")
+				.replace("<blue>", "&9")
+				.replace("</blue>", "")
+				.replace("<green>", "&a")
+				.replace("</green>", "")
+				.replace("<aqua>", "&b")
+				.replace("</aqua>", "")
+				.replace("<red>", "&c")
+				.replace("</red>", "")
+				.replace("<light_purple>", "&d")
+				.replace("</light_purple>", "")
+				.replace("<yellow>", "&e")
+				.replace("</yellow>", "")
+				.replace("<white>", "&f")
+				.replace("</white>", "")
+				.replace("<obf>", "&k")
+				.replace("</obf>", "")
+				.replace("<b>", "&l")
+				.replace("</b>", "")
+				.replace("<st>", "&m")
+				.replace("</st>", "")
+				.replace("<u>", "&n")
+				.replace("</u>", "")
+				.replace("<i>", "&o")
+				.replace("</i>", "")
+				.replace("<reset>", "&r")
+				.replace("</reset>", "")
+				//.replace("", "")
+				//.replace("", "")
+				;
+		return r;
 	}
 	
 	private static String parseHex(String text) 

@@ -202,7 +202,7 @@ public class ScratchCardHandler
 			{
 				asyncDraw();
 			}
-		}.runTaskTimer(LLY.getPlugin(), 0L, 60*20L);
+		}.runTaskTimer(LLY.getPlugin(), 120*20L, 60*20L);
 	}
 	
 	private static void asyncDraw()
@@ -288,11 +288,11 @@ public class ScratchCardHandler
 		}
 		if(s.contains("%lottosupercmd%"))
 		{
-			s = s.replace("%lottosupercmd%", CommandSuggest.getCmdString(CommandSuggest.Type.LOTTOSUPER));
+			s = s.replace("%lottosupercmd%", CommandSuggest.getCmdString(CommandSuggest.Type.SCRATCHCARD));
 		}
 		if(s.contains("%lottosuperbet%"))
 		{
-			s = s.replace("%lottosuperbet%", CommandSuggest.getCmdString(CommandSuggest.Type.LOTTOSUPER_PLAY));
+			s = s.replace("%lottosuperbet%", CommandSuggest.getCmdString(CommandSuggest.Type.SCRATCHCARD_PLAY));
 		}
 		if(sc != null)
 		{

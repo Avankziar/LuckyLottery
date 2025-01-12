@@ -73,9 +73,8 @@ public class ARG_Play extends ArgumentModule
 			String cat = plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.Category").replace("%lotteryname%", ls.getLotteryName());
 			String comment = plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.Comment");
 			EconomyHandler.withdraw(player.getUniqueId(), ls.getCostPerTicket(), cat, comment);
-			MessageHandler.sendMessage(player, plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.Play.TicketBought"));
+			MessageHandler.sendMessage(player, plugin.getYamlHandler().getLang().getString("ScratchCard.Arg.Play.TicketBought"));
 			start(player.getUniqueId(), ls);
-			return;
 		}
 		String value = args[2];
 		if(value.startsWith("-a"))
@@ -202,7 +201,8 @@ public class ARG_Play extends ArgumentModule
 	{
 		ArrayList<String> msg = new ArrayList<>();
 		msg.addAll(plugin.getYamlHandler().getLang().getStringList("ScratchCard.Arg.Play.ScratchInfo"));
-		sendScratchFields(sc, map);
+		msg.addAll(sendScratchFields(sc, map));
+		MessageHandler.sendMessage(player, msg.toArray(new String[msg.size()]));
 	}
 	
 	private static void sendFinishMessage(UUID uuid, ScratchCard sc, LinkedHashMap<Integer, ScratchCardField> map)
@@ -347,11 +347,15 @@ public class ARG_Play extends ArgumentModule
 	
 	private ArrayList<String> sendScratchFields(ScratchCard sc, LinkedHashMap<Integer, ScratchCardField> map)
 	{
+		for(Entry<Integer, ScratchCardField> e : map.entrySet())
+		{
+			LLY.log.info("i: "+e.getKey()+" | "+e.getValue().getDisplay()+" | "+e.getValue().getWinningAmount());//REMOVEME
+		}
 		ArrayList<String> msg = new ArrayList<>();
 		int c = sc.getFieldPerLine();
 		int d = 0;
 		ArrayList<StringBuilder> sbA = new ArrayList<>();
-		for(int i = 0; i < sc.getAmountOfFields(); i++)
+		for(int i =1 ; i <= sc.getAmountOfFields(); i++)
 		{
 			if(d >= c)
 			{
@@ -359,7 +363,8 @@ public class ARG_Play extends ArgumentModule
 				sbA.forEach(x -> msg.add(x.toString()));
 				sbA = new ArrayList<>();
 			}
-			if(map.containsKey(i*-1))
+			int ii = i*-1;
+			if(map.containsKey(ii))
 			{
 				int a = 0;
 				for(String s : sc.getDisplayFieldUnscratched())

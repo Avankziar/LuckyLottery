@@ -79,6 +79,7 @@ public class ARG_Ticketlist extends ArgumentModule
 		ArrayList<String> msg = new ArrayList<>();
 		msg.add(plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.TicketList.Headline")
 				.replace("%lotteryname%", ls.getLotteryName()));
+		int lastwinningclasslevel = ls.getWinningClassSuper().size()+1;
 		for(LottoSuperTicket lst : lstA)
 		{
 			LottoSuperDraw lsd = plugin.getMysqlHandler().getData(ls.getDrawMysql(), "`id` = ?", lst.getDrawID());
@@ -97,7 +98,7 @@ public class ARG_Ticketlist extends ArgumentModule
 			.forEach(x -> ccna.add(
 					matchChoosenNumber(lsd.getAdditionalChoosenNumbers(), x, ARG_Play.getSpacing(x, ls.getAdditionalLastNumberToChooseFrom()))));
 			String status = lsd.wasDrawn() 
-					? (lst.getWinningClassLevel() > 0 
+					? (lst.getWinningClassLevel() < lastwinningclasslevel 
 							? plugin.getYamlHandler().getLang().getString("LottoSuper.Arg.TicketList.StatusWon")
 									.replace("%winningclass%", String.valueOf(lst.getWinningClassLevel()))
 									.replace("%prize%", EconomyHandler.format(lst.getWinningPrize()))

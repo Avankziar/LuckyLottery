@@ -104,8 +104,9 @@ public class LottoSuperHandler
 				}			
 				String drawOnServer = y.getString("DrawOnServer", "hub");
 				boolean drawManually = y.getBoolean("DrawManually", false);
-				LinkedHashSet<WinningClassSuper> winningClassSuper = new LinkedHashSet<>();
-				for(int i = 1; i <= amountOfChoosedNumber * (additionalAmountOfChoosedNumber+1); i++)
+				ArrayList<WinningClassSuper> winningClassSuper = new ArrayList<>();
+				int wcmax = (amountOfChoosedNumber * (additionalAmountOfChoosedNumber+1)+1);
+				for(int i = 1; i <= wcmax; i++)
 				{
 					if(!y.contains("WinningClass."+i+".Payout"))
 					{
@@ -157,7 +158,7 @@ public class LottoSuperHandler
 							amount = amount > 64 ? 64 : (amount < 1 ? 1 : amount);
 							String displayname = y.getString("WinningClass."+i+".KeepsakeItem.Displayname");
 							ArrayList<String> lore = new ArrayList<>();
-							if(y.contains("WinningClass."+i+".Lore"))
+							if(y.contains("WinningClass."+i+".KeepsakeItem.Lore"))
 							{
 								lore = (ArrayList<String>) y.getStringList("WinningClass."+i+".KeepsakeItem.Lore");
 							}
@@ -290,7 +291,7 @@ public class LottoSuperHandler
 			{
 				asyncDraw();
 			}
-		}.runTaskTimer(LLY.getPlugin(), 0L, 60*20L);
+		}.runTaskTimer(LLY.getPlugin(), 60*20L, 60*20L);
 	}
 	
 	private static void asyncDraw()
@@ -449,7 +450,6 @@ public class LottoSuperHandler
 		int lowestWC = 1;
 		for(WinningClassSuper wcs : ls.getWinningClassSuper())
 		{
-			LLY.log.info("WinningClassSuper: "+wcs.getWinningClassLevel());//REMOVEME
 			double payout = 0.0;
 			switch(wcs.getPayoutType())
 			{
@@ -608,11 +608,11 @@ public class LottoSuperHandler
 			nextpot = ls.getStandartPot();
 		} else
 		{
+			nextpot += ls.getAmountToAddToThePotIfNoOneIsWinning();
 			if(nextpot < ls.getStandartPot())
 			{
 				nextpot = ls.getStandartPot();
 			}
-			nextpot += ls.getAmountToAddToThePotIfNoOneIsWinning();
 			if(nextpot > ls.getMaximumPot())
 			{
 				nextpot = ls.getMaximumPot();
@@ -804,7 +804,7 @@ public class LottoSuperHandler
 				for(Iterator<Integer> iter = lst.getAdditionalChoosenNumbers().iterator(); iter.hasNext();)
 				{
 					int cn = iter.next();
-					ccna.add(matchChoosenNumber(lsd.getChoosenNumbers(), cn));
+					ccna.add(matchChoosenNumber(lsd.getAdditionalChoosenNumbers(), cn));
 					if(lsd.getAdditionalChoosenNumbers().contains(cn))
 					{
 						matchesa++;
@@ -813,7 +813,9 @@ public class LottoSuperHandler
 				s = s.replace("%matchchoosennumber%", "["+String.join(", ", ccn)+"]")
 						.replace("%matchchoosennumberamount%", String.valueOf(matches))
 						.replace("%matchadditionalchoosennumber%", "["+String.join(", ", ccna)+"]")
-						.replace("%matchadditionalchoosennumberamount%", String.valueOf(matchesa));
+						.replace("%matchadditionalchoosennumberamount%", String.valueOf(matchesa))
+						.replace("%itemmatchchoosennumber%", String.join(", ", ccn))
+						.replace("%itemmatchadditionalchoosennumber%", String.join(", ", ccna));
 			}
 			s = s.replace("%lotteryname%", lst.getLotteryName())
 					.replace("%ticketid%", String.valueOf(lst.getID()))

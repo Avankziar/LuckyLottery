@@ -79,6 +79,7 @@ public class ARG_Ticketlist extends ArgumentModule
 		ArrayList<String> msg = new ArrayList<>();
 		msg.add(plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.TicketList.Headline")
 				.replace("%lotteryname%", cl.getLotteryName()));
+		int lastwinningclasslevel = cl.getWinningClass().size()+1;
 		for(ClassicLottoTicket clt : cltA)
 		{
 			ClassicLottoDraw cld = plugin.getMysqlHandler().getData(cl.getDrawMysql(), "`id` = ?", clt.getDrawID());
@@ -92,7 +93,7 @@ public class ARG_Ticketlist extends ArgumentModule
 			.forEach(x -> ccn.add(
 					matchChoosenNumber(cld.getChoosenNumbers(), x, ARG_Play.getSpacing(x, cl.getLastNumberToChooseFrom()))));
 			String status = cld.wasDrawn() 
-					? (clt.getWinningClassLevel() > 0 
+					? (clt.getWinningClassLevel() < lastwinningclasslevel 
 							? plugin.getYamlHandler().getLang().getString("ClassicLotto.Arg.TicketList.StatusWon")
 									.replace("%winningclass%", String.valueOf(clt.getWinningClassLevel()))
 									.replace("%prize%", EconomyHandler.format(clt.getWinningPrize()))

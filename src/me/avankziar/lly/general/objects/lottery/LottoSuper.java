@@ -2,8 +2,6 @@ package me.avankziar.lly.general.objects.lottery;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 
 import me.avankziar.lly.general.objects.Advertising;
 import me.avankziar.lly.general.objects.DrawTime;
@@ -56,7 +54,7 @@ public class LottoSuper extends Lottery
 	 * The winningCategorys of the lotto.<br>
 	 * The higher the level of the winningcategory is, the higher the price should be.
 	 */
-	private Collection<WinningClassSuper> winningClassSuper = new HashSet<>();
+	private ArrayList<WinningClassSuper> winningClassSuper = new ArrayList<>();
 	/**
 	 * If true, the classiclotto will not draw automaticlly on the drawtimes.
 	 */
@@ -74,7 +72,7 @@ public class LottoSuper extends Lottery
 			double standartPot,	double maximumPot, double amountToAddToThePotIfNoOneIsWinning,
 			double costPerTicket, int maximalAmountOfTicketWhichCanAPlayerBuy,
 			int firstNumberToChooseFrom, int lastNumberToChooseFrom, int amountOfChoosenNumber,
-			ArrayList<DrawTime> drawTime, HashSet<WinningClassSuper> winningClassSuper,
+			ArrayList<DrawTime> drawTime, ArrayList<WinningClassSuper> winningClassSuper,
 			String drawOnServer, boolean drawManually, ArrayList<Advertising> advertising,
 			int additionalFirstNumberToChooseFrom,
 			int additionalLastNumberToChooseFrom,
@@ -147,11 +145,11 @@ public class LottoSuper extends Lottery
 		this.drawTime = drawTime;
 	}
 
-	public Collection<WinningClassSuper> getWinningClassSuper() {
+	public ArrayList<WinningClassSuper> getWinningClassSuper() {
 		return winningClassSuper;
 	}
 
-	public void setWinningClassSuper(Collection<WinningClassSuper> winningClassSuper) {
+	public void setWinningClassSuper(ArrayList<WinningClassSuper> winningClassSuper) {
 		this.winningClassSuper = winningClassSuper;
 	}
 

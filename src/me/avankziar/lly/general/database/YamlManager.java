@@ -1599,6 +1599,10 @@ public class YamlManager
 						"<gray>(Beachte, solange nicht alle Felder frei sind erhälst du nicht deinen vermeitlichen Gewinn, auch wenn das Ticket schon bezahlt ist!",
 						"<yellow>All following fields must now be scratched off!",
 						"<gray>(Please note that as long as not all fields are free you will not receive your supposed winnings, even if the ticket has already been paid for!"}));
+		languageKeys.put(path+".Arg.Play.TicketBought", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"<yellow>Du hast ein Ticket gekauft! Viel Glück!",
+						"<yellow>You have bought a ticket! Good luck!"}));		
 		languageKeys.put(path+".Arg.Play.FieldWin", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<white>%d% <gray>x %amount% <gray>= %result%",
@@ -1852,11 +1856,11 @@ public class YamlManager
 					"",
 					"Please note that the old color code must still be used for the display name and the lore."}));
 		mapII.put("WinningClass.1.KeepsakeItem.Lore", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"&eDu hattest %matchchoosennumberamount% Richtige! Deine Zahlen: &f%matchchoosennumber%",
+					"&eDu hattest %matchchoosennumberamount% Richtige! Deine Zahlen: &f%itemmatchchoosennumber%",
 					"&eDu hast die Gewinnklasse %wc1level% gewonnen!",
 					"&eDatum &f%drawtime%",
 					"&eDein Preis &r%winningclass1payout%",
-					"&eYou got %matchchoosennumberamount% right! Your numbers: &f%matchchoosennumber%",
+					"&eYou got %matchchoosennumberamount% right! Your numbers: &f%itemmatchchoosennumber%",
 					"&eYou have won the prize category %wc1level%!",
 					"&eDate &f%drawtime%",
 					"&eYour price &r%winningclass1payout%"}));
@@ -2168,9 +2172,9 @@ public class YamlManager
 					"",
 					"The number of lottery numbers that match the numbers chosen by the player to win the prize in that prize category.",
 					"=> https://www.powerball.com/powerball-prize-chart"}));
-		mapII.put("WinningClass.1.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.1.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
-		mapII.put("#WinningClass.1.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+		mapII.put("#WinningClass.1.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Die Anzahl an additionalen Lottozahlen (meist SuperZahlen genannt),",
 					"die den vom Spieler gewählten additionalen Zahlen gleicht um den Preis in dieser Gewinnklasse zu erhalten. (In Kombination mit den normalen Zahlen)",
@@ -2206,7 +2210,7 @@ public class YamlManager
 					"The KeepsakeItem is an Andean item that players who have won this prize class should receive."}));
 		mapII.put("WinningClass.1.KeepsakeItem.Amount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
-		mapII.put("WinningClass.1.KeepsakeItem.Displayname", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.1.KeepsakeItem.Displayname", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&cGewinnschein der &f%lotteryname% &cLotterie",
 					"&cWinning ticket of the &f%lotteryname% &cLottery"}));
 		mapII.put("#WinningClass.1.KeepsakeItem.Displayname", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -2214,15 +2218,15 @@ public class YamlManager
 					"Bedenkt, beim Displayname und der Lore ist weiterhin der alte ColorCode zu nutzen.",
 					"",
 					"Please note that the old color code must still be used for the display name and the lore."}));
-		mapII.put("WinningClass.1.KeepsakeItem.Lore", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"&eDu hattest %matchchoosennumberamount% & %matchadditionalchoosennumberamount% Richtige! Deine Zahlen: &f%matchchoosennumber% %matchadditionalchoosennumber%",
+		mapII.put("WinningClass.1.KeepsakeItem.Lore", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eDu hattest %matchchoosennumberamount% & %matchadditionalchoosennumberamount% Richtige! Deine Zahlen: &f%itemmatchchoosennumber% &f| %itemmatchadditionalchoosennumber%",
 					"&eDu hast die Gewinnklasse %wc1level% gewonnen!",
 					"&eDatum &f%drawtime%",
-					"&eDein Preis &r%winningclass1payout%",
-					"&eYou got %matchchoosennumberamount% & %matchadditionalchoosennumberamount% right! Your numbers: &f%matchchoosennumber% %matchadditionalchoosennumber%",
+					"&eDein Preis &r&f%winningclass1payout%",
+					"&eYou got %matchchoosennumberamount% & %matchadditionalchoosennumberamount% right! Your numbers: &f%itemmatchchoosennumber% %itemmatchadditionalchoosennumber%",
 					"&eYou have won the prize category %wc1level%!",
 					"&eDate &f%drawtime%",
-					"&eYour price &r%winningclass1payout%"}));
+					"&eYour price &r&f%winningclass1payout%"}));
 		mapII.put("WinningClass.1.KeepsakeItem.EnchantmentGlintOverride", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"null"}));
 		mapII.put("#WinningClass.1.KeepsakeItem.EnchantmentGlintOverride", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -2254,7 +2258,7 @@ public class YamlManager
 					22.0}));
 		mapII.put("WinningClass.2.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					5}));
-		mapII.put("WinningClass.2.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.2.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0}));
 		mapII.put("WinningClass.3.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));
@@ -2262,7 +2266,7 @@ public class YamlManager
 					12.0}));
 		mapII.put("WinningClass.3.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					4}));
-		mapII.put("WinningClass.3.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.3.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
 		mapII.put("WinningClass.4.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));
@@ -2270,7 +2274,7 @@ public class YamlManager
 					9.0}));
 		mapII.put("WinningClass.4.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					4}));
-		mapII.put("WinningClass.4.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.4.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0}));
 		mapII.put("WinningClass.5.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));
@@ -2278,7 +2282,7 @@ public class YamlManager
 					5.0}));
 		mapII.put("WinningClass.5.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					3}));
-		mapII.put("WinningClass.5.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.5.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
 		mapII.put("WinningClass.6.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));
@@ -2286,7 +2290,7 @@ public class YamlManager
 					4.0}));
 		mapII.put("WinningClass.6.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					3}));
-		mapII.put("WinningClass.6.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.6.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0}));
 		mapII.put("WinningClass.7.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.PERCENTAGE.toString()}));
@@ -2294,7 +2298,7 @@ public class YamlManager
 					3.0}));
 		mapII.put("WinningClass.7.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					2}));
-		mapII.put("WinningClass.7.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.7.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
 		mapII.put("WinningClass.8.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.LUMP_SUM.toString()}));
@@ -2302,7 +2306,7 @@ public class YamlManager
 					5.0}));
 		mapII.put("WinningClass.8.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
-		mapII.put("WinningClass.8.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.8.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
 		mapII.put("WinningClass.9.PayoutType", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					PayoutType.LUMP_SUM.toString()}));
@@ -2310,7 +2314,7 @@ public class YamlManager
 					2.5}));
 		mapII.put("WinningClass.9.NumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0}));
-		mapII.put("WinningClass.9.AddtionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+		mapII.put("WinningClass.9.AdditionalNumberMatchToWin", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1}));
 		mapII.put("Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
@@ -2484,7 +2488,7 @@ public class YamlManager
 					"Only then does it check the specified probability. If the probability is not correct, the system starts again. Up to 42 times in succession.",
 					"The last time, the selected element is simply taken for safety reasons."}));
 		mapII.put("ScratchCardField.1.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<gold><bold>88888$</bold></gold>"}));
+					"<gold>88888$</gold>"}));
 		mapII.put("#ScratchCardField.1.Display", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Dies ist der Ersatz für das einzelne X in FieldScratched.",
@@ -2497,121 +2501,121 @@ public class YamlManager
 		mapII.put("ScratchCardField.2.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0.5}));
 		mapII.put("ScratchCardField.2.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<light_purple><bold>44444$</bold></light_purple>"}));
+					"<light_purple>44444$</light_purple>"}));
 		mapII.put("ScratchCardField.3.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					22_222.0}));
 		mapII.put("ScratchCardField.3.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1.0}));
 		mapII.put("ScratchCardField.3.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<light_purple><bold>22222$</bold></light_purple>"}));
+					"<light_purple>22222$</light_purple>"}));
 		mapII.put("ScratchCardField.4.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					11_111.0}));
 		mapII.put("ScratchCardField.4.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					2.0}));
 		mapII.put("ScratchCardField.4.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<light_purple><bold>11111$</bold></light_purple>"}));
+					"<light_purple>11111$</light_purple>"}));
 		mapII.put("ScratchCardField.5.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					8_888.0}));
 		mapII.put("ScratchCardField.5.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					4.0}));
 		mapII.put("ScratchCardField.5.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<blue><bold> 8888$</bold></blue>"}));
+					"<blue> 8888$</blue>"}));
 		mapII.put("ScratchCardField.6.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					4_444.0}));
 		mapII.put("ScratchCardField.6.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					5.0}));
 		mapII.put("ScratchCardField.6.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<blue><bold> 4444$</bold></blue>"}));
+					"<blue> 4444$</blue>"}));
 		mapII.put("ScratchCardField.7.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					2_222.0}));
 		mapII.put("ScratchCardField.7.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					12.0}));
 		mapII.put("ScratchCardField.7.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<blue><bold> 2222$</bold></blue>"}));
+					"<blue> 2222$</blue>"}));
 		mapII.put("ScratchCardField.8.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1_111.0}));
 		mapII.put("ScratchCardField.8.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					16.0}));
 		mapII.put("ScratchCardField.8.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<blue><bold> 1111$</bold></blue>"}));
+					"<blue> 1111$</blue>"}));
 		mapII.put("ScratchCardField.9.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					888.0}));
 		mapII.put("ScratchCardField.9.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					20.0}));
 		mapII.put("ScratchCardField.9.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold> 888$ </bold></green>"}));
+					"<green> 888$ </green>"}));
 		mapII.put("ScratchCardField.10.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					444.0}));
 		mapII.put("ScratchCardField.10.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					28.0}));
 		mapII.put("ScratchCardField.10.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold> 444$ </bold></green>"}));
+					"<green> 444$ </green>"}));
 		mapII.put("ScratchCardField.11.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					444.0}));
 		mapII.put("ScratchCardField.11.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					28.0}));
 		mapII.put("ScratchCardField.11.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold> 444$ </bold></green>"}));
+					"<green> 444$ </green>"}));
 		mapII.put("ScratchCardField.12.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					222.0}));
 		mapII.put("ScratchCardField.12.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					36.0}));
 		mapII.put("ScratchCardField.12.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold> 222$ </bold></green>"}));
+					"<green> 222$ </green>"}));
 		mapII.put("ScratchCardField.13.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					111.0}));
 		mapII.put("ScratchCardField.13.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					44.0}));
 		mapII.put("ScratchCardField.13.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold> 111$ </bold></green>"}));
+					"<green> 111$ </green>"}));
 		mapII.put("ScratchCardField.14.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					88.0}));
 		mapII.put("ScratchCardField.14.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					52.0}));
 		mapII.put("ScratchCardField.14.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold>  88$ </bold></green>"}));
+					"<green>  88$ </green>"}));
 		mapII.put("ScratchCardField.15.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					44.0}));
 		mapII.put("ScratchCardField.15.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					60.0}));
 		mapII.put("ScratchCardField.15.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold>  44$ </bold></green>"}));
+					"<green>  44$ </green>"}));
 		mapII.put("ScratchCardField.16.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					22.0}));
 		mapII.put("ScratchCardField.16.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					68.0}));
 		mapII.put("ScratchCardField.16.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold>  22$ </bold></green>"}));
+					"<green>  22$ </green>"}));
 		mapII.put("ScratchCardField.17.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					11.0}));
 		mapII.put("ScratchCardField.17.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					76.0}));
 		mapII.put("ScratchCardField.17.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<green><bold>  11$ </bold></green>"}));
+					"<green>  11$ </green>"}));
 		mapII.put("ScratchCardField.18.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					8.0}));
 		mapII.put("ScratchCardField.18.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					84.0}));
 		mapII.put("ScratchCardField.18.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<white><bold>  8$  </bold></white>"}));
+					"<white>  8$  </white>"}));
 		mapII.put("ScratchCardField.19.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					4.0}));
 		mapII.put("ScratchCardField.19.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					92.0}));
 		mapII.put("ScratchCardField.19.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<white><bold>  4$  </bold></white>"}));
+					"<white>  4$  </white>"}));
 		mapII.put("ScratchCardField.20.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					2.0}));
 		mapII.put("ScratchCardField.20.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					100.0}));
 		mapII.put("ScratchCardField.20.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<white><bold>  2$  </bold></white>"}));
+					"<white>  2$  </white>"}));
 		mapII.put("ScratchCardField.21.WinningAmount", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					-1.0}));
 		mapII.put("ScratchCardField.21.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0.01}));
 		mapII.put("ScratchCardField.21.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<red><bold> Joker</bold></red>"}));
+					"<red> Joker</red>"}));
 		mapII.put("Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
 		mapII.put("#Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -2628,13 +2632,11 @@ public class YamlManager
 					"The boolean that defines whether or not the player can hide this message by toggling the ingame command."}));
 		mapII.put("Advertising.1.Message", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"<#d2b773>...}/=== <white>%lotteryname% <#d2b773>===\\{...",
-					"<gold>Aktueller JackPot bis zu <white>%actualpot%<gold>!",
-					"<aqua>Hauptgewinn <white>%highestwinningclass%<aqua>!",
+					"<gold>JackPot bis zu <white>%jackpotamount%<gold>!",
 					"<red>Heute schon Lotto gespielt? <click:run_command:'%classiclottobet%%lotteryname%'><white><yellow>Klicke {hier}</click>",
 					"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
 					"<#d2b773>...}/=== <gold>%lotteryname% <#d2b773>===\\\\\\\\{...",
-					"<gold>JackPot up to <white>%actualpot%<gold>!",
-					"<aqua>Main prize <white>%highestwinningclass%<aqua>!",
+					"<gold>JackPot up to <white>%jackpotamount%<gold>!",
 					"<red>Have you played the lottery today? <click:run_command:'%classiclottobet%%lotteryname%'><white><yellow>Click {here}</click>",
 					"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{..."}));
 		mapII.put("#Advertising.1.Message", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

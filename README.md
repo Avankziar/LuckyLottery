@@ -1,7 +1,11 @@
 # LuckyLottery
 
-A Lotteryplugin for Spigot. Features contains classic and super lotto and also scratchcard.<br>
-BTM has a <b>Wiki in [English](https://github.com/Avankziar/LuckyLottery/wiki/ENG-Home) or [German](https://github.com/Avankziar/LuckyLottery/wiki/GER-Home)</b>
+A Lotteryplugin for Spigot. Features contains classic, super lotto and also scratchcard.<br>
+LLY has a <b>Wiki in [English](https://github.com/Avankziar/LuckyLottery/wiki/ENG-Home) or [German](https://github.com/Avankziar/LuckyLottery/wiki/GER-Home)</b>
+
+# Dependencies
+- InterfaceHub (Plugin)
+- Mysql (Database)
 
 # How to Install
 To install LuckyLottery (LLY), proceed as follows:

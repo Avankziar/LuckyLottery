@@ -771,9 +771,9 @@ public class YamlManager
 				"<yellow>Befehl /scratchcard play",
 				"<yellow>Command /scratchcard play");
 		argumentInput("scratchcard_giveticket", "giveticket", basePermission,
-				"/scratchcard giveticket <lotteryname> [amountOfTicket]", "/scratchcard giveticket ", false,
-				"<red>/scratchcard giveticket <Lotteriename> [amountOfTicket] <white>| Gibt allen online Spieler ein Ticket in der Rubbellos Lotterie. Optional mit Anzahl an zu vergebenden Tickets.",
-				"<red>/scratchcard giveticket <lotteryname> [amountOfTicket] <white>| Gives all online players a ticket in the scratchcard lottery. Optional with number of tickets to be allocated.",
+				"/scratchcard giveticket <lotteryname> [amountOfTicket] [boolean]", "/scratchcard giveticket ", false,
+				"<red>/scratchcard giveticket <Lotteriename> [amountOfTicket] [boolean] <white>| Gibt allen online Spieler ein Ticket in der Rubbellos Lotterie. Optional mit Anzahl an zu vergebenden Tickets und/oder ob alle Felder schon freigerubbelt sind.",
+				"<red>/scratchcard giveticket <lotteryname> [amountOfTicket] [boolean] <white>| Gives all online players a ticket in the scratchcard lottery. Optional with number of tickets to be allocated and/or all fields already are scratched.",
 				"<aqua>Befehlsrecht für <white>/scratchcard giveticket",
 				"<aqua>Commandright for <white>/scratchcard giveticket",
 				"<yellow>Befehl /scratchcard giveticket",
@@ -1605,8 +1605,8 @@ public class YamlManager
 						"<yellow>You have bought a ticket! Good luck!"}));		
 		languageKeys.put(path+".Arg.Play.FieldWin", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<white>%d% <gray>x %amount% <gray>= %result%",
-						"<white>%d% <gray>x %amount% <gray>= %result%"}));
+						"<white>(%d%-%asf%+1) <gray>x %amount% <gray>= %result%",
+						"<white>(%d%-%asf%+1) <gray>x %amount% <gray>= %result%"}));
 		languageKeys.put(path+".Arg.Play.Won", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"        <gold><bold>! GEWONNEN !",
@@ -2441,10 +2441,29 @@ public class YamlManager
 					"",
 					"Defines how many of the fields should be displayed per chat row.",
 					"With 3 X, goes up to 7 times in Minecraft. With 4 X, 6 times. With 5 X, 5 times etc."}));
-		mapII.put("Display.FieldUnscratched", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<yellow>+-------+</yellow> ",
-					"<yellow>|</yellow> XXXXXX <yellow>|</yellow> ",
-					"<yellow>+-------+</yellow> "}));
+		mapII.put("Display.HeadLine", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					""}));
+		mapII.put("#Display.HeadLine", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Definiert die Line über den Rubbelfeldern.",
+					"",
+					"Defines the line above the scratch-off fields."}));
+		mapII.put("Display.BetweenLine", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					""}));
+		mapII.put("#Display.BetweenLine", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Definiert die Line zwischen den Rubbelfeldern.",
+					"",
+					"Defines the line between the scratch-off fields."}));
+		mapII.put("Display.BottomLine", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					""}));
+		mapII.put("#Display.BottomLine", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"",
+					"Definiert die Line unter den Rubbelfeldern.",
+					"",
+					"Defines the line under the scratch-off fields."}));
+					mapII.put("Display.FieldUnscratched", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"<red>→</red>XXXXXX<red>←</red> "}));
 		mapII.put("#Display.FieldUnscratched", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Dies ist das Rubbelfeld, welches im Chat angezeigt wird, wenn ein Feld nocht nicht frei gerubbelt worden ist.",
@@ -2453,9 +2472,7 @@ public class YamlManager
 					"This is the scratch field that is displayed in the chat if a field has not yet been scratched free.",
 					"The X are to be adjusted to the highest integer monetary value (plus currency symbol! if desired). As well as the - above and below."}));
 		mapII.put("Display.FieldScratched", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<yellow>+-------+</yellow> ",
-					"<yellow>|</yellow>    X   <yellow>|</yellow> ",
-					"<yellow>+-------+</yellow> "}));
+					"<light_purple>→</light_purple>X<light_purple>←</light_purple> "}));
 		mapII.put("#Display.FieldScratched", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"",
 					"Hier wird aus Vereinfachung alles, was im FieldUnscratched beschrieben worden ist genommen und auf ein einzeles X reduziert zum ersetzten der aufgedecken Zahlenwerte.",
@@ -2615,7 +2632,7 @@ public class YamlManager
 		mapII.put("ScratchCardField.21.Chance", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0.01}));
 		mapII.put("ScratchCardField.21.Display", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"<red> Joker</red>"}));
+					"<red>  Joker</red>"}));
 		mapII.put("Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
 		mapII.put("#Advertising.1.IsActive", new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

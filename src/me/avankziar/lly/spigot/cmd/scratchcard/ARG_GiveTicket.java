@@ -30,7 +30,7 @@ public class ARG_GiveTicket extends ArgumentModule
 	}
 
 	/**
-	 * => /scratchcard giveticket lotteryname [amount of tickets]
+	 * => /scratchcard giveticket lotteryname [amount of tickets] [boolean:all scratched]
 	 */
 	@Override
 	public void run(CommandSender sender, String[] args) throws IOException 
@@ -61,6 +61,14 @@ public class ARG_GiveTicket extends ArgumentModule
 				}
 			}
 		}
+		boolean scratched = false;
+		if(args.length >= 4)
+		{
+			if(MatchApi.isBoolean(args[3]))
+			{
+				scratched = Boolean.valueOf(args[3]);
+			}
+		}
 		HashSet<UUID> onlineplayer = new HashSet<>();
 		if(plugin.getProxyOnlinePlayers() != null)
 		{
@@ -86,7 +94,7 @@ public class ARG_GiveTicket extends ArgumentModule
 					.replace("%lotteryname%", sc.getLotteryName()));
 			for(int i = 0; i < amountOfTickets; i++)
 			{
-				me.avankziar.lly.spigot.cmd.scratchcard.ARG_Play.doGivedTickets(uuid, sc);
+				me.avankziar.lly.spigot.cmd.scratchcard.ARG_Play.doGivedTickets(uuid, sc, scratched);
 			}
 		}
 	}

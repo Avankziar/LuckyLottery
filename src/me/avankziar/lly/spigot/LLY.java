@@ -308,7 +308,7 @@ public class LLY extends JavaPlugin
 		{
 			String path = "scratchcard";
 			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.SCRATCHCARD_GIVETICKET, path+"_giveticket",
-					0, 1, 2, false, false, scratchCardI);
+					0, 1, 3, false, false, scratchCardI);
 			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.SCRATCHCARD_PLAY, path+"_play",
 					0, 1, 2, false, false, scratchCardI);
 			CommandConstructor sc = new CommandConstructor(CommandSuggest.Type.SCRATCHCARD, path, false, false,

@@ -41,15 +41,20 @@ public class ScratchCard extends Lottery
 	
 	private int fieldPerLine;
 	
-	private ArrayList<String> displayFieldUnscratched = new ArrayList<>();
+	private String displayFieldUnscratched;
 	
-	private ArrayList<String> displayFieldScratched = new ArrayList<>();
+	private String displayFieldScratched;
+	
+	private String displayHeadLine;
+	private String displayBetweenLine;
+	private String displayBottomLine;
 	
 	public ScratchCard(String lotteryName, String description, GameType gameType,
 			double costPerTicket,
 			int amountOfFields, int amountOfSameFieldToWin, ArrayList<ScratchCardField> scratchCardFields,
 			ArrayList<Advertising> advertising,
-			int fieldPerLine, ArrayList<String> displayFieldUnscratched, ArrayList<String> displayFieldScratched)
+			int fieldPerLine, String displayFieldUnscratched, String displayFieldScratched,
+			String displayHeadLine, String displayBetweenLine, String displayBottomLine)
 	{
 		super(lotteryName, description, gameType);
 		setCostPerTicket(costPerTicket);
@@ -70,6 +75,9 @@ public class ScratchCard extends Lottery
 		setFieldPerLine(fieldPerLine);
 		setDisplayFieldUnscratched(displayFieldUnscratched);
 		setDisplayFieldScratched(displayFieldScratched);
+		setDisplayHeadLine(displayHeadLine);
+		setDisplayBetweenLine(displayBetweenLine);
+		setDisplayBottomLine(displayBottomLine);
 	}
 
 	public double getCostPerTicket()
@@ -142,24 +150,54 @@ public class ScratchCard extends Lottery
 		this.fieldPerLine = fieldPerLine;
 	}
 
-	public ArrayList<String> getDisplayFieldUnscratched()
+	public String getDisplayFieldUnscratched()
 	{
 		return displayFieldUnscratched;
 	}
 
-	public void setDisplayFieldUnscratched(ArrayList<String> displayFieldUnscratched)
+	public void setDisplayFieldUnscratched(String displayFieldUnscratched)
 	{
 		this.displayFieldUnscratched = displayFieldUnscratched;
 	}
 
-	public ArrayList<String> getDisplayFieldScratched()
+	public String getDisplayFieldScratched()
 	{
 		return displayFieldScratched;
 	}
 
-	public void setDisplayFieldScratched(ArrayList<String> displayFieldScratched)
+	public void setDisplayFieldScratched(String displayFieldScratched)
 	{
 		this.displayFieldScratched = displayFieldScratched;
+	}
+
+	public String getDisplayHeadLine()
+	{
+		return displayHeadLine;
+	}
+
+	public void setDisplayHeadLine(String displayHeadLine)
+	{
+		this.displayHeadLine = displayHeadLine;
+	}
+
+	public String getDisplayBetweenLine()
+	{
+		return displayBetweenLine;
+	}
+
+	public void setDisplayBetweenLine(String displayBetweenLine)
+	{
+		this.displayBetweenLine = displayBetweenLine;
+	}
+
+	public String getDisplayBottomLine()
+	{
+		return displayBottomLine;
+	}
+
+	public void setDisplayBottomLine(String displayBottomLine)
+	{
+		this.displayBottomLine = displayBottomLine;
 	}
 
 	public void setAdvertising(ArrayList<Advertising> advertising)

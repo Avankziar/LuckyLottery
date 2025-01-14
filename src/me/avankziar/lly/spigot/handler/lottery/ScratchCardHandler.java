@@ -169,20 +169,16 @@ public class ScratchCardHandler
 					}
 					advertising.add(new Advertising(active, canIgnored, message, time));
 				}
-				int fieldPerLine = y.getInt("Display.FieldPerLine");
-				ArrayList<String> displayFieldUnscratched = new ArrayList<>();
-				if(y.contains("Display.FieldUnscratched"))
-				{
-					y.getStringList("Display.FieldUnscratched").stream().forEach(x -> displayFieldUnscratched.add(x));
-				}
-				ArrayList<String> displayFieldScratched = new ArrayList<>();
-				if(y.contains("Display.FieldScratched"))
-				{
-					y.getStringList("Display.FieldScratched").stream().forEach(x -> displayFieldScratched.add(x));
-				}
+				int fieldPerLine = y.getInt("Display.FieldPerLine", 5);
+				String displayFieldUnscratched = y.getString("Display.FieldUnscratched", "XXXXX ");
+				String displayFieldScratched = y.getString("Display.FieldScratched", "X ");
+				String displayHeadLine = y.getString("Display.HeadLine", "");
+				String displayBetweenLine = y.getString("Display.BetweenLine", "");
+				String displayBottomLine = y.getString("Display.BottomLine", "");
 				ScratchCard sc = new ScratchCard(lottoname, description, GameType.X_NUMBER_OF_FIELDS,
 						costPerTicket, amountOfField, amountOfSameFieldToWin, scratchCardField, advertising,
-						fieldPerLine, displayFieldUnscratched, displayFieldScratched);
+						fieldPerLine, displayFieldUnscratched, displayFieldScratched,
+						displayHeadLine, displayBetweenLine,displayBottomLine);
 				LLY.log.info("ScratchCard "+lottoname+" loaded!");
 				scratchcard.add(sc);
 				sc.getTicketMysql().setupMysql(LLY.getPlugin().getMysqlSetup(), me.avankziar.lly.general.database.ServerType.ALL);

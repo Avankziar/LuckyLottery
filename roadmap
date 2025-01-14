@@ -15,8 +15,6 @@ Future
 					  Auslosung wie bei den ohne Nieten.
 - Custom Lotterie: Server gibt den Preis sowie die Gewinnklassen an. Die Gewinne sollten durch Konsolenbefehle durchgeführt werden.
 
-- Benachrichtigung wieviel im Lotteriepot
-
 1-0-0
 - ClassicLotto
 - LottoSuper

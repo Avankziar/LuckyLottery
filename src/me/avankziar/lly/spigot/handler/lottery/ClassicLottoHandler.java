@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -421,7 +420,7 @@ public class ClassicLottoHandler
 		//Get Next ClassicLottoDraw ID
 		int cldNextId = plugin.getMysqlHandler().lastID(cld)+1;
 		//Adding all WinningClass to a payout object
-		ArrayList<ClassicLottoPayout> clpA = new ArrayList<>();
+		LinkedHashMap<Integer, ClassicLottoPayout> clpA = new LinkedHashMap<>();
 		//Create all WinningClasss
 		int highestWC = 1;
 		int lowestWC = 1;
@@ -433,7 +432,7 @@ public class ClassicLottoHandler
 			case LUMP_SUM: payout = wc.getAmount(); break;
 			case PERCENTAGE: payout = cld.getActualPot() * wc.getAmount() / 100; break;
 			}
-			clpA.add(new ClassicLottoPayout(wc.getWinningClassLevel(),
+			clpA.put(wc.getWinningClassLevel(), new ClassicLottoPayout(wc.getWinningClassLevel(),
 					wc.getPayoutType(),
 					payout,
 					new HashSet<UUID>(), 0, wc.getNumberMatchToWin()));
@@ -443,7 +442,7 @@ public class ClassicLottoHandler
 			}
 		}
 		//Added WinningClass for all player that lost, the int is the highest level
-		clpA.add(new ClassicLottoPayout(lowestWC+1, PayoutType.LUMP_SUM, 0, new HashSet<UUID>(), 0, 0));
+		clpA.put(lowestWC+1, new ClassicLottoPayout(lowestWC+1, PayoutType.LUMP_SUM, 0, new HashSet<UUID>(), 0, 0));
 		//Lotto Ticket Evaluation
 		String repeatCategory = plugin.getYamlHandler().getLang().getString("ClassicLotto.Draw.RepeatTicket.Category")
 				.replace("%lotteryname%", cl.getLotteryName());
@@ -459,7 +458,7 @@ public class ClassicLottoHandler
 			ClassicLottoPayout clp = getPayout(clpA, index);
 			clp.getUUIDs().add(clt.getLotteryPlayer());
 			clp.setWinnersAmount(clp.getWinnersAmount()+1);
-			clpA.set(index, clp);
+			clpA.put(index, clp);
 			if(clt.shouldRepeate())
 			{
 				//If ticket should repeat, create new one and update the old one.
@@ -508,10 +507,12 @@ public class ClassicLottoHandler
 		MessageHandler.sendMessage(globalMsg.toArray(new String[globalMsg.size()]));
 		//Put all Player in a hashset to check if there won to not send a "you lost" msg.
 		//Therefor reverse the sorting of the clp.
-		clpA.sort(Comparator.comparingInt(ClassicLottoPayout::getWinningClassLevel).reversed());
+		ArrayList<ClassicLottoPayout> clpAl = new ArrayList<>();
+		clpA.entrySet().forEach(x -> clpAl.add(x.getValue()));
+		clpAl.sort(Comparator.comparingInt(ClassicLottoPayout::getWinningClassLevel).reversed());
 		//Give Players a the price and send a message
 		double nextpot = 0.0;
-		for(ClassicLottoPayout clp : clpA)
+		for(ClassicLottoPayout clp : clpAl)
 		{
 			int lv = clp.getWinningClassLevel();
 			if(clp.getUUIDs().size() == 0)
@@ -623,7 +624,7 @@ public class ClassicLottoHandler
 	 * Replacer for message in the drawing of the lottery.
 	 */
 	public static ArrayList<String> replacer(ClassicLotto cl, ClassicLottoDraw cld, ClassicLottoTicket clt,
-			ArrayList<ClassicLottoPayout> clpA, Double payout, String jackpotwinners, boolean wasJackpotBreached,
+			LinkedHashMap<Integer,ClassicLottoPayout> clpA, Double payout, String jackpotwinners, boolean wasJackpotBreached,
 			ArrayList<String> list)
 	{
 		ArrayList<String> li = new ArrayList<>();
@@ -636,7 +637,7 @@ public class ClassicLottoHandler
 	}
 	
 	public static String replacer(ClassicLotto cl, ClassicLottoDraw cld, ClassicLottoTicket clt,
-			ArrayList<ClassicLottoPayout> clpA, Double payout, String jackpotwinners, boolean wasJackpotBreached,
+			LinkedHashMap<Integer,ClassicLottoPayout> clpA, Double payout, String jackpotwinners, boolean wasJackpotBreached,
 			String r)
 	{
 		String s = r;
@@ -833,17 +834,14 @@ public class ClassicLottoHandler
 						.replace("%number%", String.valueOf(i)); 
 	}
 	
-	public static ClassicLottoPayout getPayout(ArrayList<ClassicLottoPayout> list, int level)
+	public static ClassicLottoPayout getPayout(LinkedHashMap<Integer, ClassicLottoPayout> list, int level)
 	{
-		Optional<ClassicLottoPayout> op = list.stream()
-				.filter(x -> x.getWinningClassLevel() == level)
-				.findFirst();
-		return op.isPresent() ? op.get() : null;
+		return list.get(level);
 	}
 	
-	public static int getIndexPayout(ArrayList<ClassicLottoPayout> list, int matchNumber)
+	public static int getIndexPayout(LinkedHashMap<Integer, ClassicLottoPayout> list, int matchNumber)
 	{
-		for(ClassicLottoPayout clp : list)
+		for(ClassicLottoPayout clp : list.values())
 		{
 			if(clp.getNumberMatchToWin() == matchNumber)
 			{
@@ -853,14 +851,11 @@ public class ClassicLottoHandler
 		//If no CLP matched, reduce the matchNumber by one.
 		//This should done, to catch WinningClass gaps.
 		int mn = matchNumber-1;
-		if(mn < 0)
+		if(mn > 0)
 		{
-			//Exist and Error, because it should ALWAYS be a CLP with 0 matches!
-			return 0;
-		} else
-		{
-			return getIndexPayout(list, mn);
+			return getIndexPayout(list, matchNumber-1);
 		}
+		return 0;
 	}
 	
 	public static int matchChoosenNumber(LinkedHashSet<Integer> set, LinkedHashSet<Integer> choosenNumber)

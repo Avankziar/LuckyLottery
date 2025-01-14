@@ -664,7 +664,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/classiclotto nextdraws",
 				"<yellow>Befehl /classiclotto nextdraws",
 				"<yellow>Command /classiclotto nextdraws");
-		commandsInput("lottosuper", "lottosuper", "lottosuper.cmd", 
+		commandsInput("superlotto", "superlotto", "superlotto.cmd", 
 				"/superlotto [lotteryname]", "/superlotto ", false,
 				"<red>/superlotto [Lotteriename] <white>| Listet alle super Lotterien auf und bei optionalen Argument gibt detailierte Information.",
 				"<red>/superlotto [lotteryname] <white>| Lists all super Lotteries and with optional argument gives detailed information.",
@@ -672,8 +672,8 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto",
 				"<yellow>Befehl /superlotto",
 				"<yellow>Command /superlotto");
-		basePermission = "lottosuper";
-		commandsInput("lottosuper", "lottosuper", "lottosuper.cmd", 
+		basePermission = "superlotto";
+		commandsInput("superlotto", "superlotto", "superlotto.cmd", 
 				"/superlotto [lotteryname]", "/superlotto ", false,
 				"<red>/superlotto [Lotteriename] <white>| Listet alle super Lotterien auf und bei optionalen Argument gibt detailierte Information.",
 				"<red>/superlotto [lotteryname] <white>| Lists all super Lotteries and with optional argument gives detailed information.",
@@ -681,7 +681,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto",
 				"<yellow>Befehl /superlotto",
 				"<yellow>Command /superlotto");
-		argumentInput("lottosuper_drawnow", "drawnow", basePermission,
+		argumentInput("superlotto_drawnow", "drawnow", basePermission,
 				"/superlotto drawnow <lotteryname> [numbersanumbers|reopen]", "/superlotto drawnow ", false,
 				"<red>/superlotto drawnow <Lotteriename> [Nummer|aNummer|reopen] <white>| Zieht die Lotterie jetzt. Optional können die geltenden Zahlen mitangegeben werden (Superzahlen mit a vor der Zahl) und oder Wiedereröffnung der Lotterie nach der Ziehung für maneuell gezogene Lotterien.",
 				"<red>/superlotto drawnow <lotteryname> [numbers|anumbers|reopen] <white>| Draw the lottery now. Optionally, the applicable numbers can be specified (Super numbers with a in front of the number) and or reopening the lottery after the draw for manually drawn lotteries.",
@@ -689,7 +689,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto drawnow",
 				"<yellow>Befehl /superlotto drawnow",
 				"<yellow>Command /superlotto drawnow");
-		argumentInput("lottosuper_play", "play", basePermission,
+		argumentInput("superlotto_play", "play", basePermission,
 				"/superlotto play <lotteryname> [numbers|anumbers] [boolean repeat] [confirm]", "/superlotto play ", false,
 				"<red>/superlotto play <Lotteriename> [Nummer|aNummer] [boolean Wiederholung] [bestätigen] <white>| Spielt in der angegeben Lotterie.",
 				"<red>/superlotto play <lotteryname> [numbers|anumbers] [boolean repeat] [confirm] <white>| Play in the specified lottery.",
@@ -697,7 +697,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto play",
 				"<yellow>Befehl /superlotto play",
 				"<yellow>Command /superlotto play");
-		argumentInput("lottosuper_addpot", "addpot", basePermission,
+		argumentInput("superlotto_addpot", "addpot", basePermission,
 				"/superlotto addpot <lotteryname> <AmountToAdd> [-broadcast]", "/superlotto addpot ", false,
 				"<red>/superlotto addpot <Lotteriename> <MengeZumHinzufügen> [-broadcast] <white>| Fügt dem aktuellen Pot den angegebenen Betrag hinzu. Optional mit Broadcast für alle Onlinespieler.",
 				"<red>/superlotto addpot <lotteryname> <AmountToAdd> [-broadcast] <white>| Adds the specified amount to the current pot. Optionally with broadcast to all online players.",
@@ -705,7 +705,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto addpot",
 				"<yellow>Befehl /superlotto addpot",
 				"<yellow>Command /superlotto addpot");
-		argumentInput("lottosuper_setpot", "setpot", basePermission,
+		argumentInput("superlotto_setpot", "setpot", basePermission,
 				"/superlotto setpot <lotteryname> <AmountToSet> [-broadcast]", "/superlotto setpot ", false,
 				"<red>/superlotto setpot <Lotteriename> <MengeZumSetzten> [-broadcast] <white>| Setzt den Pot der Lotterie neu fest. Optional mit Broadcast für alle Onlinespieler.",
 				"<red>/superlotto setpot <lotteryname> <AmountToSet> [-broadcast] <white>| Sets the lottery pot. Optionally with broadcast to all online players.",
@@ -713,7 +713,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto setpot",
 				"<yellow>Befehl /superlotto setpot",
 				"<yellow>Command /superlotto setpot");
-		argumentInput("lottosuper_giveticket", "giveticket", basePermission,
+		argumentInput("superlotto_giveticket", "giveticket", basePermission,
 				"/superlotto giveticket <lotteryname> [amountOfTicket]", "/superlotto giveticket ", false,
 				"<red>/superlotto giveticket <Lotteriename> [amountOfTicket] <white>| Gibt allen online Spieler ein Ticket in der Lotterie. Optional mit Anzahl an zu vergebenden Tickets und/oder ob alle Felder schon freigerubbelt sind und/oder einem einzelen Spieler..",
 				"<red>/superlotto giveticket <lotteryname> [amountOfTicket] <white>| Gives all online players a ticket in the lottery. Optional with number of tickets to be allocated and/or on single player..",
@@ -721,7 +721,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto giveticket",
 				"<yellow>Befehl /superlotto giveticket",
 				"<yellow>Command /superlotto giveticket");
-		argumentInput("lottosuper_open", "open", basePermission,
+		argumentInput("superlotto_open", "open", basePermission,
 				"/superlotto open", "/superlotto open ", false,
 				"<red>/superlotto open <Lotteriename> <white>| Öffnet eine Lotterie. Sofern die Lotterie manuell gezogen wird, muss dies dann auch über einen Befehl erfolgen.",
 				"<red>/superlotto open <Lotteriename> <white>| Opens a lottery. If the lottery is drawn manually, this must also be done using a command.",
@@ -729,7 +729,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto open",
 				"<yellow>Befehl /superlotto open",
 				"<yellow>Command /superlotto open");
-		argumentInput("lottosuper_ticketlist", "ticketlist", basePermission,
+		argumentInput("superlotto_ticketlist", "ticketlist", basePermission,
 				"/superlotto ticketlist [page]", "/superlotto ticketlist ", false,
 				"<red>/superlotto ticketlist [Seite] <white>| Listet die letzten 10 Tickets der angegebenen Lotterie auf.",
 				"<red>/superlotto ticketlist [page] <white>| Lists the last 10 tickets of the specified lottery.",
@@ -737,7 +737,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto ticketlist",
 				"<yellow>Befehl /superlotto ticketlist",
 				"<yellow>Command /superlotto ticketlist");
-		argumentInput("lottosuper_repeat", "repeat", basePermission,
+		argumentInput("superlotto_repeat", "repeat", basePermission,
 				"/superlotto repeat <lotteryname> <id>", "/superlotto repeat ", false,
 				"<red>/superlotto repeat <lotteryname> <id> <white>| Setzt das Ticket auf wiederholung der Zahlen. Sollte die Ziehung schon abgelaufen sein, wird ein neues Ticket erstellt.",
 				"<red>/superlotto repeat <lotteryname> <id> <white>| Sets the ticket to repeat the numbers. If the draw has already expired, a new ticket is created.",
@@ -745,7 +745,7 @@ public class YamlManager
 				"<aqua>Commandright for <white>/superlotto repeat",
 				"<yellow>Befehl /superlotto repeat",
 				"<yellow>Command /superlotto repeat");
-		argumentInput("lottosuper_nextdraws", "nextdraws", basePermission,
+		argumentInput("superlotto_nextdraws", "nextdraws", basePermission,
 				"/superlotto nextdraws <lotteryname>", "/superlotto nextdraws ", false,
 				"<red>/superlotto nextdraws <lotteryname> <white>| Zeigt alle nächsten Ziehungen der Lotterie.",
 				"<red>/superlotto nextdraws <lotteryname> <white>| Shows all upcoming lottery draws.",
@@ -1094,7 +1094,7 @@ public class YamlManager
 						"<red>Aktueller Pot: <white>%actualpot% | %costperticket% <red>pro Ticket.",
 						"<red>Gewinnchance <white>1:%winningchance%",
 						"<red>Mindest Pot: <white>%standartpot% | <red>Maximaler Pot: <white>%maximumpot%",
-						"<red>Ehöhung des Pot, falls es kein Hauptgewinner gibt: <white>%amounttoaddpot%",
+						"<red>Erhöhung des Pot, falls es kein Hauptgewinner gibt: <white>%amounttoaddpot%",
 						"<click:run_command:'%classiclottobet%%lotteryname%'><gold>Klicke {hier} zum spielen.</click>",
 						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
 						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",
@@ -1379,7 +1379,7 @@ public class YamlManager
 						"<red>Aktueller Pot: <white>%actualpot% | %costperticket% <red>pro Ticket.",
 						"<red>Gewinnchance <white>1:%winningchance%",
 						"<red>Mindest Pot: <white>%standartpot% | <red>Maximaler Pot: <white>%maximumpot%",
-						"<red>Ehöhung des Pot, falls es kein Hauptgewinner gibt: <white>%amounttoaddpot%",
+						"<red>Erhöhung des Pot, falls es kein Hauptgewinner gibt: <white>%amounttoaddpot%",
 						"<click:run_command:'%lottosuperbet%%lotteryname%'><gold>Klicke {hier} zum spielen.</click>",
 						"<#d2b773>...}/=====  ^^^^^^^^^^  =====\\\\{...",
 						"<#d2b773>...}/=== <gold>Klassisches Lotto Info <#d2b773>===\\{...",

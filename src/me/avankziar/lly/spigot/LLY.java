@@ -271,7 +271,7 @@ public class LLY extends JavaPlugin
 		
 		if(LotteryHandler.getLottoSuper().size() > 0)
 		{
-			String path = "lottosuper";
+			String path = "superlotto";
 			ArgumentConstructor addpot = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_ADDPOT, path+"_addpot",
 					0, 2, 3, false, false, lottoSuperI);
 			ArgumentConstructor setpot = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_SETPOT, path+"_setpot",

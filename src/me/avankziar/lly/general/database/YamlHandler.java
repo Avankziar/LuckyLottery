@@ -219,7 +219,7 @@ public class YamlHandler implements YamlHandling
 		}
 		if(yamlManager.getLottery().containsKey(GameType.X_FROM_Y_AND_Z_FROM_U))
 		{
-			File lottoSuperFolder = new File(lottery, "/LottoSuper/");
+			File lottoSuperFolder = new File(lottery, "/SuperLotto/");
 			if(!lottoSuperFolder.exists())
 			{
 				lottoSuperFolder.mkdirs();

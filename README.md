@@ -11,9 +11,9 @@ LLY has a <b>Wiki in [English](https://github.com/Avankziar/LuckyLottery/wiki/EN
 To install LuckyLottery (LLY), proceed as follows:
 - Download the Jar file.
 - Copy the jar file into the plugins folder on spigot servers.
-- Restart all servers.
+- Restart all servers where lly was installed.
 - Adjust the language on the Spigot server if required.
 - Adjust the Mysql data on the Spigot server, then set Mysql.status to 'true'. Save the file.
 - Adjust the lotterysystem at your wishes.
-- Restart the Spigot server.
+- Restart the Spigot servers.
 - Assign permission, to be read and adjusted in the commands.yml, to the player groups.

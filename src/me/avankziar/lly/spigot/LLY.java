@@ -246,7 +246,7 @@ public class LLY extends JavaPlugin
 			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_PLAY, path+"_play",
 					0, 1, 2, false, false, classicLottoI);
 			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_GIVETICKET, path+"_giveticket",
-					0, 1, 2, false, false, classicLottoI);
+					0, 1, 3, true, false, classicLottoI);
 			ArgumentConstructor open = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_OPEN, path+"_open",
 					0, 1, 1, true, false, classicLottoI);
 			ArgumentConstructor ticketlist = new ArgumentConstructor(CommandSuggest.Type.CLASSICLOTTO_TICKETLIST, path+"_ticketlist",
@@ -279,7 +279,7 @@ public class LLY extends JavaPlugin
 			ArgumentConstructor drawnow = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_DRAWNOW, path+"_drawnow",
 					0, 1, 999, true, false, lottoSuperI);
 			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_GIVETICKET, path+"_giveticket",
-					0, 1, 2, false, false, lottoSuperI);
+					0, 1, 3, true, false, lottoSuperI);
 			ArgumentConstructor nextdraws = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_NEXTDRAWS, path+"_nextdraws",
 					0, 1, 1, false, false, lottoSuperI);
 			ArgumentConstructor open = new ArgumentConstructor(CommandSuggest.Type.LOTTOSUPER_OPEN, path+"_open",
@@ -308,7 +308,7 @@ public class LLY extends JavaPlugin
 		{
 			String path = "scratchcard";
 			ArgumentConstructor giveticket = new ArgumentConstructor(CommandSuggest.Type.SCRATCHCARD_GIVETICKET, path+"_giveticket",
-					0, 1, 3, false, false, scratchCardI);
+					0, 1, 4, true, false, scratchCardI);
 			ArgumentConstructor play = new ArgumentConstructor(CommandSuggest.Type.SCRATCHCARD_PLAY, path+"_play",
 					0, 1, 2, false, false, scratchCardI);
 			CommandConstructor sc = new CommandConstructor(CommandSuggest.Type.SCRATCHCARD, path, false, false,
@@ -888,7 +888,7 @@ public class LLY extends JavaPlugin
 	
 	public void setupBstats()
 	{
-		int pluginId = 0;
+		int pluginId = 24446;
         new Metrics(this, pluginId);
 	}
 }

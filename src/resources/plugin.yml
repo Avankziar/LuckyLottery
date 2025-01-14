@@ -6,5 +6,5 @@ api-version: 1.21
 description: A Lottery Plugin which aims to can display real world lotterys systems.
 depend: [InterfaceHub]
 softdepend: [RootAdministration]
-website: TBA
+website: https://www.spigotmc.org/resources/luckylottery.121931/
 prefix: LLY

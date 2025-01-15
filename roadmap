@@ -15,6 +15,10 @@ Future
 					  Auslosung wie bei den ohne Nieten.
 - Custom Lotterie: Server gibt den Preis sowie die Gewinnklassen an. Die Gewinne sollten durch Konsolenbefehle durchgeführt werden.
 
+1-0-2
+- /scratchcard play fix
+- Gramatical fix
+
 1-0-1
 - commands.yml soll neu generiert werden!
 - ClassicLotto Draw fix

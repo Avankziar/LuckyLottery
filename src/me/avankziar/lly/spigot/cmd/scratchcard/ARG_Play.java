@@ -310,6 +310,10 @@ public class ARG_Play extends ArgumentModule
 			{
 				MessageHandler.sendMessage(uuid, samefield.toArray(new String[samefield.size()]));
 			}
+			String cat = LLY.getPlugin().getYamlHandler().getLang().getString("ScratchCard.Win.Category")
+					.replace("%lotteryname%", sc.getLotteryName());
+			String comment = LLY.getPlugin().getYamlHandler().getLang().getString("ScratchCard.Win.Comment");
+			EconomyHandler.deposit(uuid, winamount, cat, comment);
 		} else
 		{
 			msg.add(LLY.getPlugin().getYamlHandler().getLang().getString("ScratchCard.Arg.Play.NotWon"));

@@ -1346,8 +1346,8 @@ public class YamlManager
 						"<yellow>Too bad! Not won. %matchchoosennumber% %matchadditionalchoosennumber%"}));
 		languageKeys.put(path+".Draw.Win.Category", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"%lottoryname%-Gewinn",
-						"%lottoryname%-Prize"}));
+						"%lotteryname%-Gewinn",
+						"%lotteryname%-Prize"}));
 		languageKeys.put(path+".Draw.Win.Comment", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"Gewonnen in der Gewinnkategory %level%.",
@@ -1629,6 +1629,14 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow>Du hast <white>%amount% <yellow>Spielern <white>%value% <yellow>Rubbellos(e) in der Lotterie %lotteryname% geschenkt!",
 						"<yellow>You have given <white>%amount% <yellow>players <white>%value% <yellow>scratchticket(s) in the %lotteryname% lottery!"}));
+		languageKeys.put(path+".Win.Category", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%lotteryname%-Gewinn",
+						"%lotteryname%-Prize"}));
+		languageKeys.put(path+".Win.Comment", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"Gewonnen in der Gewinnkategory %level%.",
+						"Won in the winning category %level%."}));
 	}
 	
 	private void initModifierValueEntryLanguage() //INFO:BonusMalusLanguages

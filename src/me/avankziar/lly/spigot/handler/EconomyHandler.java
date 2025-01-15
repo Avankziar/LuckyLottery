@@ -68,7 +68,7 @@ public class EconomyHandler
 		}
 		if(LLY.getPlugin().getVaultEco() != null)
 		{
-			LLY.getPlugin().getVaultEco().withdrawPlayer(Bukkit.getPlayer(uuid), d);
+			LLY.getPlugin().getVaultEco().depositPlayer(Bukkit.getPlayer(uuid), d);
 		}
 	}
 }

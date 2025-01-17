@@ -66,6 +66,7 @@ public class ARG_Play extends ArgumentModule
 						.replace("%lotteryname%", ls.getLotteryName())
 						.replace("%amount%", String.valueOf(count))
 						.replace("%maximum%", String.valueOf(ls.getMaximalAmountOfTicketWhichCanAPlayerBuy())));
+				return;
 			}
 		}
 		boolean confirm = false;

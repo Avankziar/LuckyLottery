@@ -913,8 +913,8 @@ public class YamlManager
 						"<yellow><underlined>next page <yellow>==>"}));
 		languageKeys.put("NextPast", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"<white>| ",
-						"<white>| "}));
+						"<white> | ",
+						"<white> | "}));
 		languageKeys.put("Past", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"<yellow><== <underlined>vorherige Seite",

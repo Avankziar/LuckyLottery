@@ -1,5 +1,8 @@
 package me.avankziar.lly.spigot.handler;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -9,6 +12,7 @@ import me.avankziar.ifh.general.economy.action.OrdererType;
 import me.avankziar.ifh.general.economy.currency.CurrencyType;
 import me.avankziar.ifh.spigot.economy.account.Account;
 import me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
+import me.avankziar.lly.general.database.Language.ISO639_2B;
 import me.avankziar.lly.spigot.LLY;
 
 public class EconomyHandler 
@@ -22,6 +26,13 @@ public class EconomyHandler
 		}
 		if(LLY.getPlugin().getVaultEco() != null)
 		{
+			DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
+			if(LLY.getPlugin().getYamlManager().getLanguageType() == ISO639_2B.GER)
+			{
+				formatter = (DecimalFormat) NumberFormat.getInstance(Locale.GERMAN);
+			}
+			formatter.setMaximumFractionDigits(2);
+			formatter.setMinimumFractionDigits(0);
 			return String.valueOf(d) + " " + LLY.getPlugin().getVaultEco().currencyNamePlural();
 		}
 		return "MISSING ECONOMY";

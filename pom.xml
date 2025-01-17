@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>main.java.me.avankziar</groupId>
 	<artifactId>luckylottery</artifactId>
-	<version>1-0-3</version>
+	<version>1-0-4</version>
 	<name>LuckyLottery</name>
 	<url>https://github.com/${repository-owner}/${repository-name}.git</url>
     <scm>

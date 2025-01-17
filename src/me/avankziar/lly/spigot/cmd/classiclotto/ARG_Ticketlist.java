@@ -67,7 +67,7 @@ public class ARG_Ticketlist extends ArgumentModule
 			}
 		}
 		int count = plugin.getMysqlHandler().getCount(cl.getTicketMysql(), "`player_uuid` = ?", player.getUniqueId().toString());
-		double pagecount = count/10.0;
+		double pagecount = count/10.0 - 1;
 		int lastpage = (int) Math.ceil(pagecount);
 		ArrayList<ClassicLottoTicket> cltA = plugin.getMysqlHandler().getList(cl.getTicketMysql(), "`id` DESC", 10*page, 10,
 				"`player_uuid` = ?", player.getUniqueId().toString());
@@ -118,19 +118,19 @@ public class ARG_Ticketlist extends ArgumentModule
 					);
 		}
 		StringBuilder sb = new StringBuilder();
-		if(page > 0 && page < lastpage)
-		{
-			sb.append(ChatApi.click(plugin.getYamlHandler().getLang().getString("Next"), "RUN_COMMAND",
-					CommandSuggest.getCmdString(Type.CLASSICLOTTO_TICKETLIST) + (page-1)));
-		}
-		if(page > 0 && sb.length() > 0)
-		{
-			sb.append(plugin.getYamlHandler().getLang().getString("NextPast"));
-		}
 		if(page > 0)
 		{
 			sb.append(ChatApi.click(plugin.getYamlHandler().getLang().getString("Past"), "RUN_COMMAND",
-					CommandSuggest.getCmdString(Type.CLASSICLOTTO_TICKETLIST) + (page+1)));
+					CommandSuggest.getCmdString(Type.CLASSICLOTTO_TICKETLIST) + cl.getLotteryName() + " " + (page-1)));
+		}
+		if(page >= 0 && page < lastpage && sb.length() > 0)
+		{
+			sb.append(plugin.getYamlHandler().getLang().getString("NextPast"));
+		}
+		if(page >= 0 && page < lastpage)
+		{
+			sb.append(ChatApi.click(plugin.getYamlHandler().getLang().getString("Next"), "RUN_COMMAND",
+					CommandSuggest.getCmdString(Type.CLASSICLOTTO_TICKETLIST) + cl.getLotteryName() + " " + (page+1)));
 		}
 		if(!sb.toString().isEmpty())
 		{

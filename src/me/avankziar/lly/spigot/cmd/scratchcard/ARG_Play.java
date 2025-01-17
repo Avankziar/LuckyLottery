@@ -75,7 +75,12 @@ public class ARG_Play extends ArgumentModule
 			MessageHandler.sendMessage(player, plugin.getYamlHandler().getLang().getString("ScratchCard.Arg.Play.TicketBought"));
 			start(player.getUniqueId(), sc);
 		}
-		String value = args[2];
+		String value = "b";
+		if(args.length >= 3)
+		{
+			value = args[2];
+		}
+		 
 		if(value.startsWith("-a"))
 		{
 			LinkedHashMap<Integer, ScratchCardField> iscf = getSet(player.getUniqueId());

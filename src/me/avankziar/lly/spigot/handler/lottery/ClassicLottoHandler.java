@@ -65,7 +65,7 @@ public class ClassicLottoHandler
 				double maximumPot = y.getDouble("MaximumPot", 10_000_000.0);
 				double amountToAddToThePotIfNoOneIsWinning = y.getDouble("AmountToAddToThePotIfNoOneIsWinning", 500_000.0);
 				double costPerTicket = y.getDouble("CostPerTicket", 2.5);
-				int maximalAmountOfTicketWhichCanAPlayerBuy = y.getInt("maximalAmountOfTicketWhichCanAPlayerBuy", -1);
+				int maximalAmountOfTicketWhichCanAPlayerBuy = y.getInt("MaximalAmountOfTicketWhichCanAPlayerBuy", -1);
 				int fristNumberToChooseFrom = y.getInt("FristNumberToChooseFrom", 1);
 				int lastNumberToChooseFrom = y.getInt("LastNumberToChooseFrom", 49);
 				int amountOfChoosedNumber = y.getInt("AmountOfChoosedNumber", 6);

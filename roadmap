@@ -15,6 +15,13 @@ Future
 					  Auslosung wie bei den ohne Nieten.
 - Custom Lotterie: Server gibt den Preis sowie die Gewinnklassen an. Die Gewinne sollten durch Konsolenbefehle durchgeführt werden.
 
+1-0-4
+- ScratchCard Play IndexOutOfError fix
+- Vault Double format change
+- MaximalAmountOfTicketWhichCanAPlayerBuy fix
+- /classiclotto ticketlist pagination fix
+- /superlotto ticketlist pagination fix
+
 1-0-3
 - Vault economy fix
 
